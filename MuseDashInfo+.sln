@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35219.272
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MuseDashInfo+", "MuseDashInfo+\MuseDashInfo+.csproj", "{FB2BC7D6-D39A-4031-BEB0-69B08A215B75}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FB2BC7D6-D39A-4031-BEB0-69B08A215B75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB2BC7D6-D39A-4031-BEB0-69B08A215B75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB2BC7D6-D39A-4031-BEB0-69B08A215B75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB2BC7D6-D39A-4031-BEB0-69B08A215B75}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BAD074B9-CCFD-4B79-B12D-476ADC1DD3E7}
+	EndGlobalSection
+EndGlobal
