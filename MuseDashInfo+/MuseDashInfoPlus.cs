@@ -29,15 +29,17 @@ public class InfoPlusMod : MelonMod
 
     public override void OnSceneWasLoaded(int buildIndex, string sceneName)
     {
-        if (sceneName == "GameMain")
+        switch (sceneName)
         {
-            GameStatsUtils.Reload();
-        }
-        else
-        {
-            GameStatsUtils.Reset();
-            CountsTextManager.Reset();
-            UITextUtils.UnloadFonts(TextFontType.SnapsTaste);
+            case "GameMain":
+                GameStatsUtils.Reload();
+                break;
+
+            default:
+                GameStatsUtils.Reset();
+                CountsTextManager.Reset();
+                UITextUtils.UnloadFonts(TextFontType.SnapsTaste);
+                break;
         }
     }
 }

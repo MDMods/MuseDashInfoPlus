@@ -5,7 +5,6 @@ using Il2CppGameLogic;
 using HarmonyLib;
 using MelonLoader;
 
-using MuseDashInfoPlus.Utils;
 using MuseDashInfoPlus.Manager;
 
 namespace MuseDashInfoPlus.Patches;

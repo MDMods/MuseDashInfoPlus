@@ -68,6 +68,8 @@ public class PnlBattleGameStartPatch
             plusCountsText.fontSize = Constants.COUNTS_PRIMARY_SIZE;
             float x = curPnlBattleUISub.transform.Find("Score/GC")?.gameObject?.active ?? false ? 278 : 214;
             plusCounts.transform.localPosition = new Vector3(x, Constants.COUNTS_POS.y, Constants.COUNTS_POS.z);
+
+            GameStatsUtils.LockHighestScore();
             CountsTextManager.SetPlusCountsInstance(plusCounts);
             CountsTextManager.UpdatePlusCountsText();
         }

@@ -22,7 +22,8 @@ public static class GameStatsUtils
     public static int MissCount => NormalMissCount + GhostMissCount;
 
     public static int CurrentScore => _task?.m_Score ?? 0;
-    public static int HighestScore => BattleHelper.GetCurrentMusicHighScore();
+    public static int SavedHighestScore { private get; set; } = -1;
+    public static int HighestScore { get; private set; } = 0;
     public static int ScoreGap => CurrentScore - HighestScore;
 
     // From patches
@@ -30,6 +31,20 @@ public static class GameStatsUtils
     public static int NormalMissCount { get; internal set; }
     public static int GhostMissCount { get; internal set; }
     public static int CollectableMissCount { get; internal set; }
+
+    public static void DecideHighestScore()
+    {
+        HighestScore = SavedHighestScore;
+        SavedHighestScore = -1;
+    }
+
+    public static void LockHighestScore()
+    {
+        int curHiScore = HighestScore;
+        HighestScore = BattleHelper.GetCurrentMusicHighScore() <= 0
+            ? curHiScore > 0 ? curHiScore : 0
+            : BattleHelper.GetCurrentMusicHighScore();
+    }
 
     public static float Accuracy
     {
@@ -78,6 +93,8 @@ public static class GameStatsUtils
         NormalMissCount = 0;
         GhostMissCount = 0;
         CollectableMissCount = 0;
+
+        SavedHighestScore = -1;
     }
 
     public static string GetMissCountsText()
