@@ -38,7 +38,7 @@ public class InfoPlusMod : MelonMod
             default:
                 GameStatsUtils.Reset();
                 CountsTextManager.Reset();
-                UITextUtils.UnloadFonts(TextFontType.SnapsTaste);
+                FontUtils.UnloadFonts(TextFontType.SnapsTaste);
                 break;
         }
     }

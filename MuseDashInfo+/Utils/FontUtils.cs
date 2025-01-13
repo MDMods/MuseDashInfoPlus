@@ -4,7 +4,7 @@ using UnityEngine.AddressableAssets;
 
 namespace MuseDashInfoPlus.Utils;
 
-public static class UITextUtils
+public static class FontUtils
 {
     private static Font fontSnapsTaste;
     private static Font fontLatoRegular;

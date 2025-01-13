@@ -60,8 +60,8 @@ public class PnlBattleGameStartPatch
             var plusCounts = pnlBattleOthers.transform.Find("KPD_PlusCounts")?.gameObject ?? Object.Instantiate(txtScoreSample, curPnlBattleUISub.transform.Find("Score"));
             var plusCountsText = plusCounts.GetComponent<UnityEngine.UI.Text>();
             plusCounts.name = "KPD_PlusCounts";
-            UITextUtils.LoadFonts(TextFontType.SnapsTaste);
-            plusCountsText.font = UITextUtils.GetFont(TextFontType.SnapsTaste);
+            FontUtils.LoadFonts(TextFontType.SnapsTaste);
+            plusCountsText.font = FontUtils.GetFont(TextFontType.SnapsTaste);
             plusCountsText.alignment = TextAnchor.UpperLeft;
             plusCountsText.fontStyle = FontStyle.Normal;
             plusCountsText.lineSpacing = 0.8f;
