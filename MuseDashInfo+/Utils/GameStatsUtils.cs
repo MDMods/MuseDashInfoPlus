@@ -49,7 +49,7 @@ public static class GameStatsUtils
     {
         string color = Accuracy >= 100 ? "#fff000" // SSS
             : Accuracy > 95 ? "#ccf0fe" // SS
-            : Accuracy > 90 ? "#00ff00" // S
+            : Accuracy > 90 ? "#ff0089" // S
             : Accuracy > 80 ? "#ad00ff" // A
             : Accuracy > 70 ? "#00bbff" // B
             : Accuracy > 60 ? "#00ff23" // C
