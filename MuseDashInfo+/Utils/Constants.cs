@@ -2,10 +2,10 @@
 
 public static class Constants
 {
-    public const float COUNTS_SINGLE_SIZE = 40f;
-    public const float COUNTS_PRIMARY_SIZE = 30f;
-    public const float COUNTS_SECONDARY_SIZE = 28f;
+    public const int SONG_NAME_SIZE = 38;
+    public const int SONG_DIFFICULTY_SIZE = 27;
 
-    public const float SONG_NAME_SIZE = 38f;
-    public const float SONG_DIFFICULTY_SIZE = 27f;
+    public const int COUNTS_SINGLE_SIZE = 40;
+    public const int COUNTS_PRIMARY_SIZE = 30;
+    public const int COUNTS_SECONDARY_SIZE = 28;
 }
