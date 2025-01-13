@@ -15,7 +15,6 @@ public class InfoPlusMod : MelonMod
     private static MelonPreferences_Entry<bool> _displayHitCounts;
     private static MelonPreferences_Entry<string> _customHitCountsFormat;
     private static MelonPreferences_Entry<bool> _displayMissCounts;
-    private static MelonPreferences_Entry<string> _customMissCountsFormat;
     private static MelonPreferences_Entry<bool> _displayAccuracy;
     private static MelonPreferences_Entry<bool> _displayScoreGap;
     private static MelonPreferences_Entry<bool> _displayHighestScore;
@@ -70,7 +69,7 @@ public class InfoPlusMod : MelonMod
             format = format.TrimEnd();
 
             if (!string.IsNullOrWhiteSpace(format)) format += "\n";
-            if (DisplayMissCounts) format += "{miss}";
+            if (DisplayMissCounts) format += "{miss} ";
             if (DisplayAccuracy) format += "{acc}";
             format = format.TrimEnd();
 
