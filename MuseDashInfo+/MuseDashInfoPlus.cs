@@ -91,11 +91,11 @@ public class InfoPlusMod : MelonMod
     {
         if (sceneName == "GameMain")
         {
-            GameCountsUtils.Reload();
+            GameStatsUtils.Reload();
         }
         else
         {
-            GameCountsUtils.Reset();
+            GameStatsUtils.Reset();
             CountsTextManager.Reset();
             UITextUtils.UnloadFonts(TextFontType.SnapsTaste);
         }

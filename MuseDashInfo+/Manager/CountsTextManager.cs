@@ -23,9 +23,9 @@ public static class CountsTextManager
     {
         if (plusCountsText == null) return;
         string text = InfoPlusMod.FinalCountsTextFormat;
-        text = text.Replace("{total}", GameCountsUtils.TotalCount.ToString());
-        text = text.Replace("{hit}", GameCountsUtils.HitCount.ToString());
-        text = text.Replace("{miss}", GameCountsUtils.GetMissCountsText());
+        text = text.Replace("{total}", GameStatsUtils.TotalCount.ToString());
+        text = text.Replace("{hit}", GameStatsUtils.HitCount.ToString());
+        text = text.Replace("{miss}", GameStatsUtils.GetMissCountsText());
         SetPlusCountsText(text);
     }
 

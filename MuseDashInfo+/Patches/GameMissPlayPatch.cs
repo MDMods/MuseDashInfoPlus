@@ -28,16 +28,16 @@ public class GameMissPlayMissCubePatch
                     switch (noteType)
                     {
                         case 4:
-                            GameCountsUtils.GhostMissCount++;
+                            Utils.GameStatsUtils.GhostMissCount++;
                             break;
 
                         case 6 or 7:
-                            GameCountsUtils.CollectableMissCount++;
+                            Utils.GameStatsUtils.CollectableMissCount++;
                             break;
 
                         default:
                             if (noteType != 2 && !isDouble)
-                                GameCountsUtils.NormalMissCount++;
+                                Utils.GameStatsUtils.NormalMissCount++;
                             break;
                     }
                     break;
@@ -46,15 +46,15 @@ public class GameMissPlayMissCubePatch
                     switch (noteType)
                     {
                         case 4:
-                            GameCountsUtils.GhostMissCount++;
+                            Utils.GameStatsUtils.GhostMissCount++;
                             break;
 
                         case 6 or 7:
-                            GameCountsUtils.CollectableMissCount++;
+                            Utils.GameStatsUtils.CollectableMissCount++;
                             break;
 
                         default:
-                            GameCountsUtils.NormalMissCount++;
+                            Utils.GameStatsUtils.NormalMissCount++;
                             break;
                     }
                     break;

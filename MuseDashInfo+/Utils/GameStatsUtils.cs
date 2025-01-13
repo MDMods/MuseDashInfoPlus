@@ -4,7 +4,7 @@ using Il2CppFormulaBase;
 
 namespace MuseDashInfoPlus.Utils;
 
-public static class GameCountsUtils
+public static class GameStatsUtils
 {
     private static StageBattleComponent _stage;
     private static TaskStageTarget _task;
