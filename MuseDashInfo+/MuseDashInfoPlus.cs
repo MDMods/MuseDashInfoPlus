@@ -40,10 +40,4 @@ public class InfoPlusMod : MelonMod
             UITextUtils.UnloadFonts(TextFontType.SnapsTaste);
         }
     }
-
-    public override void OnApplicationQuit()
-    {
-        base.OnApplicationQuit();
-        MelonPreferences.Save();
-    }
 }
