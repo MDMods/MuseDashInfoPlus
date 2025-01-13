@@ -1,6 +1,5 @@
 ﻿using Il2CppGameLogic;
 using HarmonyLib;
-using MelonLoader;
 
 using MuseDashInfoPlus.Manager;
 
@@ -11,13 +10,7 @@ public class GameTouchPlayTouchTriggerPatch
 {
     private static void Postfix(uint touchId)
     {
-        try
-        {
+        if (touchId == 8)
             CountsTextManager.UpdatePlusCountsText();
-        }
-        catch (System.Exception e)
-        {
-            Melon<InfoPlusMod>.Logger.Error(e.ToString());
-        }
     }
 }
