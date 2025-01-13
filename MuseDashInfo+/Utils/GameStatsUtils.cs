@@ -45,6 +45,18 @@ public static class GameStatsUtils
         }
     }
 
+    public static string GetAccuracyString()
+    {
+        string color = Accuracy >= 100 ? "#fff000" // SSS
+            : Accuracy > 95 ? "#ccf0fe" // SS
+            : Accuracy > 90 ? "#00ff00" // S
+            : Accuracy > 80 ? "#ad00ff" // A
+            : Accuracy > 70 ? "#00bbff" // B
+            : Accuracy > 60 ? "#00ff23" // C
+            : "#a2a2a2"; // D
+        return $"<color={color}>{Accuracy:F2}%</color>";
+    }
+
     public static string GetScoreGapString()
     {
         string color = ScoreGap > 0 ? Constants.GAP_AHEAD_COLOR : Constants.GAP_BEHIND_COLOR;
