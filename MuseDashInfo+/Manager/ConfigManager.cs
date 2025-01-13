@@ -38,9 +38,9 @@ public static class ConfigManager
     public static string FinalSongDifficultyTextFormat { get; private set; }
     public static string FinalCountsTextFormat { get; private set; }
 
-    public static void Load()
+    public static void Init()
     {
-        _category = MelonPreferences.CreateCategory("KPD.InfoPlus", "MuseDashInfo+");
+        _category = MelonPreferences.CreateCategory(ModBuildInfo.NAME, "Info Plus");
         _category.SetFilePath("UserData/Info+.cfg");
 
         _displaySongName = _category.CreateEntry("DisplaySongName", true, "Display the song name");
@@ -55,10 +55,14 @@ public static class ConfigManager
         _displayHighestScore = _category.CreateEntry("DisplayHighestScore", false, "Display highest score");
         _customSeparatist = _category.CreateEntry("CustomSeparatist", CustomSeparatist, "Custom separatist between counts");
         _advancedTextFormat = _category.CreateEntry("AdvancedTextFormat", AdvancedTextFormat, "Advanced text format. Filling in this config will invalidate the formats of other counts and take this config as the standard");
+    }
 
-        _category.LoadFromFile(false);
-        _category.SaveToFile(false);
+    public static void Load() => _category.LoadFromFile(false);
 
+    public static void Save() => _category.SaveToFile(false);
+
+    public static void ConstractTextFormats()
+    {
         FinalSongDifficultyTextFormat = CustomSongDifficultyFormat;
         string format = string.Empty;
         if (!string.IsNullOrEmpty(AdvancedTextFormat))
