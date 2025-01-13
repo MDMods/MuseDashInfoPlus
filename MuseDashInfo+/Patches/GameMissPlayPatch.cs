@@ -16,14 +16,14 @@ public class GameMissPlayMissCubePatch
     {
         try
         {
-            int lane = Singleton<BattleEnemyManager>.instance.GetPlayResult(idx);
+            int result = Singleton<BattleEnemyManager>.instance.GetPlayResult(idx); // 0:Miss 1:Injuried 3:Great 4:Perfect
             var noteData = Singleton<StageBattleComponent>.instance.GetMusicDataByIdx(idx);
-            var noteType = noteData.noteData.type;
+            var noteType = noteData.noteData.type; // 1:Normal 2:Gear 3:Long 4:Ghost 6:Heart 7:Note 8:Mult
             var isDouble = noteData.isDouble;
 
-            switch (lane)
+            switch (result)
             {
-                case 0: // Air
+                case 0: // Miss
                     switch (noteType)
                     {
                         case 4:
@@ -41,7 +41,7 @@ public class GameMissPlayMissCubePatch
                     }
                     break;
 
-                case 1: // Ground
+                case 1: // Injuried
                     switch (noteType)
                     {
                         case 4:
