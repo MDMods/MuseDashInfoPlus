@@ -63,7 +63,7 @@ public static class ConfigManager
 
     public static void ConstractTextFormats()
     {
-        string separatist = $"<size=24><color=#beffff>{CustomSeparatist}</color></size>";
+        string separatist = $"<size=24><color=#d2d2d2>{CustomSeparatist}</color></size>";
         FinalSongDifficultyTextFormat = CustomSongDifficultyFormat;
         string format = string.Empty;
         if (!string.IsNullOrEmpty(AdvancedTextFormat))
