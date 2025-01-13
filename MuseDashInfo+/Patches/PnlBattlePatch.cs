@@ -45,8 +45,8 @@ public class PnlBattleGameStartPatch
             plusInfos.name = "KPD_PlusInfos";
             plusInfosText.alignment = TextAnchor.UpperRight;
             plusInfosText.lineSpacing = 0.8f;
-            plusInfosText.fontSize = 40;
-            plusInfosText.text = $"<b>{musicName}</b>\n<size=27>{musicDiffStr} - Level {musicLevel}</size>";
+            plusInfosText.fontSize = Constants.SONG_NAME_SIZE;
+            plusInfosText.text = $"<b>{musicName}</b>\n<size={Constants.SONG_DIFFICULTY_SIZE}>{InfoPlusMod.FinalSongDifficultyTextFormat.Replace("{diff}", musicDiffStr).Replace("{level}", musicLevel)}</size>";
             var plusInfosRect = plusInfos.GetComponent<RectTransform>();
             plusInfosRect.anchorMin = new Vector2(1, 1);
             plusInfosRect.anchorMax = new Vector2(1, 1);
@@ -62,7 +62,7 @@ public class PnlBattleGameStartPatch
             plusCountsText.alignment = TextAnchor.UpperLeft;
             plusCountsText.fontStyle = FontStyle.Normal;
             plusCountsText.lineSpacing = 0.8f;
-            plusCountsText.fontSize = 30;
+            plusCountsText.fontSize = Constants.COUNTS_PRIMARY_SIZE;
             float x = curPnlBattleUISub.transform.Find("Score/GC")?.gameObject?.active ?? false ? 278 : 214;
             plusCounts.transform.localPosition = new Vector3(x, -78, 0);
             CountsTextManager.SetPlusCountsInstance(plusCounts);

@@ -22,7 +22,11 @@ public static class CountsTextManager
     public static void UpdatePlusCountsText()
     {
         if (plusCountsText == null) return;
-        SetPlusCountsText($"<size=28>{GameCountsUtils.GetHitCountText()}</size>\n{GameCountsUtils.GetMissCountText()}");
+        string text = InfoPlusMod.FinalCountsTextFormat;
+        text = text.Replace("{total}", GameCountsUtils.TotalCount.ToString());
+        text = text.Replace("{hit}", GameCountsUtils.HitCount.ToString());
+        text = text.Replace("{miss}", GameCountsUtils.GetMissCountsText());
+        SetPlusCountsText(text);
     }
 
     public static void Reset()

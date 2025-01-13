@@ -29,7 +29,6 @@ public class InfoPlusMod : MelonMod
     public static bool DisplayHitCounts => _displayHitCounts.Value;
     public static string CustomHitCountsFormat => string.IsNullOrEmpty(_customHitCountsFormat?.Value) ? "{total} / {hit}" : _customHitCountsFormat.Value;
     public static bool DisplayMissCounts => _displayMissCounts.Value;
-    public static string CustomMissCountsFormat => string.IsNullOrEmpty(_customMissCountsFormat?.Value) ? "{great}G {misshit}M {missnote}H" : _customMissCountsFormat.Value;
     public static bool DisplayAccuracy => _displayAccuracy.Value;
     public static bool DisplayScoreGap => _displayScoreGap.Value;
     public static bool DisplayHighestScore => _displayHighestScore.Value;
@@ -49,7 +48,6 @@ public class InfoPlusMod : MelonMod
         _displayHitCounts = _category.CreateEntry("DisplayHitCounts", true, "Display hit counts");
         _customHitCountsFormat = _category.CreateEntry("CustomHitCountsFormat", CustomHitCountsFormat, "Custom hit counts text format");
         _displayMissCounts = _category.CreateEntry("DisplayMissCounts", true, "Display miss counts");
-        _customMissCountsFormat = _category.CreateEntry("CustomMissCountsFormat", CustomMissCountsFormat, "Custom miss counts text format");
         _displayAccuracy = _category.CreateEntry("DisplayAccuracy", true, "Display current accuracy");
         _displayScoreGap = _category.CreateEntry("DisplayScoreGap", true, "Display score gap to highest score");
         _displayHighestScore = _category.CreateEntry("DisplayHighestScore", false, "Display highest score");
@@ -72,7 +70,7 @@ public class InfoPlusMod : MelonMod
             format = format.TrimEnd();
 
             if (!string.IsNullOrWhiteSpace(format)) format += "\n";
-            if (DisplayMissCounts) format += CustomMissCountsFormat + " ";
+            if (DisplayMissCounts) format += "{miss}";
             if (DisplayAccuracy) format += "{acc}";
             format = format.TrimEnd();
 

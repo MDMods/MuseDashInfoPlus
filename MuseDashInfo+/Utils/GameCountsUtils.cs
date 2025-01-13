@@ -43,9 +43,7 @@ public static class GameCountsUtils
         CollectableMissCount = 0;
     }
 
-    public static string GetHitCountText()
-        => $"{TotalCount} / {HitCount}";
-    public static string GetMissCountText()
+    public static string GetMissCountsText()
         => (GreatCount + MissCount + CollectableMissCount) == 0 ? "AP"
         : (GreatCount < 1 ? string.Empty : $"{GreatCount}G")
         + (MissCount < 1 ? string.Empty : $" {MissCount}M")
