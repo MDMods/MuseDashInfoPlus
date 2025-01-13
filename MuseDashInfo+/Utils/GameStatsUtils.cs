@@ -59,8 +59,8 @@ public static class GameStatsUtils
 
     public static string GetScoreGapString()
     {
-        string color = ScoreGap > 0 ? Constants.GAP_AHEAD_COLOR : Constants.GAP_BEHIND_COLOR;
-        return $"<color={color}>{ScoreGap / 1000}K</color>";
+        bool ahead = ScoreGap > 0;
+        return $"<color={(ahead ? Constants.GAP_AHEAD_COLOR : Constants.GAP_BEHIND_COLOR)}>{(ahead ? "+" : string.Empty)}{ScoreGap / 1000}K</color>";
     }
 
     internal static void Reload()
