@@ -63,6 +63,7 @@ public static class ConfigManager
 
     public static void ConstractTextFormats()
     {
+        string separatist = $"<size=20><color=#252526>{CustomSeparatist}</color></size>";
         FinalSongDifficultyTextFormat = CustomSongDifficultyFormat;
         string format = string.Empty;
         if (!string.IsNullOrEmpty(AdvancedTextFormat))
@@ -71,13 +72,13 @@ public static class ConfigManager
         }
         else
         {
-            if (DisplayHitCounts) format += CustomHitCountsFormat + CustomSeparatist;
-            if (DisplayHighestScore) format += "{highest}" + CustomSeparatist;
+            if (DisplayHitCounts) format += CustomHitCountsFormat + separatist;
+            if (DisplayHighestScore) format += "{highest}" + separatist;
             if (DisplayScoreGap) format += "{gap}";
             format = format.TrimEnd();
 
             if (!string.IsNullOrWhiteSpace(format)) format += "\n";
-            if (DisplayMissCounts) format += "{miss}" + CustomSeparatist;
+            if (DisplayMissCounts) format += "{miss}" + separatist;
             if (DisplayAccuracy) format += "{acc}";
             format = format.TrimEnd();
 
