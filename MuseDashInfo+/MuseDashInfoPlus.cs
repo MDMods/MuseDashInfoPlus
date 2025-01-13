@@ -18,6 +18,7 @@ public class InfoPlusMod : MelonMod
     private static MelonPreferences_Entry<bool> _displayAccuracy;
     private static MelonPreferences_Entry<bool> _displayScoreGap;
     private static MelonPreferences_Entry<bool> _displayHighestScore;
+    private static MelonPreferences_Entry<string> _customSeparatist;
     private static MelonPreferences_Entry<string> _advancedTextFormat;
 
     // Upper right corner
@@ -31,6 +32,7 @@ public class InfoPlusMod : MelonMod
     public static bool DisplayAccuracy => _displayAccuracy.Value;
     public static bool DisplayScoreGap => _displayScoreGap.Value;
     public static bool DisplayHighestScore => _displayHighestScore.Value;
+    public static string CustomSeparatist => string.IsNullOrEmpty(_customSeparatist?.Value) ? " | " : _customSeparatist.Value;
     public static string AdvancedTextFormat => string.IsNullOrEmpty(_advancedTextFormat?.Value) ? string.Empty : _advancedTextFormat.Value;
 
     public static string FinalSongDifficultyTextFormat { get; private set; }
@@ -50,6 +52,7 @@ public class InfoPlusMod : MelonMod
         _displayAccuracy = _category.CreateEntry("DisplayAccuracy", true, "Display current accuracy");
         _displayScoreGap = _category.CreateEntry("DisplayScoreGap", true, "Display score gap to highest score");
         _displayHighestScore = _category.CreateEntry("DisplayHighestScore", false, "Display highest score");
+        _customSeparatist = _category.CreateEntry("CustomSeparatist", CustomSeparatist, "Custom separatist between counts");
         _advancedTextFormat = _category.CreateEntry("AdvancedTextFormat", AdvancedTextFormat, "Advanced text format. Filling in this config will invalidate the formats of other counts and take this config as the standard");
 
         _category.LoadFromFile(false);
@@ -63,13 +66,13 @@ public class InfoPlusMod : MelonMod
         }
         else
         {
-            if (DisplayHitCounts) format += CustomHitCountsFormat + " ";
-            if (DisplayHighestScore) format += "{highest} ";
+            if (DisplayHitCounts) format += CustomHitCountsFormat + CustomSeparatist;
+            if (DisplayHighestScore) format += "{highest}" + CustomSeparatist;
             if (DisplayScoreGap) format += "{gap}";
             format = format.TrimEnd();
 
             if (!string.IsNullOrWhiteSpace(format)) format += "\n";
-            if (DisplayMissCounts) format += "{miss} ";
+            if (DisplayMissCounts) format += "{miss}" + CustomSeparatist;
             if (DisplayAccuracy) format += "{acc}";
             format = format.TrimEnd();
 
