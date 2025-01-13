@@ -27,12 +27,12 @@ public static class ConfigManager
     public static string CustomSongDifficultyFormat => string.IsNullOrEmpty(_customSongDifficultyFormat?.Value) ? "{diff} - Level {level}" : _customSongDifficultyFormat.Value;
     // Upper left corner
     public static bool DisplayHitCounts => _displayHitCounts.Value;
-    public static string CustomHitCountsFormat => string.IsNullOrEmpty(_customHitCountsFormat?.Value) ? "{total} / {hit}" : _customHitCountsFormat.Value;
+    public static string CustomHitCountsFormat => string.IsNullOrEmpty(_customHitCountsFormat?.Value) ? "{total} - {hit}" : _customHitCountsFormat.Value;
     public static bool DisplayMissCounts => _displayMissCounts.Value;
     public static bool DisplayAccuracy => _displayAccuracy.Value;
     public static bool DisplayScoreGap => _displayScoreGap.Value;
     public static bool DisplayHighestScore => _displayHighestScore.Value;
-    public static string CustomSeparatist => string.IsNullOrEmpty(_customSeparatist?.Value) ? " | " : _customSeparatist.Value;
+    public static string CustomSeparatist => string.IsNullOrEmpty(_customSeparatist?.Value) ? " / " : _customSeparatist.Value;
     public static string AdvancedTextFormat => string.IsNullOrEmpty(_advancedTextFormat?.Value) ? string.Empty : _advancedTextFormat.Value;
 
     public static string FinalSongDifficultyTextFormat { get; private set; }
