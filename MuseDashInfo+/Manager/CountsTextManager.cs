@@ -26,7 +26,7 @@ public static class CountsTextManager
         text = text.Replace("{total}", GameStatsUtils.TotalCount.ToString());
         text = text.Replace("{hit}", GameStatsUtils.HitCount.ToString());
         text = text.Replace("{miss}", GameStatsUtils.GetMissCountsText());
-        text = text.Replace("{acc}", GameStatsUtils.Accuracy.ToString("F2") + '%');
+        text = text.Replace("{acc}", GameStatsUtils.GetAccuracyString());
         text = text.Replace("{highest}", GameStatsUtils.HighestScore.ToString());
         text = text.Replace("{gap}", GameStatsUtils.GetScoreGapString());
         SetPlusCountsText(text);
