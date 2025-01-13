@@ -46,7 +46,10 @@ public class PnlBattleGameStartPatch
             plusInfosText.alignment = TextAnchor.UpperRight;
             plusInfosText.lineSpacing = 0.8f;
             plusInfosText.fontSize = Constants.SONG_NAME_SIZE;
-            plusInfosText.text = $"<b>{musicName}</b>\n<size={Constants.SONG_DIFFICULTY_SIZE}>{ConfigManager.FinalSongDifficultyTextFormat.Replace("{diff}", musicDiffStr).Replace("{level}", musicLevel)}</size>";
+            string songInfoText = string.Empty;
+            if (ConfigManager.DisplaySongName) songInfoText = $"<b>{musicName}</b>\n";
+            if (ConfigManager.DisplaySongDifficulty) songInfoText += $"<size={Constants.SONG_DIFFICULTY_SIZE}>{ConfigManager.FinalSongDifficultyTextFormat.Replace("{diff}", musicDiffStr).Replace("{level}", musicLevel)}</size>";
+            plusInfosText.text = songInfoText;
             var plusInfosRect = plusInfos.GetComponent<RectTransform>();
             plusInfosRect.anchorMin = new Vector2(1, 1);
             plusInfosRect.anchorMax = new Vector2(1, 1);
