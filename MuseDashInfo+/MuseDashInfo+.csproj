@@ -17,9 +17,9 @@
     <Reference Include="../References/Il2CppInterop.Runtime.dll" />
     <Reference Include="../References/Il2CppPeroTools2.Resources.dll" />
     <Reference Include="../References/Il2CppSirenix.Serialization.dll" />
-	  <Reference Include="../References/Unity.Addressables.dll" />
-	  <Reference Include="../References/Unity.ResourceManager.dll" />
-	  <Reference Include="../References/UnityEngine.CoreModule.dll" />
+	<Reference Include="../References/Unity.Addressables.dll" />
+	<Reference Include="../References/Unity.ResourceManager.dll" />
+	<Reference Include="../References/UnityEngine.CoreModule.dll" />
     <Reference Include="../References/UnityEngine.AudioModule.dll" />
     <Reference Include="../References/UnityEngine.UI.dll" />
     <Reference Include="../References/UnityEngine.TextRenderingModule.dll" />
