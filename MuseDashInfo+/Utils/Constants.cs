@@ -14,4 +14,7 @@ public static class Constants
     public const int COUNTS_SECONDARY_SIZE = 28;
 
     public static Vector3 COUNTS_POS = new(0, -78, 0);
+
+    public const string GAP_BEHIND_COLOR = "#9cb7bc";
+    public const string GAP_AHEAD_COLOR = "#fe41f3";
 }

@@ -1,4 +1,5 @@
-﻿using Il2CppAssets.Scripts.GameCore.HostComponent;
+﻿using Il2CppAssets.Scripts.Database;
+using Il2CppAssets.Scripts.GameCore.HostComponent;
 using Il2CppAssets.Scripts.PeroTools.Commons;
 using Il2CppFormulaBase;
 
@@ -20,11 +21,35 @@ public static class GameStatsUtils
     public static int HeartCount => _task?.m_Blood ?? 0;
     public static int MissCount => NormalMissCount + GhostMissCount;
 
+    public static int CurrentScore => _task?.m_Score ?? 0;
+    public static int HighestScore => BattleHelper.GetCurrentMusicHighScore();
+    public static int ScoreGap => CurrentScore - HighestScore;
+
     // From patches
     public static int JumpOverCount { get; internal set; }
     public static int NormalMissCount { get; internal set; }
     public static int GhostMissCount { get; internal set; }
     public static int CollectableMissCount { get; internal set; }
+
+    public static float Accuracy
+    {
+        get
+        {
+            var total = PerfectCount + JumpOverCount + NoteCount + HeartCount + GreatCount + NormalMissCount + GhostMissCount + CollectableMissCount;
+
+            if (total == 0)
+                return 100;
+
+            var counted = PerfectCount + JumpOverCount + NoteCount + HeartCount + GreatCount * .5f;
+            return counted / total * 100;
+        }
+    }
+
+    public static string GetScoreGapString()
+    {
+        string color = ScoreGap > 0 ? Constants.GAP_AHEAD_COLOR : Constants.GAP_BEHIND_COLOR;
+        return $"<color={color}>{ScoreGap}</color>";
+    }
 
     internal static void Reload()
     {
