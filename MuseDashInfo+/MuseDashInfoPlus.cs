@@ -77,11 +77,11 @@ public class InfoPlusMod : MelonMod
             if (format.Contains('\n'))
             {
                 var lines = format.Split('\n');
-                format = $"<size=28>{lines[0]}</size>\n{lines[1]}";
+                format = $"<size={Constants.COUNTS_SECONDARY_SIZE}>{lines[0]}</size>\n{lines[1]}";
             }
             else if (!string.IsNullOrEmpty(format))
             {
-                format = $"<size=40>{format}</size>";
+                format = $"<size={Constants.COUNTS_SINGLE_SIZE}>{format}</size>";
             }
         }
         FinalCountsTextFormat = format;

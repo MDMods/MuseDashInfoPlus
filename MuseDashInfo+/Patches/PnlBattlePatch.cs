@@ -51,7 +51,7 @@ public class PnlBattleGameStartPatch
             plusInfosRect.anchorMin = new Vector2(1, 1);
             plusInfosRect.anchorMax = new Vector2(1, 1);
             plusInfosRect.pivot = new Vector2(1, 1);
-            plusInfos.transform.localPosition = new Vector3(777, 520, 0);
+            plusInfos.transform.localPosition = Constants.SONG_INFOS_POS;
             plusInfos.transform.localScale = new Vector3(1, 0.95f, 1);
 
             var plusCounts = pnlBattleOthers.transform.Find("KPD_PlusCounts")?.gameObject ?? Object.Instantiate(txtScoreSample, curPnlBattleUISub.transform.Find("Score"));
@@ -64,7 +64,7 @@ public class PnlBattleGameStartPatch
             plusCountsText.lineSpacing = 0.8f;
             plusCountsText.fontSize = Constants.COUNTS_PRIMARY_SIZE;
             float x = curPnlBattleUISub.transform.Find("Score/GC")?.gameObject?.active ?? false ? 278 : 214;
-            plusCounts.transform.localPosition = new Vector3(x, -78, 0);
+            plusCounts.transform.localPosition = new Vector3(x, Constants.COUNTS_POS.y, Constants.COUNTS_POS.z);
             CountsTextManager.SetPlusCountsInstance(plusCounts);
             CountsTextManager.UpdatePlusCountsText();
         }
