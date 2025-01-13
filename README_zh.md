@@ -3,7 +3,9 @@
 [English](README.md) | [中文](README_zh.md)
 
 ### 概述
-MuseDashInfo+ 是一个轻量级的 MuseDash 游戏模组，用于显示额外的游戏信息。本模组受 MuseDashCustomPlay 启发
+MuseDashInfo+ 是一个轻量级的 MuseDash 游戏模组，用于显示额外的游戏信息
+
+本模组受 MuseDashCustomPlay 启发
 
 ### 功能特性
 - **物量计数器**：在游戏界面左上角实时显示谱面总物量和已击打数量
@@ -23,6 +25,7 @@ MuseDashInfo+ 是一个轻量级的 MuseDash 游戏模组，用于显示额外�
 
 ### 配置
 您可以在 `..\MuseDash\UserData\Info+.cfg` 里更改该模组的配置
+
 该文件会在**首次启动后自动生成**，修改配置后**重启游戏生效**
 
 ```
