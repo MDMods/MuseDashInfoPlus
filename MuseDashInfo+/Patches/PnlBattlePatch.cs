@@ -66,7 +66,28 @@ public class PnlBattleGameStartPatch
             plusCountsText.fontStyle = FontStyle.Normal;
             plusCountsText.lineSpacing = 0.8f;
             plusCountsText.fontSize = Constants.COUNTS_PRIMARY_SIZE;
-            float x = curPnlBattleUISub.transform.Find("Score/GC")?.gameObject?.active ?? false ? 278 : 214;
+
+            var stageType = StageType.OtherCN;
+            if (curPnlBattleUISub.transform.Find("Score/GC")?.gameObject?.active ?? false)
+                stageType = StageType.GC;
+            else if (curPnlBattleUISub.transform.Find("Score/Djmax")?.gameObject?.active ?? false)
+                stageType = StageType.Djmax;
+            else if (curPnlBattleUISub.transform.Find("Score/Other/ScoreTittle/ImgEnglish")?.gameObject?.active ?? false)
+                stageType = StageType.OtherEN;
+            else if (curPnlBattleUISub.transform.Find("Score/Other/ScoreTittle/ImgChinese")?.gameObject?.active ?? false)
+                stageType = StageType.OtherCN;
+            else
+                stageType = StageType.Unknown;
+
+            float x = 0;
+            x = stageType switch
+            {
+                StageType.OtherCN => 110,
+                StageType.OtherEN => 220,
+                StageType.GC => 278,
+                StageType.Djmax => 214,
+                _ => (float)228,
+            };
             plusCounts.transform.localPosition = new Vector3(x, Constants.COUNTS_POS.y, Constants.COUNTS_POS.z);
 
             GameStatsUtils.LockHighestScore();
@@ -78,4 +99,13 @@ public class PnlBattleGameStartPatch
             Melon<InfoPlusMod>.Logger.Error(e.ToString());
         }
     }
+}
+
+public enum StageType
+{
+    OtherEN,
+    OtherCN,
+    GC,
+    Djmax,
+    Unknown
 }
