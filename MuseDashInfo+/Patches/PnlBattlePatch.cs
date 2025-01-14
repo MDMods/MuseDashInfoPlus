@@ -37,7 +37,10 @@ public class PnlBattleGameStartPatch
             var pnlBattleOthers = __instance.transform.Find("PnlBattleUI/PnlBattleOthers").gameObject;
             var curPnlBattleUISub = pnlBattleOthers;
             if (!pnlBattleOthers.active) curPnlBattleUISub = __instance.transform.Find("PnlBattleUI/PnlBattleSpell").gameObject;
-            TextObjectTemplate = pnlBattleOthers.transform.Find("Score/Djmax/TxtScore_djmax").gameObject;
+            TextObjectTemplate = Object.Instantiate(pnlBattleOthers.transform.Find("Score/Djmax/TxtScore_djmax").gameObject);
+            Object.Destroy(TextObjectTemplate.transform.Find("ImgIconApDjmax").gameObject);
+            Object.Destroy(TextObjectTemplate.GetComponent<ContentSizeFitter>());
+            TextObjectTemplate.transform.localPosition = new Vector3(9999, 9999, -9999);
 
             GameObject imgIconAp = null;
             var stageType = StageType.Unknown;
@@ -153,9 +156,6 @@ public class PnlBattleGameStartPatch
             var obj = parent.Find(objectName)?.gameObject ??
                       Object.Instantiate(TextObjectTemplate, parent);
             obj.name = objectName;
-
-            Object.Destroy(obj.transform.Find("ImgIconApDjmax").gameObject);
-            Object.Destroy(obj.GetComponent<ContentSizeFitter>());
 
             if (!skipRectReset)
             {

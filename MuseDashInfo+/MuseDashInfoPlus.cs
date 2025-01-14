@@ -1,5 +1,7 @@
-﻿using MelonLoader;
+﻿using Il2CppAssets.Scripts.UI.Panels;
+using MelonLoader;
 using MuseDashInfoPlus.Manager;
+using MuseDashInfoPlus.Patches;
 using MuseDashInfoPlus.Utils;
 
 namespace MuseDashInfoPlus;
@@ -39,6 +41,7 @@ public class InfoPlusMod : MelonMod
                 GameStatsUtils.Reset();
                 StatsTextManager.Reset();
                 FontUtils.UnloadFonts(TextFontType.SnapsTaste);
+                PnlBattleGameStartPatch.Reset();
                 break;
         }
     }
