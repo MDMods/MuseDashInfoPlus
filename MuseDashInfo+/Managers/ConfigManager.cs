@@ -19,7 +19,6 @@ public static class ConfigManager
     private static MelonPreferences_Entry<bool> _displayScoreGap;
     private static MelonPreferences_Entry<bool> _displayHighestScore;
     private static MelonPreferences_Entry<string> _customSeparatist;
-    private static MelonPreferences_Entry<string> _advancedTextFormat;
 
     // Upper right corner
     public static bool DisplaySongName => _displaySongName.Value;
@@ -33,7 +32,6 @@ public static class ConfigManager
     public static bool DisplayScoreGap => _displayScoreGap.Value;
     public static bool DisplayHighestScore => _displayHighestScore.Value;
     public static string CustomSeparatist => string.IsNullOrEmpty(_customSeparatist?.Value) ? " / " : _customSeparatist.Value;
-    public static string AdvancedTextFormat => string.IsNullOrEmpty(_advancedTextFormat?.Value) ? string.Empty : _advancedTextFormat.Value;
 
     public static string FinalSongDifficultyTextFormat { get; private set; }
     public static string FinalGameStatsTextFormat { get; private set; }
@@ -56,7 +54,6 @@ public static class ConfigManager
         _displayScoreGap = _category.CreateEntry("DisplayScoreGap", true, "Display score gap to highest score");
         _displayHighestScore = _category.CreateEntry("DisplayHighestScore", false, "Display highest score");
         _customSeparatist = _category.CreateEntry("CustomSeparatist", CustomSeparatist, "Custom separatist between counts");
-        _advancedTextFormat = _category.CreateEntry("AdvancedTextFormat", AdvancedTextFormat, "Advanced text format. Filling in this config will invalidate the formats of other counts and take this config as the standard");
     }
 
     public static void Load() => _category.LoadFromFile(false);
