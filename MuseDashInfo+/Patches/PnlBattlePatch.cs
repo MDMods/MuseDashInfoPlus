@@ -13,15 +13,31 @@ namespace MuseDashInfoPlus.Patches;
 [HarmonyPatch(typeof(PnlBattle), nameof(PnlBattle.GameStart))]
 public class PnlBattleGameStartPatch
 {
-    private static GameObject textObjectTemplate;
+    private static GameObject TextObjectTemplate;
+    private static GameObject ChartInfosObj;
+    private static GameObject GameStatsObj;
+    private static GameObject ScoreStatsObj;
+    private static GameObject HitStatsObj;
+
+    public static void Reset()
+    {
+        TextObjectTemplate = null;
+        ChartInfosObj = null;
+        GameStatsObj = null;
+        ScoreStatsObj = null;
+        HitStatsObj = null;
+    }
+
     private static void Postfix(PnlBattle __instance)
     {
+        if (TextObjectTemplate != null) return;
+
         try
         {
             var pnlBattleOthers = __instance.transform.Find("PnlBattleUI/PnlBattleOthers").gameObject;
             var curPnlBattleUISub = pnlBattleOthers;
             if (!pnlBattleOthers.active) curPnlBattleUISub = __instance.transform.Find("PnlBattleUI/PnlBattleSpell").gameObject;
-            textObjectTemplate = pnlBattleOthers.transform.Find("Score/Djmax/TxtScore_djmax").gameObject;
+            TextObjectTemplate = pnlBattleOthers.transform.Find("Score/Djmax/TxtScore_djmax").gameObject;
 
             GameObject imgIconAp = null;
             var stageType = StageType.Unknown;
@@ -58,7 +74,7 @@ public class PnlBattleGameStartPatch
             FontUtils.LoadFonts(TextFontType.SnapsTaste);
 
             // Chart Infos
-            var chartInfosObj = CreateStatsText(
+            var chartInfosObj = CreateText(
                 "InfoPlus_ChartInfos",
                 curPnlBattleUISub.transform.Find("Up"),
                 false,
@@ -72,12 +88,12 @@ public class PnlBattleGameStartPatch
             chartInfosObj.transform.localScale = new Vector3(1, 0.95f, 1);
 
             // Score Stats 
-            var scoreStatsObj = CreateStatsText(
+            var scoreStatsObj = CreateText(
                 "InfoPlus_ScoreStats",
                 imgIconAp.transform.parent,
                 true,
                 TextAnchor.LowerLeft,
-                Constants.SCORE_STATS_POS,
+                new Vector3(Constants.SCORE_STATS_POS.x, Constants.Y_BEHIND_SCORE[stageType], Constants.SCORE_STATS_POS.z),
                 Constants.SCORE_STATS_SIZE,
                 FontStyle.Bold,
                 true
@@ -89,7 +105,7 @@ public class PnlBattleGameStartPatch
             scoreStatsRect.pivot = new Vector2(1, 1);
 
             // Game Stats
-            var gameStatsObj = CreateStatsText(
+            var gameStatsObj = CreateText(
                 "InfoPlus_GameStats",
                 curPnlBattleUISub.transform.Find("Score"),
                 false,
@@ -101,7 +117,7 @@ public class PnlBattleGameStartPatch
             );
 
             // Hit Stats
-            var hitStatsObj = CreateStatsText(
+            var hitStatsObj = CreateText(
                 "InfoPlus_HitStats",
                 curPnlBattleUISub.transform.Find("Below"),
                 false,
@@ -124,7 +140,7 @@ public class PnlBattleGameStartPatch
         }
     }
 
-    private static GameObject CreateStatsText(
+    private static GameObject CreateText(
         string objectName,
         Transform parent,
         bool skipRectReset,
@@ -135,7 +151,7 @@ public class PnlBattleGameStartPatch
         bool useCustomFont = false)
         {
             var obj = parent.Find(objectName)?.gameObject ??
-                      Object.Instantiate(textObjectTemplate, parent);
+                      Object.Instantiate(TextObjectTemplate, parent);
             obj.name = objectName;
 
             Object.Destroy(obj.transform.Find("ImgIconApDjmax").gameObject);

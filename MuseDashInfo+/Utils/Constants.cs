@@ -14,10 +14,10 @@ public static class Constants
 
     public const int GAME_STATS_SIZE = 36;
     public const int SCORE_STATS_SIZE = 38;
-    public const int HIT_STATS_SIZE = 32;
+    public const int HIT_STATS_SIZE = 30;
 
     public static Vector3 GAME_STATS_POS = new(0, -135, 0);
-    public static Vector3 SCORE_STATS_POS = new(110, -64, 0);
+    public static Vector3 SCORE_STATS_POS = new(55, -64, 0);
     public static Vector3 HIT_STATS_POS = new(-866, -460, 0);
 
     public static int SEPARATIST_SIZE = 34;
@@ -30,8 +30,16 @@ public static class Constants
     {
         { StageType.GC, 325 },
         { StageType.Djmax, 260 },
-        { StageType.OtherEN, 265 },
-        { StageType.OtherCN, 155 },
+        { StageType.OtherEN, 270 },
+        { StageType.OtherCN, 160 },
         { StageType.Unknown, 260 }
+    };
+    public static Dictionary<StageType, float> Y_BEHIND_SCORE = new()
+    {
+        { StageType.GC, -30 },
+        { StageType.Djmax, -78 },
+        { StageType.OtherEN, -64 },
+        { StageType.OtherCN, -64 },
+        { StageType.Unknown, -64 }
     };
 }
