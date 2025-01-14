@@ -22,7 +22,10 @@ public class InfoPlusMod : MelonMod
     public override void OnInitializeMelon()
     {
         instance = this;
+    }
 
+    public override void OnLateInitializeMelon()
+    {
         ConfigManager.Init();
         ConfigManager.Load();
         ConfigManager.ConstractTextFormats();
