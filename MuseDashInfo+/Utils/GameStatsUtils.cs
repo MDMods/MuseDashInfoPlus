@@ -2,6 +2,7 @@
 using Il2CppAssets.Scripts.GameCore.HostComponent;
 using Il2CppAssets.Scripts.PeroTools.Commons;
 using Il2CppFormulaBase;
+using MuseDashInfoPlus.Patches;
 
 namespace MuseDashInfoPlus.Utils;
 
@@ -101,7 +102,7 @@ public static class GameStatsUtils
         => (GreatCount + MissCount + CollectableMissCount) == 0 ? "AP"
         : (GreatCount < 1 ? string.Empty : $"{GreatCount}G")
         + (MissCount < 1 ? string.Empty : $" {MissCount}M")
-        + (CollectableMissCount < 1 ? string.Empty : $" {CollectableMissCount}H");
+        + ((PnlBattleGameStartPatch.IsSpellMode ? 0 : CollectableMissCount) < 1 ? string.Empty : $" {CollectableMissCount}H");
 }
 
 // Reference: https://github.com/flustix/AccDisplay/blob/main/AccDisplay/Utils/GameUtils.cs

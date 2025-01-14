@@ -19,6 +19,8 @@ public class PnlBattleGameStartPatch
     private static GameObject ScoreStatsObj;
     private static GameObject HitStatsObj;
 
+    public static bool IsSpellMode { get; private set; }
+
     public static void Reset()
     {
         TextObjectTemplate = null;
@@ -26,6 +28,8 @@ public class PnlBattleGameStartPatch
         GameStatsObj = null;
         ScoreStatsObj = null;
         HitStatsObj = null;
+
+        IsSpellMode = false;
     }
 
     private static void Postfix(PnlBattle __instance)
@@ -36,7 +40,11 @@ public class PnlBattleGameStartPatch
         {
             var pnlBattleOthers = __instance.transform.Find("PnlBattleUI/PnlBattleOthers")?.gameObject;
             var curPnlBattleUISub = pnlBattleOthers;
-            if (!pnlBattleOthers?.activeSelf ?? false) curPnlBattleUISub = __instance.transform.Find("PnlBattleUI/PnlBattleSpell").gameObject;
+            if (!pnlBattleOthers?.activeSelf ?? false)
+            {
+                curPnlBattleUISub = __instance.transform.Find("PnlBattleUI/PnlBattleSpell").gameObject;
+                IsSpellMode = true;
+            }
             TextObjectTemplate = Object.Instantiate(pnlBattleOthers.transform.Find("Score/Djmax/TxtScore_djmax").gameObject);
             Object.Destroy(TextObjectTemplate.transform.Find("ImgIconApDjmax").gameObject);
             Object.Destroy(TextObjectTemplate.GetComponent<ContentSizeFitter>());
@@ -98,7 +106,7 @@ public class PnlBattleGameStartPatch
             }
 
             // Score Stats 
-            if ((ConfigManager.DisplayHighestScore || ConfigManager.DisplayScoreGap) && curPnlBattleUISub.name != "PnlBattleSpell")
+            if ((ConfigManager.DisplayHighestScore || ConfigManager.DisplayScoreGap) && !IsSpellMode)
             {
                 var scoreStatsObj = CreateText(
                     "InfoPlus_ScoreStats",
@@ -134,7 +142,7 @@ public class PnlBattleGameStartPatch
             }
             
             // Hit Stats
-            if (ConfigManager.DisplayNoteCounts)
+            if (ConfigManager.DisplayNoteCounts && !IsSpellMode)
             {
                 var hitStatsObj = CreateText(
                     "InfoPlus_HitStats",
