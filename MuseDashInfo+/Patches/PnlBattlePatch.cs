@@ -75,7 +75,8 @@ public class PnlBattleGameStartPatch
             imgPauseRect.anchoredPosition = new Vector2(0, 0);
 
             // Remove AP icon
-            Object.Destroy(imgPauseRect);
+            var imgIconAp = curPnlBattleUISub.transform.Find(imgIconApPath)?.gameObject;
+            if (imgIconAp != null) imgIconAp.transform.localPosition = new Vector3(9999, 9999, -9999);
 
             FontUtils.LoadFonts(TextFontType.SnapsTaste);
 
