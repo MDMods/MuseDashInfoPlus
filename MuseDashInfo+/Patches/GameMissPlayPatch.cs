@@ -59,7 +59,7 @@ public class GameMissPlayMissCubePatch
                     break;
             }
 
-            CountsTextManager.UpdatePlusCountsText();
+            StatsTextManager.UpdateAllText();
         }
         catch (System.Exception e)
         {

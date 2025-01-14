@@ -21,7 +21,8 @@
 	<Reference Include="../References/Unity.ResourceManager.dll" />
 	<Reference Include="../References/UnityEngine.CoreModule.dll" />
     <Reference Include="../References/UnityEngine.AudioModule.dll" />
-    <Reference Include="../References/UnityEngine.UI.dll" />
+	<Reference Include="../References/UnityEngine.UIModule.dll" />
+	<Reference Include="../References/UnityEngine.UI.dll" />
     <Reference Include="../References/UnityEngine.TextRenderingModule.dll" />
     <Reference Include="../References/UnityEngine.InputLegacyModule.dll" />
     <Reference Include="../References/Newtonsoft.Json.dll" />

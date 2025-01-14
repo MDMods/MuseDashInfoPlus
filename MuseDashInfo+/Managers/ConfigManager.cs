@@ -27,7 +27,7 @@ public static class ConfigManager
     public static string CustomSongDifficultyFormat => string.IsNullOrEmpty(_customSongDifficultyFormat?.Value) ? "{diff} - Level {level}" : _customSongDifficultyFormat.Value;
     // Upper left corner
     public static bool DisplayHitCounts => _displayHitCounts.Value;
-    public static string CustomHitCountsFormat => string.IsNullOrEmpty(_customHitCountsFormat?.Value) ? "{total} - {hit}" : _customHitCountsFormat.Value;
+    public static string CustomHitCountsFormat => string.IsNullOrEmpty(_customHitCountsFormat?.Value) ? "{hit} of {total} notes" : _customHitCountsFormat.Value;
     public static bool DisplayMissCounts => _displayMissCounts.Value;
     public static bool DisplayAccuracy => _displayAccuracy.Value;
     public static bool DisplayScoreGap => _displayScoreGap.Value;
@@ -36,7 +36,9 @@ public static class ConfigManager
     public static string AdvancedTextFormat => string.IsNullOrEmpty(_advancedTextFormat?.Value) ? string.Empty : _advancedTextFormat.Value;
 
     public static string FinalSongDifficultyTextFormat { get; private set; }
-    public static string FinalCountsTextFormat { get; private set; }
+    public static string FinalGameStatsTextFormat { get; private set; }
+    public static string FinalScoreStatsTextFormat { get; private set; }
+    public static string FinalHitStatsTextFormat { get; private set; }
 
     public static void Init()
     {
@@ -63,35 +65,20 @@ public static class ConfigManager
 
     public static void ConstractTextFormats()
     {
-        string separatist = $"<size=24><color=#d2d2d2>{CustomSeparatist}</color></size>";
+        string separatist = $"<size={Constants.SEPARATIST_SIZE}><color={Constants.SEPARATIST_COLOR}>{CustomSeparatist}</color></size>";
+
         FinalSongDifficultyTextFormat = CustomSongDifficultyFormat;
+
         string format = string.Empty;
-        if (!string.IsNullOrEmpty(AdvancedTextFormat))
-        {
-            format = AdvancedTextFormat;
-        }
-        else
-        {
-            if (DisplayHitCounts) format += CustomHitCountsFormat + separatist;
-            if (DisplayHighestScore) format += "{highest}" + separatist;
-            if (DisplayScoreGap) format += "{gap}";
-            format = format.TrimEnd();
+        if (DisplayAccuracy) format += "{acc}";
+        if (DisplayMissCounts) format += (DisplayAccuracy ? separatist : string.Empty) + "{miss}";
+        FinalGameStatsTextFormat = format.Trim();
 
-            if (!string.IsNullOrWhiteSpace(format)) format += "\n";
-            if (DisplayMissCounts) format += "{miss}" + separatist;
-            if (DisplayAccuracy) format += "{acc}";
-            format = format.TrimEnd();
+        format = string.Empty;
+        if (DisplayHighestScore) format += "{highest}";
+        if (DisplayScoreGap) format += (DisplayHighestScore ? separatist : string.Empty) + "{gap}";
+        FinalScoreStatsTextFormat = format.Trim();
 
-            if (format.Contains('\n'))
-            {
-                var lines = format.Split('\n');
-                format = $"<size={Constants.COUNTS_SECONDARY_SIZE}>{lines[0]}</size>\n{lines[1]}";
-            }
-            else if (!string.IsNullOrEmpty(format))
-            {
-                format = $"<size={Constants.COUNTS_SINGLE_SIZE}>{format}</size>";
-            }
-        }
-        FinalCountsTextFormat = format;
+        FinalHitStatsTextFormat = CustomHitCountsFormat;
     }
 }

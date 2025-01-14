@@ -1,0 +1,29 @@
+﻿using Il2CppAssets.Scripts.Database;
+
+using MuseDashInfoPlus.Manager;
+
+namespace MuseDashInfoPlus.Utils;
+
+public static class GameInfosUtils
+{
+    public static string MusicName => GlobalDataBase.dbBattleStage.selectedMusicName;
+    public static int MusicDiff => GlobalDataBase.dbBattleStage.selectedDifficulty;
+    public static string MusicLevel => GlobalDataBase.dbBattleStage.selectedMusicInfo.GetMusicLevelStringByDiff(MusicDiff);
+    public static string MusicDiffStr => (MusicDiff switch
+    {
+        1 => "Easy",
+        2 => "Hard",
+        3 => "Master",
+        4 => "Hidden",
+        5 => "Special",
+        _ => "Unknown"
+    }).ToUpper();
+
+    public static string GetChartInfosString()
+    {
+        var text = string.Empty;
+        if (ConfigManager.DisplaySongName) text = $"<b>{MusicName}</b>\n";
+        if (ConfigManager.DisplaySongDifficulty) text += $"<size={Constants.CHART_DIFFICULTY_SIZE}>{ConfigManager.FinalSongDifficultyTextFormat.Replace("{diff}", MusicDiffStr).Replace("{level}", MusicLevel)}</size>";
+        return text;
+    }
+}
