@@ -32,20 +32,6 @@ public static class GameStatsUtils
     public static int GhostMissCount { get; internal set; }
     public static int CollectableMissCount { get; internal set; }
 
-    public static void DecideHighestScore()
-    {
-        HighestScore = SavedHighestScore;
-        SavedHighestScore = -1;
-    }
-
-    public static void LockHighestScore()
-    {
-        int curHiScore = HighestScore;
-        HighestScore = BattleHelper.GetCurrentMusicHighScore() <= 0
-            ? curHiScore > 0 ? curHiScore : 0
-            : BattleHelper.GetCurrentMusicHighScore();
-    }
-
     public static float Accuracy
     {
         get
@@ -58,6 +44,20 @@ public static class GameStatsUtils
             var counted = PerfectCount + JumpOverCount + NoteCount + HeartCount + GreatCount * .5f;
             return counted / total * 100;
         }
+    }
+
+    public static void DecideHighestScore()
+    {
+        HighestScore = SavedHighestScore;
+        SavedHighestScore = -1;
+    }
+
+    public static void LockHighestScore()
+    {
+        int curHiScore = HighestScore;
+        HighestScore = BattleHelper.GetCurrentMusicHighScore() <= 0
+            ? curHiScore > 0 ? curHiScore : 0
+            : BattleHelper.GetCurrentMusicHighScore();
     }
 
     public static string GetAccuracyString()
