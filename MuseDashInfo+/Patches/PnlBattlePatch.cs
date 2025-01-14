@@ -80,7 +80,7 @@ public class PnlBattleGameStartPatch
             FontUtils.LoadFonts(TextFontType.SnapsTaste);
 
             // Chart Infos
-            if (ConfigManager.DisplaySongName || ConfigManager.DisplaySongDifficulty)
+            if (ConfigManager.DisplayChartName || ConfigManager.DisplayChartDifficulty)
             {
                 var chartInfosObj = CreateText(
                     "InfoPlus_ChartInfos",
@@ -133,7 +133,7 @@ public class PnlBattleGameStartPatch
             }
             
             // Hit Stats
-            if (ConfigManager.DisplayHitCounts)
+            if (ConfigManager.DisplayNoteCounts)
             {
                 var hitStatsObj = CreateText(
                     "InfoPlus_HitStats",

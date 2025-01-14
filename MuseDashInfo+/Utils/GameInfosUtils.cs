@@ -22,8 +22,8 @@ public static class GameInfosUtils
     public static string GetChartInfosString()
     {
         var text = string.Empty;
-        if (ConfigManager.DisplaySongName) text = $"<b>{MusicName}</b>\n";
-        if (ConfigManager.DisplaySongDifficulty) text += $"<size={Constants.CHART_DIFFICULTY_SIZE}>{ConfigManager.FinalSongDifficultyTextFormat.Replace("{diff}", MusicDiffStr).Replace("{level}", MusicLevel)}</size>";
+        if (ConfigManager.DisplayChartName) text = $"<b>{MusicName}</b>\n";
+        if (ConfigManager.DisplayChartDifficulty) text += $"<size={Constants.CHART_DIFFICULTY_SIZE}>{ConfigManager.FinalChartDifficultyTextFormat.Replace("{diff}", MusicDiffStr).Replace("{level}", MusicLevel)}</size>";
         return text;
     }
 }
