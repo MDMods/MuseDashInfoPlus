@@ -36,7 +36,7 @@ public static class Constants
     };
     public static Dictionary<StageType, float> Y_BEHIND_SCORE = new()
     {
-        { StageType.GC, -30 },
+        { StageType.GC, -55 },
         { StageType.Djmax, -78 },
         { StageType.OtherEN, -64 },
         { StageType.OtherCN, -64 },

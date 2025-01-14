@@ -31,22 +31,27 @@ public static class StatsTextManager
 
     public static void UpdateAllText()
     {
-        if (gameStatsText == null) return;
-
-        string text = ConfigManager.FinalGameStatsTextFormat;
-        text = text.Replace("{acc}", GameStatsUtils.GetAccuracyString());
-        text = text.Replace("{miss}", GameStatsUtils.GetMissCountsText());
-        SetGameStatsText(text);
-
-        text = ConfigManager.FinalScoreStatsTextFormat;
-        text = text.Replace("{highest}", GameStatsUtils.HighestScore.ToString());
-        text = text.Replace("{gap}", GameStatsUtils.GetScoreGapString());
-        SetScoreStatsText(text);
-
-        text = ConfigManager.FinalHitStatsTextFormat;
-        text = text.Replace("{total}", GameStatsUtils.TotalCount.ToString());
-        text = text.Replace("{hit}", GameStatsUtils.HitCount.ToString());
-        SetHitStatsText(text);
+        if (gameStatsText != null)
+        {
+            string text = ConfigManager.FinalGameStatsTextFormat;
+            text = text.Replace("{acc}", GameStatsUtils.GetAccuracyString());
+            text = text.Replace("{miss}", GameStatsUtils.GetMissCountsText());
+            SetGameStatsText(text);
+        }
+        if (scoreStatsText != null)
+        {
+            string text = ConfigManager.FinalScoreStatsTextFormat;
+            text = text.Replace("{highest}", GameStatsUtils.HighestScore.ToString());
+            text = text.Replace("{gap}", GameStatsUtils.GetScoreGapString());
+            SetScoreStatsText(text);
+        }
+        if (hitStatsText != null)
+        {
+            string text = ConfigManager.FinalHitStatsTextFormat;
+            text = text.Replace("{total}", GameStatsUtils.TotalCount.ToString());
+            text = text.Replace("{hit}", GameStatsUtils.HitCount.ToString());
+            SetHitStatsText(text);
+        }
     }
 
     public static void Reset()

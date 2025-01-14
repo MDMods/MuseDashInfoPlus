@@ -34,9 +34,9 @@ public class PnlBattleGameStartPatch
 
         try
         {
-            var pnlBattleOthers = __instance.transform.Find("PnlBattleUI/PnlBattleOthers").gameObject;
+            var pnlBattleOthers = __instance.transform.Find("PnlBattleUI/PnlBattleOthers")?.gameObject;
             var curPnlBattleUISub = pnlBattleOthers;
-            if (!pnlBattleOthers.active) curPnlBattleUISub = __instance.transform.Find("PnlBattleUI/PnlBattleSpell").gameObject;
+            if (!pnlBattleOthers?.activeSelf ?? false) curPnlBattleUISub = __instance.transform.Find("PnlBattleUI/PnlBattleSpell").gameObject;
             TextObjectTemplate = Object.Instantiate(pnlBattleOthers.transform.Find("Score/Djmax/TxtScore_djmax").gameObject);
             Object.Destroy(TextObjectTemplate.transform.Find("ImgIconApDjmax").gameObject);
             Object.Destroy(TextObjectTemplate.GetComponent<ContentSizeFitter>());
@@ -77,64 +77,76 @@ public class PnlBattleGameStartPatch
             FontUtils.LoadFonts(TextFontType.SnapsTaste);
 
             // Chart Infos
-            var chartInfosObj = CreateText(
-                "InfoPlus_ChartInfos",
-                curPnlBattleUISub.transform.Find("Up"),
-                false,
-                TextAnchor.UpperRight,
-                Constants.CHART_INFOS_POS,
-                Constants.CHART_NAME_SIZE
-            );
-            var chartInfosText = chartInfosObj.GetComponent<Text>();
-            chartInfosText.lineSpacing = 0.8f;
-            chartInfosText.text = GameInfosUtils.GetChartInfosString();
-            chartInfosObj.transform.localScale = new Vector3(1, 0.95f, 1);
+            if (ConfigManager.DisplaySongName || ConfigManager.DisplaySongDifficulty)
+            {
+                var chartInfosObj = CreateText(
+                    "InfoPlus_ChartInfos",
+                    curPnlBattleUISub.transform.Find("Up"),
+                    false,
+                    TextAnchor.UpperRight,
+                    Constants.CHART_INFOS_POS,
+                    Constants.CHART_NAME_SIZE
+                );
+                var chartInfosText = chartInfosObj.GetComponent<Text>();
+                chartInfosText.lineSpacing = 0.8f;
+                chartInfosText.text = GameInfosUtils.GetChartInfosString();
+                chartInfosObj.transform.localScale = new Vector3(1, 0.95f, 1);
+            }
 
             // Score Stats 
-            var scoreStatsObj = CreateText(
-                "InfoPlus_ScoreStats",
-                imgIconAp.transform.parent,
-                true,
-                TextAnchor.LowerLeft,
-                new Vector3(Constants.SCORE_STATS_POS.x, Constants.Y_BEHIND_SCORE[stageType], Constants.SCORE_STATS_POS.z),
-                Constants.SCORE_STATS_SIZE,
-                FontStyle.Bold,
-                true
-            );
-            Object.Destroy(imgIconAp);
-            var scoreStatsRect = scoreStatsObj.GetComponent<RectTransform>();
-            scoreStatsRect.anchorMin = new Vector2(1, 1);
-            scoreStatsRect.anchorMax = new Vector2(1, 1);
-            scoreStatsRect.pivot = new Vector2(1, 1);
+            if (ConfigManager.DisplayHighestScore || ConfigManager.DisplayScoreGap)
+            {
+                var scoreStatsObj = CreateText(
+                    "InfoPlus_ScoreStats",
+                    imgIconAp.transform.parent,
+                    true,
+                    TextAnchor.LowerLeft,
+                    new Vector3(Constants.SCORE_STATS_POS.x, Constants.Y_BEHIND_SCORE[stageType], Constants.SCORE_STATS_POS.z),
+                    Constants.SCORE_STATS_SIZE,
+                    FontStyle.Bold,
+                    true
+                );
+                Object.Destroy(imgIconAp);
+                var scoreStatsRect = scoreStatsObj.GetComponent<RectTransform>();
+                scoreStatsRect.anchorMin = new Vector2(1, 1);
+                scoreStatsRect.anchorMax = new Vector2(1, 1);
+                scoreStatsRect.pivot = new Vector2(1, 1);
+                StatsTextManager.SetScoreStatsInstance(scoreStatsObj);
+            }
 
             // Game Stats
-            var gameStatsObj = CreateText(
-                "InfoPlus_GameStats",
-                curPnlBattleUISub.transform.Find("Score"),
-                false,
-                TextAnchor.UpperLeft,
-                new Vector3(Constants.X_BEHIND_SCORE_TEXT[stageType], Constants.GAME_STATS_POS.y, Constants.GAME_STATS_POS.z),
-                Constants.GAME_STATS_SIZE,
-                FontStyle.Normal,
-                true
-            );
-
+            if (ConfigManager.DisplayAccuracy || ConfigManager.DisplayMissCounts)
+            {
+                var gameStatsObj = CreateText(
+                    "InfoPlus_GameStats",
+                    curPnlBattleUISub.transform.Find("Score"),
+                    false,
+                    TextAnchor.UpperLeft,
+                    new Vector3(Constants.X_BEHIND_SCORE_TEXT[stageType], Constants.GAME_STATS_POS.y, Constants.GAME_STATS_POS.z),
+                    Constants.GAME_STATS_SIZE,
+                    FontStyle.Normal,
+                    true
+                );
+                StatsTextManager.SetGameStatsInstance(gameStatsObj);
+            }
+            
             // Hit Stats
-            var hitStatsObj = CreateText(
-                "InfoPlus_HitStats",
-                curPnlBattleUISub.transform.Find("Below"),
-                false,
-                TextAnchor.LowerLeft,
-                Constants.HIT_STATS_POS,
-                Constants.HIT_STATS_SIZE,
-                FontStyle.Italic,
-                true
-            );
-
+            if (ConfigManager.DisplayHitCounts)
+            {
+                var hitStatsObj = CreateText(
+                    "InfoPlus_HitStats",
+                    curPnlBattleUISub.transform.Find("Below"),
+                    false,
+                    TextAnchor.LowerLeft,
+                    Constants.HIT_STATS_POS,
+                    Constants.HIT_STATS_SIZE,
+                    FontStyle.Italic,
+                    true
+                );
+                StatsTextManager.SetHitStatsInstance(hitStatsObj);
+            }
+            
             GameStatsUtils.LockHighestScore();
-            StatsTextManager.SetGameStatsInstance(gameStatsObj);
-            StatsTextManager.SetScoreStatsInstance(scoreStatsObj);
-            StatsTextManager.SetHitStatsInstance(hitStatsObj);
             StatsTextManager.UpdateAllText();
         }
         catch (System.Exception e)
@@ -156,6 +168,9 @@ public class PnlBattleGameStartPatch
             var obj = parent.Find(objectName)?.gameObject ??
                       Object.Instantiate(TextObjectTemplate, parent);
             obj.name = objectName;
+
+            Object.Destroy(obj.transform.Find("ImgIconApDjmax").gameObject);
+            Object.Destroy(obj.GetComponent<ContentSizeFitter>());
 
             if (!skipRectReset)
             {
