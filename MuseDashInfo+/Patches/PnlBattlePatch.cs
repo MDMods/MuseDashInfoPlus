@@ -42,27 +42,27 @@ public class PnlBattleGameStartPatch
             Object.Destroy(TextObjectTemplate.GetComponent<ContentSizeFitter>());
             TextObjectTemplate.transform.localPosition = new Vector3(9999, 9999, -9999);
 
-            GameObject imgIconAp = null;
+            string imgIconApPath = string.Empty;
             var stageType = StageType.Unknown;
             if (curPnlBattleUISub.transform.Find("Score/GC")?.gameObject?.active ?? false)
             {
                 stageType = StageType.GC;
-                imgIconAp = curPnlBattleUISub.transform.Find("Score/GC/TxtScoreGC/ImgIconApGc").gameObject;
+                imgIconApPath = "Score/GC/TxtScoreGC/ImgIconApGc";
             }
             else if (curPnlBattleUISub.transform.Find("Score/Djmax")?.gameObject?.active ?? false)
             {
                 stageType = StageType.Djmax;
-                imgIconAp = curPnlBattleUISub.transform.Find("Score/Djmax/TxtScore_djmax/ImgIconApDjmax").gameObject;
+                imgIconApPath = "Score/Djmax/TxtScore_djmax/ImgIconApDjmax";
             }
             else if (curPnlBattleUISub.transform.Find("Score/Other/ScoreTittle/ImgEnglish")?.gameObject?.active ?? false)
             {
                 stageType = StageType.OtherEN;
-                imgIconAp = curPnlBattleUISub.transform.Find("Score/Other/TxtScore/ImgIconAp").gameObject;
+                imgIconApPath = "Score/Other/TxtScore/ImgIconAp";
             }
             else if (curPnlBattleUISub.transform.Find("Score/Other/ScoreTittle/ImgChinese")?.gameObject?.active ?? false)
             {
                 stageType = StageType.OtherCN;
-                imgIconAp = curPnlBattleUISub.transform.Find("Score/Other/TxtScore/ImgIconAp").gameObject;
+                imgIconApPath = "Score/Other/TxtScore/ImgIconAp";
             }
             else
             {
@@ -73,6 +73,9 @@ public class PnlBattleGameStartPatch
             var imgPauseRect = curPnlBattleUISub.transform.Find("Up/BtnPause/ImgPause").gameObject.GetComponent<RectTransform>();
             imgPauseRect.sizeDelta = new Vector2(70, 70);
             imgPauseRect.anchoredPosition = new Vector2(0, 0);
+
+            // Remove AP icon
+            Object.Destroy(imgPauseRect);
 
             FontUtils.LoadFonts(TextFontType.SnapsTaste);
 
@@ -94,11 +97,11 @@ public class PnlBattleGameStartPatch
             }
 
             // Score Stats 
-            if (ConfigManager.DisplayHighestScore || ConfigManager.DisplayScoreGap)
+            if ((ConfigManager.DisplayHighestScore || ConfigManager.DisplayScoreGap) && curPnlBattleUISub.name != "PnlBattleSpell")
             {
                 var scoreStatsObj = CreateText(
                     "InfoPlus_ScoreStats",
-                    imgIconAp.transform.parent,
+                    curPnlBattleUISub.transform.Find(imgIconApPath[..imgIconApPath.LastIndexOf('/')]),
                     true,
                     TextAnchor.LowerLeft,
                     new Vector3(Constants.SCORE_STATS_POS.x, Constants.Y_BEHIND_SCORE[stageType], Constants.SCORE_STATS_POS.z),
@@ -106,7 +109,6 @@ public class PnlBattleGameStartPatch
                     FontStyle.Bold,
                     true
                 );
-                Object.Destroy(imgIconAp);
                 var scoreStatsRect = scoreStatsObj.GetComponent<RectTransform>();
                 scoreStatsRect.anchorMin = new Vector2(1, 1);
                 scoreStatsRect.anchorMax = new Vector2(1, 1);
