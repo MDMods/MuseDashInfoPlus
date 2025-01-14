@@ -43,8 +43,8 @@ public static class ConfigManager
         _category = MelonPreferences.CreateCategory(ModBuildInfo.NAME, "Info Plus");
         _category.SetFilePath("UserData/Info+.cfg");
 
-        _displayChartName = _category.CreateEntry("DisplayChartName", true, description: "Show song name\n显示歌曲名");
-        _displayChartDifficulty = _category.CreateEntry("DisplayChartDifficulty", true, description: "Show difficulty level\n显示谱面难度");
+        _displayChartName = _category.CreateEntry("DisplayChartName", !InfoPlusMod.IsSongDescLoaded, description: "Show song name\n显示歌曲名");
+        _displayChartDifficulty = _category.CreateEntry("DisplayChartDifficulty", !InfoPlusMod.IsSongDescLoaded, description: "Show difficulty level\n显示谱面难度");
         _customChartDifficultyFormat = _category.CreateEntry("CustomChartDifficultyFormat", CustomChartDifficultyFormat, description: "Custom difficulty text format\n{diff} will be replaced with EASY/HARD/MASTER\n{level} will be replaced with the chart level\n自定义歌曲难度文本\n{diff} 将被替换为 EASY/HARD/MASTER\n{level} 将被替换为谱面等级");
 
         _displayNoteCounts = _category.CreateEntry("DisplayNoteCounts", true, description: "Show note counter\n显示物量计数器");

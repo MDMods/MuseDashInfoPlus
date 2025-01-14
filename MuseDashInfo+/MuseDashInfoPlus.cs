@@ -1,8 +1,10 @@
-﻿using Il2CppAssets.Scripts.UI.Panels;
+﻿using Il2CppAssets.Scripts.Structs;
 using MelonLoader;
+
 using MuseDashInfoPlus.Manager;
 using MuseDashInfoPlus.Patches;
 using MuseDashInfoPlus.Utils;
+using System.Linq;
 
 namespace MuseDashInfoPlus;
 
@@ -19,6 +21,8 @@ public class InfoPlusMod : MelonMod
 {
     public static InfoPlusMod instance { get; private set; }
 
+    public static bool IsSongDescLoaded { get; private set; }
+
     public override void OnInitializeMelon()
     {
         instance = this;
@@ -26,6 +30,8 @@ public class InfoPlusMod : MelonMod
 
     public override void OnLateInitializeMelon()
     {
+        IsSongDescLoaded = RegisteredMelons.Any(mod => mod.MelonAssembly.Assembly.FullName.TrimStart().StartsWith("SongDesc"));
+
         ConfigManager.Init();
         ConfigManager.Load();
         ConfigManager.ConstractTextFormats();
