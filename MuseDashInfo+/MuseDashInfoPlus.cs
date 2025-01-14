@@ -12,7 +12,7 @@ internal static class ModBuildInfo
     public const string NAME = "Info Plus";
     public const string DESCRIPTION = "Displays additional in-game info";
     public const string AUTHOR = "KARPED1EM";
-    public const string VERSION = "1.1.0";
+    public const string VERSION = "1.2.0";
     public const string REPO_LINK = "https://github.com/KARPED1EM/MuseDashInfoPlus";
 }
 
