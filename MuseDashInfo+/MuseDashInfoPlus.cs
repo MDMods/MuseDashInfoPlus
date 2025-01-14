@@ -1,5 +1,4 @@
-﻿using Il2CppAssets.Scripts.Structs;
-using MelonLoader;
+﻿using MelonLoader;
 
 using MuseDashInfoPlus.Manager;
 using MuseDashInfoPlus.Patches;

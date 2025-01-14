@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using Il2Cpp;
+
 using MuseDashInfoPlus.Utils;
 
 namespace MuseDashInfoPlus.Patches;
