@@ -20,8 +20,8 @@ public static class Constants
     public static Vector3 SCORE_STATS_POS = new(55, -64, 0);
     public static Vector3 HIT_STATS_POS = new(-866, -460, 0);
 
-    public static int SEPARATIST_SIZE = 34;
-    public static string SEPARATIST_COLOR = "#d2d2d2";
+    public static int Separator_SIZE = 34;
+    public static string Separator_COLOR = "#d2d2d2";
 
     public const string GAP_BEHIND_COLOR = "#9338fb";
     public const string GAP_AHEAD_COLOR = "#fe41f3";
