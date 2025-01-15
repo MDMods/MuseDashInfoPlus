@@ -2,6 +2,8 @@
 using Il2CppAssets.Scripts.GameCore.HostComponent;
 using Il2CppAssets.Scripts.PeroTools.Commons;
 using Il2CppFormulaBase;
+using System.Linq;
+using MDIP.Modules;
 using MDIP.Patches;
 
 namespace MDIP.Utils;
@@ -14,7 +16,7 @@ public static class GameStatsUtils
     public static bool Playing => _stage?.isInGame ?? false;
 
     // Normal judgements
-    public static int TotalCount => _stage?.GetMusicData()?.Count ?? 0;
+    public static int TotalCount => _stage?.GetMusicData().Count(note => Utils.IsRegularNote(note.noteData.type)) ?? 0;
     public static int HitCount => _task?.m_HitCount ?? 0;
     public static int PerfectCount => _task?.m_PerfectResult ?? 0;
     public static int GreatCount => _task?.m_GreatResult ?? 0;
