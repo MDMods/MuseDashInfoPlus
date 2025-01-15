@@ -21,17 +21,17 @@ public static class GameStatsUtils
     public static int MusicNoteCount => _task?.m_MusicCount ?? 0;
     public static int HeartCount => _task?.m_Blood ?? 0;
     public static int MissCount => NormalMissCount + GhostMissCount;
-
     public static int CurrentScore => _task?.m_Score ?? 0;
-    public static int SavedHighestScore { private get; set; } = -1;
-    public static int HighestScore { get; private set; } = 0;
-    public static int ScoreGap => CurrentScore - HighestScore;
 
     // From patches
     public static int JumpOverCount { get; internal set; }
     public static int NormalMissCount { get; internal set; }
     public static int GhostMissCount { get; internal set; }
     public static int CollectableMissCount { get; internal set; }
+
+    public static int SavedHighestScore { private get; set; } = -1;
+    public static int HighestScore { get; private set; } = 0;
+    public static int ScoreGap => CurrentScore - HighestScore;
 
     public static float Accuracy
     {
