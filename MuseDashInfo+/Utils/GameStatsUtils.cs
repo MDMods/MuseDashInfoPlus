@@ -14,7 +14,7 @@ public static class GameStatsUtils
     public static bool Playing => _stage?.isInGame ?? false;
 
     // Normal judgements
-    public static int TotalCount => _task?.GetTotalNum() ?? 0;
+    public static int TotalCount => _stage?.GetMusicData()?.Count ?? 0;
     public static int HitCount => _task?.m_HitCount ?? 0;
     public static int PerfectCount => _task?.m_PerfectResult ?? 0;
     public static int GreatCount => _task?.m_GreatResult ?? 0;
