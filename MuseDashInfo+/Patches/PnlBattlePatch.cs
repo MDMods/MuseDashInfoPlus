@@ -159,7 +159,7 @@ public class PnlBattleGameStartPatch
                     Constants.NOTE_STATS_POS,
                     Constants.NOTE_STATS_SIZE,
                     FontStyle.Italic,
-                    false
+                    true
                 );
                 StatsTextManager.SetNoteStatsInstance(NoteStatsObj);
             }
