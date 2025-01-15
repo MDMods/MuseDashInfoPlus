@@ -6,6 +6,7 @@ using HarmonyLib;
 using MelonLoader;
 
 using MDIP.Manager;
+using MDIP.Modules;
 
 namespace MDIP.Patches;
 
@@ -18,7 +19,7 @@ public class GameMissPlayMissCubePatch
         {
             int result = Singleton<BattleEnemyManager>.instance.GetPlayResult(idx); // 0:Miss 1:Injuried 3:Great 4:Perfect
             var noteData = Singleton<StageBattleComponent>.instance.GetMusicDataByIdx(idx);
-            var noteType = noteData.noteData.type; // 1:Normal 2:Gear 3:Long 4:Ghost 6:Heart 7:Note 8:Mult
+            var noteType = (NoteType)noteData.noteData.type;
             var isDouble = noteData.isDouble;
 
             switch (result)
@@ -26,16 +27,16 @@ public class GameMissPlayMissCubePatch
                 case 0: // Miss
                     switch (noteType)
                     {
-                        case 4:
+                        case NoteType.Ghost:
                             Utils.GameStatsUtils.GhostMissCount++;
                             break;
 
-                        case 6 or 7:
+                        case NoteType.Heart or NoteType.Music:
                             Utils.GameStatsUtils.CollectableMissCount++;
                             break;
 
                         default:
-                            if (noteType != 2 && !isDouble)
+                            if (noteType != NoteType.Block && !isDouble)
                                 Utils.GameStatsUtils.NormalMissCount++;
                             break;
                     }
@@ -44,11 +45,11 @@ public class GameMissPlayMissCubePatch
                 case 1: // Injuried
                     switch (noteType)
                     {
-                        case 4:
+                        case NoteType.Ghost:
                             Utils.GameStatsUtils.GhostMissCount++;
                             break;
 
-                        case 6 or 7:
+                        case NoteType.Heart or NoteType.Music:
                             Utils.GameStatsUtils.CollectableMissCount++;
                             break;
 
