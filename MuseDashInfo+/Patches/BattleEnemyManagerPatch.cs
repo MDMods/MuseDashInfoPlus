@@ -3,6 +3,7 @@ using Il2CppAssets.Scripts.PeroTools.Commons;
 using Il2CppFormulaBase;
 using HarmonyLib;
 using MDIP.Modules;
+using MDIP.Manager;
 
 namespace MDIP.Patches;
 
@@ -23,6 +24,8 @@ public class BattleEnemyManagerSetPlayResultPatch
                 Utils.GameStatsUtils.NormalMissCount++;
                 break;
         }
+
+        StatsTextManager.UpdateAllText();
     }
 }
 
