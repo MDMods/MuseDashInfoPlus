@@ -36,8 +36,8 @@ public class MDIPMod : MelonMod
 
         ConfigManager.Init();
         ConfigManager.Load();
-        ConfigManager.ConstractTextFormats();
         ConfigManager.Save();
+        ConfigManager.ConstractTextFormats();
     }
 
     public override void OnSceneWasLoaded(int buildIndex, string sceneName)
@@ -51,8 +51,8 @@ public class MDIPMod : MelonMod
             default:
                 GameStatsUtils.Reset();
                 StatsTextManager.Reset();
-                FontUtils.UnloadFonts(TextFontType.SnapsTaste);
                 PnlBattleGameStartPatch.Reset();
+                FontUtils.UnloadFonts(TextFontType.SnapsTaste);
                 break;
         }
     }
