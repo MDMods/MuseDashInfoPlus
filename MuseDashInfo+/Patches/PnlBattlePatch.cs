@@ -23,13 +23,20 @@ public class PnlBattleGameStartPatch
 
     public static void Reset()
     {
-        TextObjectTemplate = null;
-        ChartInfosObj = null;
-        GameStatsObj = null;
-        ScoreStatsObj = null;
-        HitStatsObj = null;
+        DestroyObjectAndReset(ref TextObjectTemplate);
+        DestroyObjectAndReset(ref ChartInfosObj);
+        DestroyObjectAndReset(ref GameStatsObj);
+        DestroyObjectAndReset(ref ScoreStatsObj);
+        DestroyObjectAndReset(ref HitStatsObj);
 
         IsSpellMode = false;
+    }
+
+    private static void DestroyObjectAndReset(ref GameObject obj)
+    {
+        if (obj == null) return;
+        try { Object.Destroy(obj); } catch { }
+        obj = null;
     }
 
     private static void Postfix(PnlBattle __instance)
@@ -91,7 +98,7 @@ public class PnlBattleGameStartPatch
             // Chart Infos
             if (ConfigManager.DisplayChartName || ConfigManager.DisplayChartDifficulty)
             {
-                var chartInfosObj = CreateText(
+                ChartInfosObj = CreateText(
                     "InfoPlus_ChartInfos",
                     curPnlBattleUISub.transform.Find("Up"),
                     false,
@@ -99,16 +106,16 @@ public class PnlBattleGameStartPatch
                     Constants.CHART_INFOS_POS,
                     Constants.CHART_NAME_SIZE
                 );
-                var chartInfosText = chartInfosObj.GetComponent<Text>();
+                var chartInfosText = ChartInfosObj.GetComponent<Text>();
                 chartInfosText.lineSpacing = 0.8f;
                 chartInfosText.text = GameInfosUtils.GetChartInfosString();
-                chartInfosObj.transform.localScale = new Vector3(1, 0.95f, 1);
+                ChartInfosObj.transform.localScale = new Vector3(1, 0.95f, 1);
             }
 
             // Score Stats 
             if ((ConfigManager.DisplayHighestScore || ConfigManager.DisplayScoreGap) && !IsSpellMode)
             {
-                var scoreStatsObj = CreateText(
+                ScoreStatsObj = CreateText(
                     "InfoPlus_ScoreStats",
                     curPnlBattleUISub.transform.Find(imgIconApPath[..imgIconApPath.LastIndexOf('/')]),
                     true,
@@ -118,17 +125,17 @@ public class PnlBattleGameStartPatch
                     FontStyle.Bold,
                     true
                 );
-                var scoreStatsRect = scoreStatsObj.GetComponent<RectTransform>();
+                var scoreStatsRect = ScoreStatsObj.GetComponent<RectTransform>();
                 scoreStatsRect.anchorMin = new Vector2(1, 1);
                 scoreStatsRect.anchorMax = new Vector2(1, 1);
                 scoreStatsRect.pivot = new Vector2(1, 1);
-                StatsTextManager.SetScoreStatsInstance(scoreStatsObj);
+                StatsTextManager.SetScoreStatsInstance(ScoreStatsObj);
             }
 
             // Game Stats
             if (ConfigManager.DisplayAccuracy || ConfigManager.DisplayMissCounts)
             {
-                var gameStatsObj = CreateText(
+                GameStatsObj = CreateText(
                     "InfoPlus_GameStats",
                     curPnlBattleUISub.transform.Find("Score"),
                     false,
@@ -138,13 +145,13 @@ public class PnlBattleGameStartPatch
                     FontStyle.Normal,
                     true
                 );
-                StatsTextManager.SetGameStatsInstance(gameStatsObj);
+                StatsTextManager.SetGameStatsInstance(GameStatsObj);
             }
             
             // Hit Stats
             if (ConfigManager.DisplayNoteCounts && !IsSpellMode)
             {
-                var hitStatsObj = CreateText(
+                HitStatsObj = CreateText(
                     "InfoPlus_HitStats",
                     curPnlBattleUISub.transform.Find("Below"),
                     false,
@@ -154,7 +161,7 @@ public class PnlBattleGameStartPatch
                     FontStyle.Italic,
                     true
                 );
-                StatsTextManager.SetHitStatsInstance(hitStatsObj);
+                StatsTextManager.SetHitStatsInstance(HitStatsObj);
             }
             
             GameStatsUtils.LockHighestScore();
@@ -162,7 +169,7 @@ public class PnlBattleGameStartPatch
         }
         catch (System.Exception e)
         {
-            Melon<InfoPlusMod>.Logger.Error(e.ToString());
+            Melon<MuseDashInfoPlus>.Logger.Error(e.ToString());
         }
     }
 

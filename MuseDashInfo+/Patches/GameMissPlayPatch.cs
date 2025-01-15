@@ -63,7 +63,7 @@ public class GameMissPlayMissCubePatch
         }
         catch (System.Exception e)
         {
-            Melon<InfoPlusMod>.Logger.Error(e.ToString());
+            Melon<MuseDashInfoPlus>.Logger.Error(e.ToString());
         }
     }
 }
