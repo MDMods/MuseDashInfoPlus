@@ -1,9 +1,9 @@
 ﻿using System.Reflection;
 using MelonLoader;
 
-using MuseDashInfoPlus;
+using MDIP;
 
-[assembly: MelonInfo(typeof(MuseDashInfoPlus.MuseDashInfoPlus), ModBuildInfo.NAME, ModBuildInfo.VERSION, ModBuildInfo.AUTHOR, ModBuildInfo.REPO_LINK)]
+[assembly: MelonInfo(typeof(MDIP.MDIPMod), ModBuildInfo.NAME, ModBuildInfo.VERSION, ModBuildInfo.AUTHOR, ModBuildInfo.REPO_LINK)]
 [assembly: MelonGame("PeroPeroGames", "MuseDash")]
 [assembly: MelonColor(255, 255, 79, 113)]
 [assembly: MelonAuthorColor(255, 128, 128, 128)]

@@ -1,9 +1,9 @@
 ﻿using HarmonyLib;
 using Il2Cpp;
 
-using MuseDashInfoPlus.Utils;
+using MDIP.Utils;
 
-namespace MuseDashInfoPlus.Patches;
+namespace MDIP.Patches;
 
 [HarmonyPatch(typeof(PnlPreparation))]
 public class PnlPreparationPatch

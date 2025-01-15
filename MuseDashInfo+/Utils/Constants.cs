@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-using MuseDashInfoPlus.Modules;
+using MDIP.Modules;
 
-namespace MuseDashInfoPlus.Utils;
+namespace MDIP.Utils;
 
 public static class Constants
 {
@@ -14,11 +14,11 @@ public static class Constants
 
     public const int GAME_STATS_SIZE = 36;
     public const int SCORE_STATS_SIZE = 38;
-    public const int HIT_STATS_SIZE = 30;
+    public const int NOTE_STATS_SIZE = 30;
 
     public static Vector3 GAME_STATS_POS = new(0, -135, 0);
     public static Vector3 SCORE_STATS_POS = new(55, -64, 0);
-    public static Vector3 HIT_STATS_POS = new(-866, -460, 0);
+    public static Vector3 NOTE_STATS_POS = new(-866, -460, 0);
 
     public static int Separator_SIZE = 34;
     public static string Separator_COLOR = "#d2d2d2";

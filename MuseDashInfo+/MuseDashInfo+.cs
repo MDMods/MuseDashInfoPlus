@@ -1,11 +1,11 @@
 ﻿using MelonLoader;
 
-using MuseDashInfoPlus.Manager;
-using MuseDashInfoPlus.Patches;
-using MuseDashInfoPlus.Utils;
+using MDIP.Manager;
+using MDIP.Patches;
+using MDIP.Utils;
 using System.Linq;
 
-namespace MuseDashInfoPlus;
+namespace MDIP;
 
 internal static class ModBuildInfo
 {
@@ -13,12 +13,15 @@ internal static class ModBuildInfo
     public const string DESCRIPTION = "Displays additional in-game infos";
     public const string AUTHOR = "KARPED1EM";
     public const string VERSION = "1.2.0";
-    public const string REPO_LINK = "https://github.com/KARPED1EM/MuseDashInfoPlus";
+    public const string REPO_LINK = "https://github.com/KARPED1EM/MDIP";
 }
 
-public class MuseDashInfoPlus : MelonMod
+/// <summary>
+/// MDIP (MuseDashInfoPlus) main mod class
+/// </summary>
+public class MDIPMod : MelonMod
 {
-    public static MuseDashInfoPlus Instance { get; private set; }
+    public static MDIPMod Instance { get; private set; }
 
     public static bool IsSongDescLoaded { get; private set; }
 

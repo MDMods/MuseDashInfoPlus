@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
-namespace MuseDashInfoPlus.Utils;
+namespace MDIP.Utils;
 
 public static class FontUtils
 {

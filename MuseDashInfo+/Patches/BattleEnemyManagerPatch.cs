@@ -3,7 +3,7 @@ using Il2CppAssets.Scripts.PeroTools.Commons;
 using Il2CppFormulaBase;
 using HarmonyLib;
 
-namespace MuseDashInfoPlus.Patches;
+namespace MDIP.Patches;
 
 [HarmonyPatch(typeof(BattleEnemyManager), nameof(BattleEnemyManager.SetPlayResult))]
 public class BattleEnemyManagerSetPlayResultPatch

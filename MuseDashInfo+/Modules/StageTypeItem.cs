@@ -1,4 +1,4 @@
-﻿namespace MuseDashInfoPlus.Modules;
+﻿namespace MDIP.Modules;
 
 public enum StageType
 {

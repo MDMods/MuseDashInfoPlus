@@ -2,7 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <RootNamespace>MuseDashInfoPlus</RootNamespace>
+    <RootNamespace>MDIP</RootNamespace>
+	<AssemblyName>Info+</AssemblyName>
   </PropertyGroup>
 	
   <ItemDefinitionGroup>

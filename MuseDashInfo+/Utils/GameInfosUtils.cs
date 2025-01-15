@@ -1,8 +1,8 @@
 ﻿using Il2CppAssets.Scripts.Database;
 
-using MuseDashInfoPlus.Manager;
+using MDIP.Manager;
 
-namespace MuseDashInfoPlus.Utils;
+namespace MDIP.Utils;
 
 public static class GameInfosUtils
 {

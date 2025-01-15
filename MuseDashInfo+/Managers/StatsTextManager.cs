@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-using MuseDashInfoPlus.Utils;
+using MDIP.Utils;
 
-namespace MuseDashInfoPlus.Manager;
+namespace MDIP.Manager;
 
 public static class StatsTextManager
 {
@@ -23,10 +23,10 @@ public static class StatsTextManager
     private static void SetScoreStatsText(string text)
         => scoreStatsText.text = text;
 
-    public static void SetHitStatsInstance(GameObject obj)
+    public static void SetNoteStatsInstance(GameObject obj)
         => hitStatsText = obj.GetComponent<Text>();
 
-    private static void SetHitStatsText(string text)
+    private static void SetNoteStatsText(string text)
         => hitStatsText.text = text;
 
     public static void UpdateAllText()
@@ -47,10 +47,10 @@ public static class StatsTextManager
         }
         if (hitStatsText != null)
         {
-            string text = ConfigManager.FinalHitStatsTextFormat;
+            string text = ConfigManager.FinalNoteStatsTextFormat;
             text = text.Replace("{total}", GameStatsUtils.TotalCount.ToString());
             text = text.Replace("{hit}", GameStatsUtils.HitCount.ToString());
-            SetHitStatsText(text);
+            SetNoteStatsText(text);
         }
     }
 

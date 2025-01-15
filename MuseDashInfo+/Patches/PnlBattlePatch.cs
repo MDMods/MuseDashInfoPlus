@@ -4,11 +4,11 @@ using MelonLoader;
 using UnityEngine;
 using UnityEngine.UI;
 
-using MuseDashInfoPlus.Utils;
-using MuseDashInfoPlus.Manager;
-using MuseDashInfoPlus.Modules;
+using MDIP.Utils;
+using MDIP.Manager;
+using MDIP.Modules;
 
-namespace MuseDashInfoPlus.Patches;
+namespace MDIP.Patches;
 
 [HarmonyPatch(typeof(PnlBattle), nameof(PnlBattle.GameStart))]
 public class PnlBattleGameStartPatch
@@ -17,7 +17,7 @@ public class PnlBattleGameStartPatch
     private static GameObject ChartInfosObj;
     private static GameObject GameStatsObj;
     private static GameObject ScoreStatsObj;
-    private static GameObject HitStatsObj;
+    private static GameObject NoteStatsObj;
 
     public static bool IsSpellMode { get; private set; }
 
@@ -27,7 +27,7 @@ public class PnlBattleGameStartPatch
         DestroyObjectAndReset(ref ChartInfosObj);
         DestroyObjectAndReset(ref GameStatsObj);
         DestroyObjectAndReset(ref ScoreStatsObj);
-        DestroyObjectAndReset(ref HitStatsObj);
+        DestroyObjectAndReset(ref NoteStatsObj);
 
         IsSpellMode = false;
     }
@@ -98,7 +98,7 @@ public class PnlBattleGameStartPatch
             // Chart Infos
             if (ConfigManager.DisplayChartName || ConfigManager.DisplayChartDifficulty)
             {
-                ChartInfosObj = CreateText(
+                ChartInfosObj = CreateTextObj(
                     "InfoPlus_ChartInfos",
                     curPnlBattleUISub.transform.Find("Up"),
                     false,
@@ -115,7 +115,7 @@ public class PnlBattleGameStartPatch
             // Score Stats 
             if ((ConfigManager.DisplayHighestScore || ConfigManager.DisplayScoreGap) && !IsSpellMode)
             {
-                ScoreStatsObj = CreateText(
+                ScoreStatsObj = CreateTextObj(
                     "InfoPlus_ScoreStats",
                     curPnlBattleUISub.transform.Find(imgIconApPath[..imgIconApPath.LastIndexOf('/')]),
                     true,
@@ -135,7 +135,7 @@ public class PnlBattleGameStartPatch
             // Game Stats
             if (ConfigManager.DisplayAccuracy || ConfigManager.DisplayMissCounts)
             {
-                GameStatsObj = CreateText(
+                GameStatsObj = CreateTextObj(
                     "InfoPlus_GameStats",
                     curPnlBattleUISub.transform.Find("Score"),
                     false,
@@ -148,20 +148,20 @@ public class PnlBattleGameStartPatch
                 StatsTextManager.SetGameStatsInstance(GameStatsObj);
             }
             
-            // Hit Stats
+            // Note Stats
             if (ConfigManager.DisplayNoteCounts && !IsSpellMode)
             {
-                HitStatsObj = CreateText(
-                    "InfoPlus_HitStats",
+                NoteStatsObj = CreateTextObj(
+                    "InfoPlus_NoteStats",
                     curPnlBattleUISub.transform.Find("Below"),
                     false,
                     TextAnchor.LowerLeft,
-                    Constants.HIT_STATS_POS,
-                    Constants.HIT_STATS_SIZE,
+                    Constants.NOTE_STATS_POS,
+                    Constants.NOTE_STATS_SIZE,
                     FontStyle.Italic,
                     true
                 );
-                StatsTextManager.SetHitStatsInstance(HitStatsObj);
+                StatsTextManager.SetNoteStatsInstance(NoteStatsObj);
             }
             
             GameStatsUtils.LockHighestScore();
@@ -169,11 +169,11 @@ public class PnlBattleGameStartPatch
         }
         catch (System.Exception e)
         {
-            Melon<MuseDashInfoPlus>.Logger.Error(e.ToString());
+            Melon<MDIPMod>.Logger.Error(e.ToString());
         }
     }
 
-    private static GameObject CreateText(
+    private static GameObject CreateTextObj(
         string objectName,
         Transform parent,
         bool skipRectReset,

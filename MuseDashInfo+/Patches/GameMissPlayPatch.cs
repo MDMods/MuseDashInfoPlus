@@ -5,9 +5,9 @@ using Il2CppGameLogic;
 using HarmonyLib;
 using MelonLoader;
 
-using MuseDashInfoPlus.Manager;
+using MDIP.Manager;
 
-namespace MuseDashInfoPlus.Patches;
+namespace MDIP.Patches;
 
 [HarmonyPatch(typeof(GameMissPlay), nameof(GameMissPlay.MissCube))]
 public class GameMissPlayMissCubePatch
@@ -63,7 +63,7 @@ public class GameMissPlayMissCubePatch
         }
         catch (System.Exception e)
         {
-            Melon<MuseDashInfoPlus>.Logger.Error(e.ToString());
+            Melon<MDIPMod>.Logger.Error(e.ToString());
         }
     }
 }

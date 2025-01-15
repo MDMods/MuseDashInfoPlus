@@ -2,9 +2,9 @@
 using Il2CppAssets.Scripts.GameCore.HostComponent;
 using Il2CppAssets.Scripts.PeroTools.Commons;
 using Il2CppFormulaBase;
-using MuseDashInfoPlus.Patches;
+using MDIP.Patches;
 
-namespace MuseDashInfoPlus.Utils;
+namespace MDIP.Utils;
 
 public static class GameStatsUtils
 {
@@ -18,7 +18,7 @@ public static class GameStatsUtils
     public static int HitCount => _task?.m_HitCount ?? 0;
     public static int PerfectCount => _task?.m_PerfectResult ?? 0;
     public static int GreatCount => _task?.m_GreatResult ?? 0;
-    public static int NoteCount => _task?.m_MusicCount ?? 0;
+    public static int MusicNoteCount => _task?.m_MusicCount ?? 0;
     public static int HeartCount => _task?.m_Blood ?? 0;
     public static int MissCount => NormalMissCount + GhostMissCount;
 
@@ -37,12 +37,12 @@ public static class GameStatsUtils
     {
         get
         {
-            var total = PerfectCount + JumpOverCount + NoteCount + HeartCount + GreatCount + NormalMissCount + GhostMissCount + CollectableMissCount;
+            var total = PerfectCount + JumpOverCount + MusicNoteCount + HeartCount + GreatCount + NormalMissCount + GhostMissCount + CollectableMissCount;
 
             if (total == 0)
                 return 100;
 
-            var counted = PerfectCount + JumpOverCount + NoteCount + HeartCount + GreatCount * .5f;
+            var counted = PerfectCount + JumpOverCount + MusicNoteCount + HeartCount + GreatCount * .5f;
             return counted / total * 100;
         }
     }

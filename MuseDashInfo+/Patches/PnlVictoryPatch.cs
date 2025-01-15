@@ -3,7 +3,7 @@ using HarmonyLib;
 using MelonLoader;
 using UnityEngine;
 
-namespace MuseDashInfoPlus.Patches;
+namespace MDIP.Patches;
 
 [HarmonyPatch(typeof(PnlVictory), nameof(PnlVictory.SetDetailInfo))]
 public class PnlVictorySetDetailInfoPatch
@@ -28,7 +28,7 @@ public class PnlVictorySetDetailInfoPatch
         }
         catch (System.Exception e)
         {
-            Melon<MuseDashInfoPlus>.Logger.Error(e.ToString());
+            Melon<MDIPMod>.Logger.Error(e.ToString());
         }
     }
 }
