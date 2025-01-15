@@ -3,6 +3,8 @@ using HarmonyLib;
 using MelonLoader;
 using UnityEngine;
 
+using MDIP.Manager;
+
 namespace MDIP.Patches;
 
 [HarmonyPatch(typeof(PnlVictory), nameof(PnlVictory.SetDetailInfo))]
@@ -10,6 +12,8 @@ public class PnlVictorySetDetailInfoPatch
 {
     private static void Postfix(PnlVictory __instance)
     {
+        if (!ConfigManager.FixDoubleMissCountBug) return;
+
         try
         {
             var transforms = __instance.pnlVictory.GetComponentsInChildren<Transform>(true);
