@@ -2,8 +2,7 @@
 using Il2CppAssets.Scripts.GameCore.HostComponent;
 using Il2CppAssets.Scripts.PeroTools.Commons;
 using Il2CppFormulaBase;
-using System.Linq;
-using MDIP.Modules;
+
 using MDIP.Patches;
 
 namespace MDIP.Utils;
@@ -16,7 +15,6 @@ public static class GameStatsUtils
     public static bool Playing => _stage?.isInGame ?? false;
 
     // Normal judgements
-    public static int TotalCount => _stage?.GetMusicData().Count(note => Utils.IsRegularNote(note.noteData.type)) ?? 0;
     public static int HitCount => _task?.m_HitCount ?? 0;
     public static int PerfectCount => _task?.m_PerfectResult ?? 0;
     public static int GreatCount => _task?.m_GreatResult ?? 0;
@@ -31,6 +29,7 @@ public static class GameStatsUtils
     public static int GhostMissCount { get; internal set; }
     public static int CollectableMissCount { get; internal set; }
 
+    public static int TotalCount { get; private set; } = -1;
     public static int SavedHighestScore { private get; set; } = -1;
     public static int HighestScore { get; private set; } = 0;
     public static int ScoreGap => CurrentScore - HighestScore;
@@ -49,18 +48,20 @@ public static class GameStatsUtils
         }
     }
 
-    public static void DecideHighestScore()
+    public static void LockHighestScore()
     {
         HighestScore = SavedHighestScore;
         SavedHighestScore = -1;
     }
 
-    public static void LockHighestScore()
+    public static void DecideConstantDatas()
     {
         int curHiScore = HighestScore;
         HighestScore = BattleHelper.GetCurrentMusicHighScore() <= 0
             ? curHiScore > 0 ? curHiScore : 0
             : BattleHelper.GetCurrentMusicHighScore();
+
+        TotalCount = _stage?.GetMusicData().Count(Utils.IsSingleNoteFunc) ?? 0;
     }
 
     public static string GetAccuracyString()
@@ -98,6 +99,7 @@ public static class GameStatsUtils
         CollectableMissCount = 0;
 
         SavedHighestScore = -1;
+        TotalCount = -1;
     }
 
     public static string GetMissCountsText()

@@ -49,7 +49,7 @@ public static class StatsTextManager
         {
             string text = ConfigManager.FinalNoteStatsTextFormat;
             text = text.Replace("{total}", GameStatsUtils.TotalCount.ToString());
-            text = text.Replace("{hit}", (GameStatsUtils.HitCount + GameStatsUtils.HeartCount + GameStatsUtils.MusicNoteCount + GameStatsUtils.JumpOverCount).ToString());
+            text = text.Replace("{hit}", (GameStatsUtils.PerfectCount + GameStatsUtils.JumpOverCount + GameStatsUtils.MusicNoteCount + GameStatsUtils.HeartCount + GameStatsUtils.GreatCount).ToString());
             SetNoteStatsText(text);
         }
     }

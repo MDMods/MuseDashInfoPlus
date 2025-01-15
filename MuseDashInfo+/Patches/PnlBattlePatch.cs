@@ -164,7 +164,7 @@ public class PnlBattleGameStartPatch
                 StatsTextManager.SetNoteStatsInstance(NoteStatsObj);
             }
             
-            GameStatsUtils.LockHighestScore();
+            GameStatsUtils.DecideConstantDatas();
             StatsTextManager.UpdateAllText();
         }
         catch (System.Exception e)

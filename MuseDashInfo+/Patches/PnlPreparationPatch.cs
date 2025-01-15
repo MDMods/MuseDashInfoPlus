@@ -27,6 +27,6 @@ public class PnlPreparationPatch
     private static void OnBattleStartPrefix(PnlPreparation __instance)
     {
         SetHighestScore(__instance.pnlRecord.txtScore?.text);
-        GameStatsUtils.DecideHighestScore();
+        GameStatsUtils.LockHighestScore();
     }
 }
