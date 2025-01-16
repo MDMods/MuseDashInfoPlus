@@ -20,20 +20,20 @@ public static class GameStatsManager
     public static int VanillaHitCount => _task?.m_HitCount ?? 0;
     public static int VanillaPerfectCount => _task?.m_PerfectResult ?? 0;
     public static int VanillaGreatCount => _task?.m_GreatResult ?? 0;
-    public static int VanillaMusicNoteCount => _task?.m_MusicCount ?? 0;
-    public static int VanillaHeartCount => _task?.m_Blood ?? 0;
+    public static int VanillaMusicCount => _task?.m_MusicCount ?? 0;
+    public static int VanillaBloodCount => _task?.m_Blood ?? 0;
 
     // From mod
     public static int JumpOverCount { get; private set; }
     public static int NormalMissCount { get; private set; }
     public static int GhostMissCount { get; private set; }
-    public static int HeartMissCount { get; private set; }
-    public static int MusicNoteMissCount { get; private set; }
+    public static int BloodMissCount { get; private set; }
+    public static int MusicMissCount { get; private set; }
 
     public static int CurrentScoreMissCount => NormalMissCount + GhostMissCount;
-    public static int CollectableMissCount => HeartMissCount + MusicNoteMissCount;
+    public static int CollectableMissCount => BloodMissCount + MusicMissCount;
     public static int TotalMissCount => NormalMissCount + GhostMissCount + CollectableMissCount;
-    public static int TotalCollectableCount => VanillaHeartCount + VanillaMusicNoteCount;
+    public static int TotalCollectableCount => VanillaBloodCount + VanillaMusicCount;
     public static int TotalCountedCount => VanillaPerfectCount + VanillaGreatCount + JumpOverCount + TotalCollectableCount;
 
     public static int TotalNoteCount { get; private set; }
@@ -42,7 +42,7 @@ public static class GameStatsManager
     public static int ScoreGap => VanillaCurrentScore - HighestScore;
 
     private static List<int> CountedNoteIdList = new();
-    private static List<int> CountedBindHeartList = new();
+    private static List<int> CountedBindBloodList = new();
 
     public static float GetAccuracy()
     {
@@ -113,25 +113,25 @@ public static class GameStatsManager
         GhostMissCount++;
     }
 
-    public static void AddHeartMiss(int id)
+    public static void AddBloodMiss(int id)
     {
         if (CountedNoteIdList.Contains(id)) return;
         CountedNoteIdList.Add(id);
-        HeartMissCount++;
+        BloodMissCount++;
     }
 
-    public static void AddBindHeartMiss(int id)
+    public static void AddBindBloodMiss(int id)
     {
-        if (CountedBindHeartList.Contains(id)) return;
-        CountedBindHeartList.Add(id);
-        HeartMissCount++;
+        if (CountedBindBloodList.Contains(id)) return;
+        CountedBindBloodList.Add(id);
+        BloodMissCount++;
     }
 
-    public static void AddMusicNoteMiss(int id)
+    public static void AddMusicMiss(int id)
     {
         if (CountedNoteIdList.Contains(id)) return;
         CountedNoteIdList.Add(id);
-        MusicNoteMissCount++;
+        MusicMissCount++;
     }
 
     public static void AddJumpOver(int id)
@@ -155,14 +155,14 @@ public static class GameStatsManager
         JumpOverCount = 0;
         NormalMissCount = 0;
         GhostMissCount = 0;
-        HeartMissCount = 0;
-        MusicNoteMissCount = 0;
+        BloodMissCount = 0;
+        MusicMissCount = 0;
 
         TotalNoteCount = -1;
         SavedHighestScore = -1;
 
         CountedNoteIdList = new();
-        CountedBindHeartList = new();
+        CountedBindBloodList = new();
     }
 }
 

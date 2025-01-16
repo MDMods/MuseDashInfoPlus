@@ -7,7 +7,7 @@ public enum NoteType
     Long = 3,
     Ghost = 4,
     Boss = 5,
-    Heart = 6,
+    Blood = 6,
     Music = 7,
     Mul = 8,
 }
