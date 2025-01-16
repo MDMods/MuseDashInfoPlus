@@ -19,7 +19,7 @@ public static class ConfigManager
     private static MelonPreferences_Entry<bool> _displayScoreGap;
     private static MelonPreferences_Entry<bool> _displayHighestScore;
     // Others
-    private static MelonPreferences_Entry<bool> _fixDoubleMissCountBug;
+    private static MelonPreferences_Entry<bool> _replaceResultsScreenMissCount;
     private static MelonPreferences_Entry<string> _customSeparator;
 
     // Upper right corner
@@ -34,7 +34,7 @@ public static class ConfigManager
     public static bool DisplayScoreGap => _displayScoreGap.Value;
     public static bool DisplayHighestScore => _displayHighestScore.Value;
     // Others
-    public static bool FixDoubleMissCountBug => _fixDoubleMissCountBug.Value;
+    public static bool ReplaceResultsScreenMissCount => _replaceResultsScreenMissCount.Value;
     public static string CustomSeparator => string.IsNullOrEmpty(_customSeparator?.Value) ? " / " : _customSeparator.Value;
 
     public static string FinalChartDifficultyTextFormat { get; private set; }
@@ -58,7 +58,7 @@ public static class ConfigManager
         _displayScoreGap = _category.CreateEntry("DisplayScoreGap", true, description: "Show score difference from high score\n显示当前与最高分的分数差距");
         _displayHighestScore = _category.CreateEntry("DisplayHighestScore", false, description: "Show historical high score\n显示当前谱面历史最高分数");
 
-        _fixDoubleMissCountBug = _category.CreateEntry("FixDoubleMissCountBug", false, description: "Fixed incorrect Miss count when only hitting the bottom note in double-press patterns\n修复双押仅打击下方 Note 导致结算页面多一个 Miss 的问题");
+        _replaceResultsScreenMissCount = _category.CreateEntry("ReplaceResultsScreenMissCount", false, description: "Show mod-calculated misses instead of game's default count on results screen\n以模组计算的 Miss 数替代结算页面的 Miss 数");
         _customSeparator = _category.CreateEntry("CustomSeparator", CustomSeparator, description: "Custom separator between stats\n自定义各个数据之间的分隔符");
     }
 

@@ -15,7 +15,7 @@ public class PnlVictorySetDetailInfoPatch
     {
         NoteRecordManager.ExportToExcel();
 
-        if (!ConfigManager.FixDoubleMissCountBug) return;
+        if (!ConfigManager.ReplaceResultsScreenMissCount) return;
 
         try
         {
