@@ -42,6 +42,7 @@ public static class GameStatsManager
     public static int ScoreGap => VanillaCurrentScore - HighestScore;
 
     private static List<int> CountedNoteIdList = new();
+    private static List<int> CountedBindHeartList = new();
 
     public static float GetAccuracy()
     {
@@ -119,6 +120,13 @@ public static class GameStatsManager
         HeartMissCount++;
     }
 
+    public static void AddBindHeartMiss(int id)
+    {
+        if (CountedBindHeartList.Contains(id)) return;
+        CountedBindHeartList.Add(id);
+        HeartMissCount++;
+    }
+
     public static void AddMusicNoteMiss(int id)
     {
         if (CountedNoteIdList.Contains(id)) return;
@@ -154,6 +162,7 @@ public static class GameStatsManager
         SavedHighestScore = -1;
 
         CountedNoteIdList = new();
+        CountedBindHeartList = new();
     }
 }
 

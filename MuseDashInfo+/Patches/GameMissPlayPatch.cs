@@ -42,6 +42,7 @@ public class GameMissPlayMissCubePatch
                         break;
 
                     default:
+                        if (note.configData.blood) GameStatsManager.AddBindHeartMiss(idx);
                         if (result is 0 && type is NoteType.Block) break; // Missing an block does not count as a miss
                         if (result is 1 && isDouble) break; // Skip damaged double since there would always be a miss if this double should be counted
                         GameStatsManager.AddNormalMiss(idx, isDouble ? note.doubleIdx : -1);
