@@ -85,7 +85,7 @@ CustomSeparator = " / "
 ### 如何使用
 
 - 根据下列出的依赖项安装 MelonLoader 至 Muse Dash
-- 下载 [Latest Release](https://github.com/KARPED1EM/MuseDashInfoPlus/releases) 并将 `MuseDashInfo+.dll` 放置于 `..\MuseDash\Mods\` 目录下
+- 下载 [Latest Release](https://github.com/KARPED1EM/MuseDashInfoPlus/releases) 并将 `Info+.dll` 放置于 `..\MuseDash\Mods\` 目录下
 - 启动游戏即可
 
 ### 依赖项
