@@ -16,22 +16,11 @@ public static class Utils
     public static int Count(this Il2CppSystem.Collections.Generic.List<MusicData> noteList, Func<MusicData, bool> predicate)
     {
         int count = 0;
-        //List<MusicData> longs = new();
         foreach (var note in noteList)
         {
-            //if (note.noteData.type == (uint)NoteType.Long)
-            //    longs.Add(note);
             if (predicate(note))
                 count++;
         }
-        //longs.Sort(static delegate (MusicData x, MusicData y)
-        //{
-        //    return x.tick.CompareTo(y.tick);
-        //});
-        //foreach (var note in longs)
-        //{
-        //    Melon<MDIPMod>.Logger.Warning($"Note {note.noteData.id}-{note.tick} => Num:{note.longPressNum} Count:{note.longPressCount} Start:{note.isLongPressStart} Pressing:{note.isLongPressing} End:{note.isLongPressEnd}");
-        //}
         return count;
     }
 }

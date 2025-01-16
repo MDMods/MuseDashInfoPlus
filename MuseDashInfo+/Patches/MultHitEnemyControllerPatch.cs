@@ -5,7 +5,7 @@ using MDIP.Managers;
 
 namespace MDIP.Patches;
 
-[HarmonyPatch(typeof(MultHitEnemyController), nameof(MultHitEnemyController.OnControllerMiss))]
+//[HarmonyPatch(typeof(MultHitEnemyController), nameof(MultHitEnemyController.OnControllerMiss))]
 public class MultHitEnemyControllerPatch
 {
     private static void Prefix(MultHitEnemyController __instance, int index)

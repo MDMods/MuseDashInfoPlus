@@ -23,7 +23,7 @@ public class GameMissPlayMissCubePatch
             var type = (NoteType)note.noteData.type;
             var isDouble = note.isDouble;
 
-            NoteRecordManager.AddRecord(idx, "MissCube", $"result:{result}");
+            //NoteRecordManager.AddRecord(idx, "MissCube", $"result:{result}");
 
             if (result is 0 or 1)
             {

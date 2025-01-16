@@ -5,7 +5,7 @@ using MDIP.Managers;
 
 namespace MDIP.Patches;
 
-[HarmonyPatch(typeof(BaseEnemyObjectController), nameof(BaseEnemyObjectController.ControllerMissCheck))]
+//[HarmonyPatch(typeof(BaseEnemyObjectController), nameof(BaseEnemyObjectController.ControllerMissCheck))]
 public class BaseEnemyObjectControllerPatch
 {
     private static void Postfix(BaseEnemyObjectController __instance, int i, Il2CppSystem.Decimal currentTick)

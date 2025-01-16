@@ -17,7 +17,7 @@ public class BattleEnemyManagerSetPlayResultPatch
         var note = Singleton<StageBattleComponent>.instance.GetMusicDataByIdx(idx);
         var type = (NoteType)note.noteData.type;
 
-        NoteRecordManager.AddRecord(idx, "SetPlayResult", $"result:{result}");
+        //NoteRecordManager.AddRecord(idx, "SetPlayResult", $"result:{result}");
 
         switch (result)
         {

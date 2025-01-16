@@ -13,7 +13,7 @@ public class PnlVictorySetDetailInfoPatch
 {
     private static void Postfix(PnlVictory __instance)
     {
-        NoteRecordManager.ExportToExcel();
+        //NoteRecordManager.ExportToExcel();
 
         if (!ConfigManager.ReplaceResultsScreenMissCount) return;
 
