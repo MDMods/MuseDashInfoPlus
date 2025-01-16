@@ -67,8 +67,12 @@ public static class GameStatsManager
 
     public static string GetScoreGapString()
     {
+        if (ScoreGap == 0) return string.Empty;
         bool ahead = ScoreGap > 0;
-        return $"<color={(ahead ? Constants.GAP_AHEAD_COLOR : Constants.GAP_BEHIND_COLOR)}>{(ahead ? "+" : string.Empty)}{ScoreGap / 1000}K</color>";
+        string str = ScoreGap < 1000 && ScoreGap > -1000
+            ? $"<color={(ahead ? Constants.GAP_AHEAD_COLOR : Constants.GAP_BEHIND_COLOR)}>{(ahead ? "+" : string.Empty)}{ScoreGap}</color>"
+            : $"<color={(ahead ? Constants.GAP_AHEAD_COLOR : Constants.GAP_BEHIND_COLOR)}>{(ahead ? "+" : string.Empty)}{ScoreGap / 1000}K</color>";
+        return str;
     }
 
     public static string GetMissCountsString()
