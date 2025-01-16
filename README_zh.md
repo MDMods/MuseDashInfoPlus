@@ -24,7 +24,6 @@ MuseDashInfo+ 是一个轻量级的 MuseDash 游戏模组，用于显示额外�
 - 若您加载了 [SongDesc](https://github.com/MDMods/SongDesc) 模组，谱面信息将默认隐藏
 - 东方特殊谱面不支持物量计数器/最高分/最高分差值
 - 物量计数器会将长条视为两个 Note，首尾各算一个，而 Miss 计数器与游戏原版都将长条视为一个 Note
-- 与单 Note 捆绑的红心会被 Miss 计数器统计，但物量计数器与游戏原版不会将这类红心视为一个单独的 Note
 
 ### 预览
 

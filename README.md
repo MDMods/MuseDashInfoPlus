@@ -24,7 +24,6 @@ All features can be toggled individually, and some support custom text formattin
 - If you loaded [SongDesc](https://github.com/mdmods/songdesc) mod, Chart Info will be disabled by default, use configuration to re-enable
 - The Touhou Danmaku mode does not support the Note Counter/Hi-Score/Hi-Score Gap
 - The Note Counter treats hold notes as two separate notes (counting both the start and end), while the Miss Counter and vanilla game count each hold note as a single note
-- Hearts attached to single notes are counted by the Miss Counter, but the Note Counter and vanilla game do not count these hearts as separate notes
 
 ### Preview
 
