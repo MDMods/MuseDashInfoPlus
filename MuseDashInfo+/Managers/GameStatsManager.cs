@@ -46,9 +46,10 @@ public static class GameStatsManager
 
     public static float GetAccuracy()
     {
-        int total = TotalCountedCount + TotalMissCount;
+        var total = TotalCountedCount + TotalMissCount;
+        var counted = JumpOverCount + TotalCollectableCount + VanillaPerfectCount + VanillaGreatCount * .5f;
         return total <= 0 ? 100
-            : VanillaPerfectCount + VanillaGreatCount * .5f + JumpOverCount + TotalCollectableCount / total * 100;
+            : counted  / total * 100;
     }
 
     public static string GetAccuracyString()
