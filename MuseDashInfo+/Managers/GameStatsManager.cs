@@ -89,7 +89,7 @@ public static class GameStatsManager
             ? curHiScore > 0 ? curHiScore : 0
             : BattleHelper.GetCurrentMusicHighScore();
 
-        TotalNoteCount = _stage?.GetMusicData().Count(Utils.Utils.IsSingleNoteFunc) ?? 0;
+        TotalNoteCount = _stage?.GetMusicData()?.Count(Utils.Utils.IsSingleNoteFunc) ?? 0;
     }
 
     public static void AddNormalMiss(int id, int doubleId = -1)
