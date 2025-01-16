@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using Il2Cpp;
 
-using MDIP.Utils;
+using MDIP.Managers;
 
 namespace MDIP.Patches;
 
@@ -13,9 +13,9 @@ public class PnlPreparationPatch
         if (!string.IsNullOrEmpty(score))
         {
             if (score == "-")
-                GameStatsUtils.SavedHighestScore = 0;
+                GameStatsManager.SavedHighestScore = 0;
             else if (int.TryParse(score, out var x) && x >= 1)
-                GameStatsUtils.SavedHighestScore = int.Parse(score);
+                GameStatsManager.SavedHighestScore = int.Parse(score);
         }
     }
 
@@ -27,6 +27,6 @@ public class PnlPreparationPatch
     private static void OnBattleStartPrefix(PnlPreparation __instance)
     {
         SetHighestScore(__instance.pnlRecord.txtScore?.text);
-        GameStatsUtils.LockHighestScore();
+        GameStatsManager.LockHighestScore();
     }
 }

@@ -2,8 +2,10 @@
 using Il2CppAssets.Scripts.PeroTools.Commons;
 using Il2CppFormulaBase;
 using HarmonyLib;
+
 using MDIP.Modules;
 using MDIP.Manager;
+using MDIP.Managers;
 
 namespace MDIP.Patches;
 
@@ -12,16 +14,18 @@ public class BattleEnemyManagerSetPlayResultPatch
 {
     private static void Postfix(int idx, byte result, bool isMulStart = false, bool isMulEnd = false, bool isLeft = false)
     {
-        var noteData = Singleton<StageBattleComponent>.instance.GetMusicDataByIdx(idx);
-        var noteType = (NoteType)noteData.noteData.type;
+        var note = Singleton<StageBattleComponent>.instance.GetMusicDataByIdx(idx);
+        var type = (NoteType)note.noteData.type;
+
+        NoteRecordManager.AddRecord(idx, "SetPlayResult", $"result:{result}");
 
         switch (result)
         {
-            case 4 when noteType == NoteType.Block:
-                Utils.GameStatsUtils.JumpOverCount++;
+            case 4 when type == NoteType.Block:
+                GameStatsManager.AddJumpOver(idx);
                 break;
-            case 1 when noteType == NoteType.Long:
-                Utils.GameStatsUtils.NormalMissCount++;
+            case 1 when type == NoteType.Long:
+                GameStatsManager.AddNormalMiss(idx);
                 break;
         }
 

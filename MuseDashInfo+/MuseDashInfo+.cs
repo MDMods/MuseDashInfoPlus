@@ -4,6 +4,7 @@ using System.Linq;
 using MDIP.Manager;
 using MDIP.Patches;
 using MDIP.Utils;
+using MDIP.Managers;
 
 namespace MDIP;
 
@@ -45,12 +46,13 @@ public class MDIPMod : MelonMod
         switch (sceneName)
         {
             case "GameMain":
-                GameStatsUtils.Reload();
+                GameStatsManager.Reload();
                 break;
 
             default:
-                GameStatsUtils.Reset();
+                GameStatsManager.Reset();
                 StatsTextManager.Reset();
+                NoteRecordManager.Reset();
                 PnlBattleGameStartPatch.Reset();
                 FontUtils.UnloadFonts(TextFontType.SnapsTaste);
                 break;

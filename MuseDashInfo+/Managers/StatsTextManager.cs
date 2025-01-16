@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-using MDIP.Utils;
+using MDIP.Managers;
 
 namespace MDIP.Manager;
 
@@ -34,22 +34,22 @@ public static class StatsTextManager
         if (gameStatsText != null)
         {
             string text = ConfigManager.FinalGameStatsTextFormat;
-            text = text.Replace("{acc}", GameStatsUtils.GetAccuracyString());
-            text = text.Replace("{miss}", GameStatsUtils.GetMissCountsText());
+            text = text.Replace("{acc}", GameStatsManager.GetAccuracyString());
+            text = text.Replace("{miss}", GameStatsManager.GetMissCountsString());
             SetGameStatsText(text);
         }
         if (scoreStatsText != null)
         {
             string text = ConfigManager.FinalScoreStatsTextFormat;
-            text = text.Replace("{highest}", GameStatsUtils.HighestScore.ToString());
-            text = text.Replace("{gap}", GameStatsUtils.GetScoreGapString());
+            text = text.Replace("{highest}", GameStatsManager.HighestScore.ToString());
+            text = text.Replace("{gap}", GameStatsManager.GetScoreGapString());
             SetScoreStatsText(text);
         }
         if (hitStatsText != null)
         {
             string text = ConfigManager.FinalNoteStatsTextFormat;
-            text = text.Replace("{total}", GameStatsUtils.TotalCount.ToString());
-            text = text.Replace("{hit}", (GameStatsUtils.PerfectCount + GameStatsUtils.JumpOverCount + GameStatsUtils.MusicNoteCount + GameStatsUtils.HeartCount + GameStatsUtils.GreatCount).ToString());
+            text = text.Replace("{total}", GameStatsManager.TotalNoteCount.ToString());
+            text = text.Replace("{hit}", GameStatsManager.TotalCountedCount.ToString());
             SetNoteStatsText(text);
         }
     }

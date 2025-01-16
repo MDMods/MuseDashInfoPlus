@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using MDIP.Utils;
 using MDIP.Manager;
 using MDIP.Modules;
+using MDIP.Managers;
 
 namespace MDIP.Patches;
 
@@ -164,7 +165,7 @@ public class PnlBattleGameStartPatch
                 StatsTextManager.SetNoteStatsInstance(NoteStatsObj);
             }
             
-            GameStatsUtils.DecideConstantDatas();
+            GameStatsManager.DecideConstantDatas();
             StatsTextManager.UpdateAllText();
         }
         catch (System.Exception e)

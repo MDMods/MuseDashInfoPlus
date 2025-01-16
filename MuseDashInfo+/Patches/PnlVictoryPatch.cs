@@ -4,6 +4,7 @@ using MelonLoader;
 using UnityEngine;
 
 using MDIP.Manager;
+using MDIP.Managers;
 
 namespace MDIP.Patches;
 
@@ -12,6 +13,8 @@ public class PnlVictorySetDetailInfoPatch
 {
     private static void Postfix(PnlVictory __instance)
     {
+        NoteRecordManager.ExportToExcel();
+
         if (!ConfigManager.FixDoubleMissCountBug) return;
 
         try
@@ -26,7 +29,7 @@ public class PnlVictorySetDetailInfoPatch
                 {
                     transform.Find("PnlVictory_3D/DetailInfo/Other/TxtMiss/TxtValue")
                         .gameObject.GetComponent<UnityEngine.UI.Text>()
-                        .text = Utils.GameStatsUtils.MissCount.ToString();
+                        .text = GameStatsManager.TotalMissCount.ToString();
                 }
             }
         }

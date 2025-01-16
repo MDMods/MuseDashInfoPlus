@@ -7,6 +7,7 @@ using MelonLoader;
 
 using MDIP.Manager;
 using MDIP.Modules;
+using MDIP.Managers;
 
 namespace MDIP.Patches;
 
@@ -18,46 +19,34 @@ public class GameMissPlayMissCubePatch
         try
         {
             int result = Singleton<BattleEnemyManager>.instance.GetPlayResult(idx); // 0:Miss 1:Injuried 3:Great 4:Perfect
-            var noteData = Singleton<StageBattleComponent>.instance.GetMusicDataByIdx(idx);
-            var noteType = (NoteType)noteData.noteData.type;
-            var isDouble = noteData.isDouble;
+            var note = Singleton<StageBattleComponent>.instance.GetMusicDataByIdx(idx);
+            var type = (NoteType)note.noteData.type;
+            var isDouble = note.isDouble;
 
-            switch (result)
+            NoteRecordManager.AddRecord(idx, "MissCube", $"result:{result}");
+
+            if (result is 0 or 1)
             {
-                case 0: // Miss
-                    switch (noteType)
-                    {
-                        case NoteType.Ghost:
-                            Utils.GameStatsUtils.GhostMissCount++;
-                            break;
+                switch (type)
+                {
+                    case NoteType.Ghost:
+                        GameStatsManager.AddGhostMiss(idx);
+                        break;
 
-                        case NoteType.Heart or NoteType.Music:
-                            Utils.GameStatsUtils.CollectableMissCount++;
-                            break;
+                    case NoteType.Heart:
+                        GameStatsManager.AddHeartMiss(idx);
+                        break;
 
-                        default:
-                            if (noteType != NoteType.Block && !isDouble)
-                                Utils.GameStatsUtils.NormalMissCount++;
-                            break;
-                    }
-                    break;
+                    case NoteType.Music:
+                        GameStatsManager.AddMusicNoteMiss(idx);
+                        break;
 
-                case 1: // Injuried
-                    switch (noteType)
-                    {
-                        case NoteType.Ghost:
-                            Utils.GameStatsUtils.GhostMissCount++;
-                            break;
-
-                        case NoteType.Heart or NoteType.Music:
-                            Utils.GameStatsUtils.CollectableMissCount++;
-                            break;
-
-                        default:
-                            Utils.GameStatsUtils.NormalMissCount++;
-                            break;
-                    }
-                    break;
+                    default:
+                        if (result is 0 && type is NoteType.Block) break; // Missing an block does not count as a miss
+                        if (result is 1 && isDouble) break; // Skip damaged double since there would always be a miss if this double should be counted
+                        GameStatsManager.AddNormalMiss(idx, isDouble ? note.doubleIdx : -1);
+                        break;
+                }
             }
 
             StatsTextManager.UpdateAllText();
