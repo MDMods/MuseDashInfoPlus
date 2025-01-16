@@ -29,7 +29,7 @@ public class PnlVictorySetDetailInfoPatch
                 {
                     transform.Find("PnlVictory_3D/DetailInfo/Other/TxtMiss/TxtValue")
                         .gameObject.GetComponent<UnityEngine.UI.Text>()
-                        .text = GameStatsManager.TotalMissCount.ToString();
+                        .text = (GameStatsManager.NormalMissCount + GameStatsManager.GhostMissCount).ToString();
                 }
             }
         }
