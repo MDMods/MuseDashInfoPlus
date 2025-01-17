@@ -12,7 +12,7 @@ This mod was inspired by MuseDashCustomPlay.
 
 - **Chart Info**: Shows the current song name and chart difficulty level
 - **Note Counter**: Shows total and hit note counts in real-time
-- **Miss Counter**: Shows current Great/Miss counts and missed music note counts
+- **Miss Counter**: Shows current Great/Miss counts and missed music note/heart counts
 - **Current Accuracy**: Shows real-time accuracy (may slightly deviate due to technical limitations)
 - **High Score/Gap**: Shows your highest score and the current score gap from your best record
 - **Replace Miss Count**: Replaces the game's original miss counter with the actual miss count, which includes ghost misses and missed during i-frame (This option also fixes a vanilla bug where hitting only the bottom note of a double note incorrectly counts as three misses)
