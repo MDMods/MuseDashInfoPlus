@@ -13,19 +13,23 @@ This mod was inspired by MuseDashCustomPlay.
 - **Chart Info**: Shows the current song name and chart difficulty level
 - **Note Counter**: Shows total and hit note counts in real-time
 - **Miss Counter**: Shows current Great/Miss counts and missed music note/heart counts
-- **Current Accuracy**: Shows real-time accuracy (may slightly deviate due to technical limitations)
+- **Current Accuracy**: Shows real-time accuracy
 - **High Score/Gap**: Shows your highest score and the current score gap from your best record
 - **Replace Miss Count**: Replaces the game's original miss counter with the actual miss count, which includes ghost misses and missed during i-frame (This option also fixes a vanilla bug where hitting only the bottom note of a double note incorrectly counts as three misses)
 
 All features can be toggled individually, and some support custom text formatting.
 
-### Note
+### Notes
 
 - If you loaded [SongDesc](https://github.com/mdmods/songdesc) mod, Chart Info will be disabled by default, use configuration to re-enable
 - The Touhou Danmaku mode does not support the Note Counter/Hi-Score/Hi-Score Gap
 - The Note Counter treats hold notes as two separate notes (counting both the start and end), while the Miss Counter and vanilla game count each hold note as a single note
 
-### Preview
+### Known issues:
+- The accuracy is slightly off in some cases
+- When the song name is too long, it will overlap with the score and become difficult to read
+
+### Previews
 
 ![Preview 1](Static/Preview1.webp)
 
