@@ -34,7 +34,7 @@ public static class Constants
     public const string RANK_C_COLOR = "#00ff23";
     public const string RANK_D_COLOR = "#a2a2a2";
 
-    public const string WHITE_COLOR = "#fff";
+    public const string WHITE_COLOR = "#fdfdfa";
 
     public static Dictionary<StageType, float> X_BEHIND_SCORE_TEXT = new()
     {
