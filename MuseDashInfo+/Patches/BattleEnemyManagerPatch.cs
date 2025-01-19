@@ -30,7 +30,7 @@ public class BattleEnemyManagerSetPlayResultPatch
                 break;
         }
 
-        if (type.IsRegularNote()) StatsTextManager.UpdateAllText();
+        if (type.IsRegularNote() && type != NoteType.Mul) StatsTextManager.UpdateAllText();
     }
 }
 
