@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace MDIP.Managers;
@@ -27,8 +28,13 @@ public static class StatsTextManager
     private static void SetNoteStatsText(string text)
         => hitStatsText.text = text;
 
+    private static long lastUpdateTick = 0;
     public static void UpdateAllText()
     {
+        long now = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        if (now - lastUpdateTick < 123) return;
+        lastUpdateTick = now;
+
         GameStatsManager.UpdateCurrentStats();
         if (gameStatsText != null)
         {

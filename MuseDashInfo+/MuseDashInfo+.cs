@@ -4,6 +4,7 @@ using System.Linq;
 using MDIP.Managers;
 using MDIP.Patches;
 using MDIP.Utils;
+using System;
 
 namespace MDIP;
 
@@ -57,5 +58,16 @@ public class MDIPMod : MelonMod
                 FontUtils.UnloadFonts(TextFontType.SnapsTaste);
                 break;
         }
+    }
+
+    private static int lastUpdateSecond = -1;
+    public override void OnLateUpdate()
+    {
+        base.OnLateUpdate();
+        if (lastUpdateSecond == DateTime.Now.Second || !GameStatsManager.IsInGame) return;
+        lastUpdateSecond = DateTime.Now.Second;
+
+        GameStatsManager.CheckMashing();
+        StatsTextManager.UpdateAllText();
     }
 }

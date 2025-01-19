@@ -34,7 +34,7 @@ public class BattleEnemyManagerSetPlayResultPatch
         if (type == NoteType.Mul && result is 3 or 4)
             GameStatsManager.Mashing(note);
 
-        if (type.IsRegularNote() && !note.isLongPressing)
+        if (type.IsRegularNote() && !note.isLongPressing && type != NoteType.Mul)
         {
             GameStatsManager.CheckMashing();
             StatsTextManager.UpdateAllText();

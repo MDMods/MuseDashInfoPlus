@@ -74,6 +74,8 @@ public static class GameStatsManager
         _current.Block - _current.Music - _current.Energy - _current.RedPoint -
         _miss.Music - _miss.Energy - MissCountHitable - _miss.LongPair - _miss.Block;
 
+    public static bool IsInGame => _task != null && _stage != null;
+
     public static void UpdateCurrentStats()
     {
         if (_task == null) return;
