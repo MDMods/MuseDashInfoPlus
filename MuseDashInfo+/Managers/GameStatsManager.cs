@@ -133,8 +133,8 @@ public static class GameStatsManager
         if (gap == 0) return string.Empty;
 
         var (color, prefix) = gap > 0
-            ? (Constants.GAP_AHEAD_COLOR, "+")
-            : (Constants.GAP_BEHIND_COLOR, "");
+            ? (ConfigManager.ScoreGapAheadColor, "+")
+            : (ConfigManager.ScoreGapBehindColor, "");
 
         return Math.Abs(gap) < 1000
             ? $"<color={color}>{prefix}{gap}</color>"

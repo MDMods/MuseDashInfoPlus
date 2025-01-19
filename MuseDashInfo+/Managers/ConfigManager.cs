@@ -1,6 +1,7 @@
 ﻿using MelonLoader;
 
 using MDIP.Utils;
+using Il2CppAssets.Scripts.PeroTools.Commons;
 
 namespace MDIP.Managers;
 
@@ -16,8 +17,10 @@ public static class ConfigManager
     private static MelonPreferences_Entry<string> _customNoteCountsFormat;
     private static MelonPreferences_Entry<bool> _displayMissCounts;
     private static MelonPreferences_Entry<bool> _displayAccuracy;
-    private static MelonPreferences_Entry<bool> _displayScoreGap;
     private static MelonPreferences_Entry<bool> _displayHighestScore;
+    private static MelonPreferences_Entry<bool> _displayScoreGap;
+    private static MelonPreferences_Entry<string> _scoreGapAheadColor;
+    private static MelonPreferences_Entry<string> _scoreGapBehindColor;
     // Others
     private static MelonPreferences_Entry<bool> _replaceResultsScreenMissCount;
     private static MelonPreferences_Entry<string> _customSeparator;
@@ -31,8 +34,10 @@ public static class ConfigManager
     public static string CustomNoteCountsFormat => string.IsNullOrEmpty(_customNoteCountsFormat?.Value) ? "{hit} of {total} notes" : _customNoteCountsFormat.Value;
     public static bool DisplayMissCounts => _displayMissCounts.Value;
     public static bool DisplayAccuracy => _displayAccuracy.Value;
-    public static bool DisplayScoreGap => _displayScoreGap.Value;
     public static bool DisplayHighestScore => _displayHighestScore.Value;
+    public static bool DisplayScoreGap => _displayScoreGap.Value;
+    public static string ScoreGapAheadColor => string.IsNullOrEmpty(_scoreGapAheadColor?.Value) ? Constants.GAP_AHEAD_COLOR : _scoreGapAheadColor.Value;
+    public static string ScoreGapBehindColor => string.IsNullOrEmpty(_scoreGapBehindColor?.Value) ? Constants.GAP_BEHIND_COLOR : _scoreGapBehindColor.Value;
     // Others
     public static bool ReplaceResultsScreenMissCount => _replaceResultsScreenMissCount.Value;
     public static string CustomSeparator => string.IsNullOrEmpty(_customSeparator?.Value) ? " / " : _customSeparator.Value;
@@ -55,8 +60,10 @@ public static class ConfigManager
         _customNoteCountsFormat = _category.CreateEntry("CustomNoteCountsFormat", CustomNoteCountsFormat, description: "Custom note counter format\n{total} will be replaced with total notes\n{hit} will be replaced with current hit count\n自定义物量计数器文本\n{total} 将被替换为谱面总物量\n{hit} 将被替换为当前已击打数量");
         _displayMissCounts = _category.CreateEntry("DisplayMissCounts", true, description: "Show miss counter\n显示漏击计数器");
         _displayAccuracy = _category.CreateEntry("DisplayAccuracy", true, description: "Show current accuracy\n显示当前准确率");
-        _displayScoreGap = _category.CreateEntry("DisplayScoreGap", true, description: "Show score difference from high score\n显示当前与最高分的分数差距");
         _displayHighestScore = _category.CreateEntry("DisplayHighestScore", false, description: "Show historical high score\n显示当前谱面历史最高分数");
+        _displayScoreGap = _category.CreateEntry("DisplayScoreGap", true, description: "Show score difference from high score\n显示当前与最高分的分数差距");
+        _scoreGapAheadColor = _category.CreateEntry("ScoreGapAheadColor", ScoreGapAheadColor, description: "Score gap text color when higher than personal best\n当分数超过历史最高分时的分数差值文本颜色");
+        _scoreGapBehindColor = _category.CreateEntry("ScoreGapBehindColor", ScoreGapBehindColor, description: "Score gap text color when lower than personal best\n当分数低于历史最高分时的分数差值文本颜色");
 
         _replaceResultsScreenMissCount = _category.CreateEntry("ReplaceResultsScreenMissCount", true, description: "Show mod-calculated misses instead of game's default count on results screen\n以模组计算的 Miss 数替代结算页面的 Miss 数");
         _customSeparator = _category.CreateEntry("CustomSeparator", CustomSeparator, description: "Custom separator between stats\n自定义各个数据之间的分隔符");
