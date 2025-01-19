@@ -1,15 +1,12 @@
-﻿using System.Numerics;
+﻿using Il2CppGameLogic;
+using System.Numerics;
 using System;
 using MelonLoader;
-
-using Il2CppGameLogic;
-
 
 namespace MDIP.Utils;
 
 public static class Utils
 {
-    
     public static bool IsRegularNote(uint noteType) => noteType >= 1 && noteType <= 8;
 
     public static Func<MusicData, bool> IsSingleNoteFunc = new(note => IsRegularNote(note.noteData.type) && !note.isLongPressing);
