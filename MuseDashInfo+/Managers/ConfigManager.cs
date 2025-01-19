@@ -10,6 +10,7 @@ public static class ConfigManager
     private static MelonPreferences_Category _category;
     // Upper right corner
     private static MelonPreferences_Entry<bool> _displayChartName;
+    private static MelonPreferences_Entry<string> _chartNameColor;
     private static MelonPreferences_Entry<bool> _displayChartDifficulty;
     private static MelonPreferences_Entry<string> _customChartDifficultyFormat;
     // Upper left corner
@@ -33,6 +34,7 @@ public static class ConfigManager
 
     // Upper right corner
     public static bool DisplayChartName => _displayChartName.Value;
+    public static string ChartNameColor => string.IsNullOrEmpty(_chartNameColor?.Value) ? Constants.WHITE_COLOR : _chartNameColor.Value;
     public static bool DisplayChartDifficulty => _displayChartDifficulty.Value;
     public static string CustomChartDifficultyFormat => string.IsNullOrEmpty(_customChartDifficultyFormat?.Value) ? "{diff} - Level {level}" : _customChartDifficultyFormat.Value;
     // Upper left corner
@@ -65,6 +67,7 @@ public static class ConfigManager
         _category.SetFilePath("UserData/Info+.cfg");
 
         _displayChartName = _category.CreateEntry("DisplayChartName", !MDIPMod.IsSongDescLoaded, description: "Show song name\n显示歌曲名");
+        _chartNameColor = _category.CreateEntry("ChartNameColor", ChartNameColor, description: "Song name color\n歌曲名颜色");
         _displayChartDifficulty = _category.CreateEntry("DisplayChartDifficulty", !MDIPMod.IsSongDescLoaded, description: "Show difficulty level\n显示谱面难度");
         _customChartDifficultyFormat = _category.CreateEntry("CustomChartDifficultyFormat", CustomChartDifficultyFormat, description: "Custom difficulty text format\n{diff} will be replaced with EASY/HARD/MASTER\n{level} will be replaced with the chart level\n自定义歌曲难度文本\n{diff} 将被替换为 EASY/HARD/MASTER\n{level} 将被替换为谱面等级");
 

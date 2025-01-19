@@ -22,7 +22,7 @@ public static class GameInfosUtils
     public static string GetChartInfosString()
     {
         var text = string.Empty;
-        if (ConfigManager.DisplayChartName) text = $"<b>{MusicName}</b>\n";
+        if (ConfigManager.DisplayChartName) text = $"<b>{MusicName.Color(ConfigManager.ChartNameColor)}</b>\n";
         if (ConfigManager.DisplayChartDifficulty) text += $"<size={Constants.CHART_DIFFICULTY_SIZE}>{ConfigManager.FinalChartDifficultyTextFormat.Replace("{diff}", MusicDiffStr).Replace("{level}", MusicLevel)}</size>";
         return text;
     }
