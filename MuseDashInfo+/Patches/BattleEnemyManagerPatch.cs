@@ -31,7 +31,14 @@ public class BattleEnemyManagerSetPlayResultPatch
                 break;
         }
 
-        if (type.IsRegularNote() && type != NoteType.Mul) StatsTextManager.UpdateAllText();
+        if (type == NoteType.Mul && result is 3 or 4)
+            GameStatsManager.Mashing(note);
+
+        if (type.IsRegularNote() && !note.isLongPressing)
+        {
+            GameStatsManager.CheckMashing();
+            StatsTextManager.UpdateAllText();
+        }
     }
 }
 

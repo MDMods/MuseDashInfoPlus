@@ -8,5 +8,6 @@ public enum CountNoteAction
     MissLong,
     MissGhost,
     MissEnergy,
-    MissMusic
+    MissMusic,
+    MissMul,
 }

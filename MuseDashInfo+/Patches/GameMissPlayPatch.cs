@@ -18,7 +18,7 @@ public class GameMissPlayMissCubePatch
     {
         try
         {
-            int result = Singleton<BattleEnemyManager>.instance.GetPlayResult(idx); // 0:Miss 1:Injuried 3:Great 4:Perfect
+            int result = Singleton<BattleEnemyManager>.instance.GetPlayResult(idx);
             var note = Singleton<StageBattleComponent>.instance.GetMusicDataByIdx(idx);
             var type = (NoteType)note.noteData.type;
             var isDouble = note.isDouble;
@@ -44,7 +44,12 @@ public class GameMissPlayMissCubePatch
                         break;
 
                     case NoteType.Block:
-                        if (result != 0) GameStatsManager.CountNote(idx, CountNoteAction.MissBlock);
+                        if (result != 0)
+                            GameStatsManager.CountNote(idx, CountNoteAction.MissBlock);
+                        break;
+
+                    case NoteType.Mul:
+                        GameStatsManager.CountNote(idx, CountNoteAction.MissMul);
                         break;
 
                     default:
@@ -53,7 +58,11 @@ public class GameMissPlayMissCubePatch
                 }
             }
 
-            if (type.IsRegularNote() && type != NoteType.Block) StatsTextManager.UpdateAllText();
+            if (type.IsRegularNote() && type != NoteType.Block && !note.isLongPressing)
+            {
+                GameStatsManager.CheckMashing();
+                StatsTextManager.UpdateAllText();
+            }
         }
         catch (System.Exception e)
         {
