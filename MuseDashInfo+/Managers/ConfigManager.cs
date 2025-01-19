@@ -78,7 +78,7 @@ public static class ConfigManager
         _collectableMissCountsColor = _category.CreateEntry("CollectableMissCountsColor", CollectableMissCountsColor, description: "Text color of collectable missed count\n音符/红心遗漏计数的文本颜色");
         _greatCountsColor = _category.CreateEntry("GreatCountsColor", GreatCountsColor, description: "Text color of great count\nGreat 计数的文本颜色");
         _displayAccuracy = _category.CreateEntry("DisplayAccuracy", true, description: "Show current accuracy\n显示当前准确率");
-        _displayHighestScore = _category.CreateEntry("DisplayHighestScore", false, description: "Show historical high score\n显示当前谱面历史最高分数");
+        _displayHighestScore = _category.CreateEntry("DisplayHighestScore", false, description: "Show personal best score\n显示当前谱面历史最高分数");
         _displayScoreGap = _category.CreateEntry("DisplayScoreGap", true, description: "Show score difference from high score\n显示当前与最高分的分数差距");
         _scoreGapAheadColor = _category.CreateEntry("ScoreGapAheadColor", ScoreGapAheadColor, description: "Score gap text color when higher than personal best\n当分数超过历史最高分时的分数差值文本颜色");
         _scoreGapBehindColor = _category.CreateEntry("ScoreGapBehindColor", ScoreGapBehindColor, description: "Score gap text color when lower than personal best\n当分数低于历史最高分时的分数差值文本颜色");
