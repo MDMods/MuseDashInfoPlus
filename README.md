@@ -25,10 +25,6 @@ All features can be toggled individually, and some support custom text formattin
 - The Touhou Danmaku mode does not support the Note Counter/Hi-Score/Hi-Score Gap
 - The Note Counter treats hold notes as two separate notes (counting both the start and end), while the Miss Counter and vanilla game count each hold note as a single note
 
-### Known issues:
-- The accuracy is slightly off in some cases
-- When the song name is too long, it will overlap with the score and become difficult to read
-
 ### Previews
 
 ![Preview 1](Static/Preview1.webp)
@@ -49,6 +45,9 @@ This file is automatically **generated after the first launch**. Changes take ef
 # Show song name
 DisplayChartName = true
 
+# Song name color
+ChartNameColor = "#fdfdfa"
+
 # Show difficulty level
 DisplayChartDifficulty = true
 
@@ -68,20 +67,44 @@ CustomNoteCountsFormat = "{hit} of {total} notes"
 # Show miss counter
 DisplayMissCounts = true
 
+# Text color of missed count
+NormalMissCountsColor = "#fdfdfa"
+
+# Text color of collectable missed count
+CollectableMissCountsColor = "#fdfdfa"
+
+# Text color of great count
+GreatCountsColor = "#fdfdfa"
+
 # Show current accuracy
 DisplayAccuracy = true
+
+# Show personal best score
+DisplayHighestScore = false
 
 # Show score difference from high score
 DisplayScoreGap = true
 
-# Show historical high score
-DisplayHighestScore = false
+# Score gap text color when higher than personal best
+ScoreGapAheadColor = "#fe41f3"
+
+# Score gap text color when lower than personal best
+ScoreGapBehindColor = "#9338fb"
 
 # Show mod-calculated misses instead of game's default count on results screen
 ReplaceResultsScreenMissCount = true
 
 # Custom separator between stats
 CustomSeparator = " / "
+
+# Position offset of custom text 1
+Text1PositionOffset = "0,0"
+
+# Position offset of custom text 2
+Text2PositionOffset = "0,0"
+
+# Position offset of custom text 3
+Text3PositionOffset = "0,0"
 ```
 
 Note: All the custom format strings above support rich text formatting. for example: `<size=40><color=#e1bb8a>{total}</color></size>`.

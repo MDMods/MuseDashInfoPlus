@@ -25,10 +25,6 @@ MuseDashInfo+ 是一个轻量级的 MuseDash 游戏模组，用于显示额外�
 - 东方特殊谱面不支持物量计数器/最高分/最高分差值
 - 物量计数器会将长条视为两个 Note，首尾各算一个，而 Miss 计数器与游戏原版都将长条视为一个 Note
 
-### 已知问题
-- 准确率在部分情况下略有偏差
-- 谱面名称太长会和分数重叠导致难以辨认
-
 ### 预览
 
 ![预览1](Static/Preview1.webp)
@@ -49,6 +45,9 @@ MuseDashInfo+ 是一个轻量级的 MuseDash 游戏模组，用于显示额外�
 # 显示歌曲名
 DisplayChartName = true
 
+# 歌曲名颜色
+ChartNameColor = "#fdfdfa"
+
 # 显示谱面难度
 DisplayChartDifficulty = true
 
@@ -68,20 +67,44 @@ CustomNoteCountsFormat = "{hit} of {total} notes"
 # 显示漏击计数器
 DisplayMissCounts = true
 
+# 漏击计数的文本颜色
+NormalMissCountsColor = "#fdfdfa"
+
+# 音符/红心遗漏计数的文本颜色
+CollectableMissCountsColor = "#fdfdfa"
+
+# Great 计数的文本颜色
+GreatCountsColor = "#fdfdfa"
+
 # 显示当前准确率
 DisplayAccuracy = true
+
+# 显示当前谱面历史最高分数
+DisplayHighestScore = false
 
 # 显示当前与最高分的分数差距
 DisplayScoreGap = true
 
-# 显示当前谱面历史最高分数
-DisplayHighestScore = false
+# 当分数超过历史最高分时的分数差值文本颜色
+ScoreGapAheadColor = "#fe41f3"
+
+# 当分数低于历史最高分时的分数差值文本颜色
+ScoreGapBehindColor = "#9338fb"
 
 # 以模组计算的 Miss 数替代结算页面的 Miss 数
 ReplaceResultsScreenMissCount = true
 
 # 自定义各个数据之间的分隔符
 CustomSeparator = " / "
+
+# 自定义文本1的位置偏移
+Text1PositionOffset = "0,0"
+
+# 自定义文本2的位置偏移
+Text2PositionOffset = "0,0"
+
+# 自定义文本3的位置偏移
+Text3PositionOffset = "0,0"
 ```
 
 提示：上述自定义字符串均支持富文本，例：`<size=40><color=#e1bb8a>{total}</color></size>`。
