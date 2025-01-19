@@ -22,10 +22,10 @@ public class BattleEnemyManagerSetPlayResultPatch
         switch (result)
         {
             case 4 when type == NoteType.Block:
-                GameStatsManager.AddJumpOver(idx);
+                GameStatsManager.AddBlockCur(idx);
                 break;
             case 1 when type == NoteType.Long:
-                GameStatsManager.AddNormalMiss(idx);
+                GameStatsManager.AddLongMiss(idx, note.isLongPressStart);
                 break;
         }
 

@@ -48,8 +48,8 @@ public static class StatsTextManager
         if (hitStatsText != null)
         {
             string text = ConfigManager.FinalNoteStatsTextFormat;
-            text = text.Replace("{total}", GameStatsManager.TotalNoteCount.ToString());
-            text = text.Replace("{hit}", GameStatsManager.TotalCountedCount.ToString());
+            text = text.Replace("{total}", ((int)GameStatsManager.MDAccTotal).ToString());
+            text = text.Replace("{hit}", ((int)GameStatsManager.MDAccCounted).ToString());
             SetNoteStatsText(text);
         }
     }

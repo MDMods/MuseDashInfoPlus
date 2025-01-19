@@ -33,18 +33,21 @@ public class GameMissPlayMissCubePatch
                         GameStatsManager.AddGhostMiss(idx);
                         break;
 
-                    case NoteType.Blood:
-                        GameStatsManager.AddBloodMiss(idx);
+                    case NoteType.Energy:
+                        GameStatsManager.AddEnergyMiss(idx);
                         break;
 
                     case NoteType.Music:
                         GameStatsManager.AddMusicMiss(idx);
                         break;
 
+                    case NoteType.Block:
+                        if (result != 0) GameStatsManager.AddBlockMiss(idx);
+                        break;
+
                     default:
-                        if (note.configData.blood) GameStatsManager.AddBindBloodMiss(idx);
-                        if (result is 0 && type is NoteType.Block) break; // Missing an block does not count as a miss
-                        GameStatsManager.AddNormalMiss(idx, isDouble ? note.doubleIdx : -1);
+                        if (note.configData.blood) GameStatsManager.AddBindEnergyMiss(idx);
+                        GameStatsManager.AddMonsterMiss(idx, isDouble ? note.doubleIdx : -1);
                         break;
                 }
             }
