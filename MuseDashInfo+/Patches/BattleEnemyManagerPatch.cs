@@ -6,6 +6,7 @@ using HarmonyLib;
 using MDIP.Modules;
 using MDIP.Manager;
 using MDIP.Managers;
+using MDIP.Utils;
 
 namespace MDIP.Patches;
 
@@ -22,14 +23,14 @@ public class BattleEnemyManagerSetPlayResultPatch
         switch (result)
         {
             case 4 when type == NoteType.Block:
-                GameStatsManager.AddBlockCur(idx);
+                GameStatsManager.CountNote(idx, CountNoteAction.Block);
                 break;
             case 1 when type == NoteType.Long:
-                GameStatsManager.AddLongMiss(idx, note.isLongPressStart);
+                GameStatsManager.CountNote(idx, CountNoteAction.MissLong, -1, note.isLongPressStart);
                 break;
         }
 
-        StatsTextManager.UpdateAllText();
+        if (type.IsRegularNote()) StatsTextManager.UpdateAllText();
     }
 }
 

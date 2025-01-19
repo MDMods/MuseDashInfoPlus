@@ -8,6 +8,7 @@ using MelonLoader;
 using MDIP.Manager;
 using MDIP.Modules;
 using MDIP.Managers;
+using MDIP.Utils;
 
 namespace MDIP.Patches;
 
@@ -30,29 +31,28 @@ public class GameMissPlayMissCubePatch
                 switch (type)
                 {
                     case NoteType.Ghost:
-                        GameStatsManager.AddGhostMiss(idx);
+                        GameStatsManager.CountNote(idx, CountNoteAction.MissGhost);
                         break;
 
                     case NoteType.Energy:
-                        GameStatsManager.AddEnergyMiss(idx);
+                        GameStatsManager.CountNote(idx, CountNoteAction.MissEnergy);
                         break;
 
                     case NoteType.Music:
-                        GameStatsManager.AddMusicMiss(idx);
+                        GameStatsManager.CountNote(idx, CountNoteAction.MissMusic);
                         break;
 
                     case NoteType.Block:
-                        if (result != 0) GameStatsManager.AddBlockMiss(idx);
+                        if (result != 0) GameStatsManager.CountNote(idx, CountNoteAction.MissBlock);
                         break;
 
                     default:
-                        if (note.configData.blood) GameStatsManager.AddBindEnergyMiss(idx);
-                        GameStatsManager.AddMonsterMiss(idx, isDouble ? note.doubleIdx : -1);
+                        GameStatsManager.CountNote(idx, CountNoteAction.MissMonster, isDouble ? note.doubleIdx : -1);
                         break;
                 }
             }
 
-            StatsTextManager.UpdateAllText();
+            if (type.IsRegularNote()) StatsTextManager.UpdateAllText();
         }
         catch (System.Exception e)
         {

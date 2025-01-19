@@ -164,8 +164,8 @@ public class PnlBattleGameStartPatch
                 );
                 StatsTextManager.SetNoteStatsInstance(NoteStatsObj);
             }
-            
-            GameStatsManager.DecideConstantDatas();
+
+            GameStatsManager.Init();
             StatsTextManager.UpdateAllText();
         }
         catch (System.Exception e)

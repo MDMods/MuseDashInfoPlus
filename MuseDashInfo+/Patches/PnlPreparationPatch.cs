@@ -13,9 +13,9 @@ public class PnlPreparationPatch
         if (!string.IsNullOrEmpty(score))
         {
             if (score == "-")
-                GameStatsManager.SavedHighestScore = 0;
+                GameStatsManager.SavedHighScore = 0;
             else if (int.TryParse(score, out var x) && x >= 1)
-                GameStatsManager.SavedHighestScore = int.Parse(score);
+                GameStatsManager.SavedHighScore = int.Parse(score);
         }
     }
 
@@ -27,6 +27,6 @@ public class PnlPreparationPatch
     private static void OnBattleStartPrefix(PnlPreparation __instance)
     {
         SetHighestScore(__instance.pnlRecord.txtScore?.text);
-        GameStatsManager.LockHighestScore();
+        GameStatsManager.SavedHighScoreLocked = true;
     }
 }

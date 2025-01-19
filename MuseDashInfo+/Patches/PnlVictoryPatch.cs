@@ -16,18 +16,17 @@ public class PnlVictorySetDetailInfoPatch
     {
         //NoteRecordManager.ExportToExcel();
 
-        if (Math.Round(GetTrueAccuracy(), 2) != Math.Round(GetCalculatedAccuracy(), 2))
+        if (AccuracyRest != 0 || Math.Round(GetTrueAccuracy(), 2) != Math.Round(GetCalculatedAccuracy(), 2))
         {
-            Melon<MDIPMod>.Logger.Msg($"======================================");
-            Melon<MDIPMod>.Logger.Warning("The calculated accuracy is different from the actual accuracy");
-            Melon<MDIPMod>.Logger.Msg($"Total:{MDAccTotal} | Counted:{MDAccCounted} | Rest:{MDAccRest}");
-            Melon<MDIPMod>.Logger.Msg($"Total => TotalMusicCount:{TotalMusicCount} | TotalEnergyCount:{TotalEnergyCount} | TotalHitableCount:{TotalHitableCount} | TotalBlockCount:{TotalBlockCount}");
-            Melon<MDIPMod>.Logger.Msg($"Counted => CurPerfectCount:{CurPerfectCount} | CurGreatCount:{CurGreatCount} /2f | CurBlockCount:{CurBlockCount} | CurMusicCount:{CurMusicCount} | CurEnergyCount:{CurEnergyCount} | CurRedPointCount:{CurRedPointCount}");
-            Melon<MDIPMod>.Logger.Msg($"Miss => MissMusicCount:{MissMusicCount} | MissEnergyCount:{MissEnergyCount} | MissHitableCount:{MissHitableCount} | MissLongPair:{MissLongPairCount} | MissBlockCount:{MissBlockCount}");
-            Melon<MDIPMod>.Logger.Msg($"{MDAccTotal} - {CurPerfectCount + CurGreatCount + CurBlockCount + CurMusicCount + CurEnergyCount + CurRedPointCount} - {MissMusicCount + MissEnergyCount + MissHitableCount - MissLongPairCount + MissBlockCount} = {MDAccRest}");
-            Melon<MDIPMod>.Logger.Msg($"======================================");
-            Melon<MDIPMod>.Logger.Warning($"Calc Acc: {GetCalculatedAccuracy()} | True Acc:{GetTrueAccuracy()}");
-            Melon<MDIPMod>.Logger.Msg($"======================================");
+            Melon<MDIPMod>.Logger.Error($"===== Accuracy Calculation Error =====");
+            Melon<MDIPMod>.Logger.Msg($"Total:{AccuracyTotal} | Counted:{AccuracyCounted} | Rest:{AccuracyRest}");
+            Melon<MDIPMod>.Logger.Msg($"Total => Music:{Total.Music} | Energy:{Total.Energy} | Hitable:{Total.Hitable} | Block:{Total.Block}");
+            Melon<MDIPMod>.Logger.Msg($"Counted => Perfect:{Current.Perfect} | Great:{Current.Great} /2f | Block:{Current.Block} | Music:{Current.Music} | Energy:{Current.Energy} | RedPoint:{Current.RedPoint}");
+            Melon<MDIPMod>.Logger.Msg($"Miss => Music:{Miss.Music} | Energy:{Miss.Energy} | Hitable:{MissCountHitable} | LongPair:{Miss.LongPair} | Block:{Miss.Block}");
+            Melon<MDIPMod>.Logger.Msg($"{AccuracyTotal} - {Current.Perfect + Current.Great + Current.Block + Current.Music + Current.Energy + Current.RedPoint} - {Miss.Music + Miss.Energy + MissCountHitable - Miss.LongPair + Miss.Block} = {AccuracyRest}");
+            Melon<MDIPMod>.Logger.Error($"======================================");
+            Melon<MDIPMod>.Logger.Msg($"Calc Acc: {GetCalculatedAccuracy()} | True Acc:{GetTrueAccuracy()}");
+            Melon<MDIPMod>.Logger.Error($"======================================");
         }
 
         if (!ConfigManager.ReplaceResultsScreenMissCount) return;
@@ -44,7 +43,7 @@ public class PnlVictorySetDetailInfoPatch
                 {
                     transform.Find("PnlVictory_3D/DetailInfo/Other/TxtMiss/TxtValue")
                         .gameObject.GetComponent<UnityEngine.UI.Text>()
-                        .text = (MissCount).ToString();
+                        .text = (MissCountHitable + Miss.Block).ToString();
                 }
             }
         }

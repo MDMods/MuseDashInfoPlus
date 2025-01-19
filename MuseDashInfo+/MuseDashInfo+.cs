@@ -46,7 +46,6 @@ public class MDIPMod : MelonMod
         switch (sceneName)
         {
             case "GameMain":
-                GameStatsManager.Reload();
                 break;
 
             default:
