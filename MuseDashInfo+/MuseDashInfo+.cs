@@ -1,10 +1,9 @@
 ﻿using MelonLoader;
 using System.Linq;
 
-using MDIP.Manager;
+using MDIP.Managers;
 using MDIP.Patches;
 using MDIP.Utils;
-using MDIP.Managers;
 
 namespace MDIP;
 
@@ -51,7 +50,9 @@ public class MDIPMod : MelonMod
             default:
                 GameStatsManager.Reset();
                 StatsTextManager.Reset();
+#if DEBUG
                 NoteRecordManager.Reset();
+#endif
                 PnlBattleGameStartPatch.Reset();
                 FontUtils.UnloadFonts(TextFontType.SnapsTaste);
                 break;

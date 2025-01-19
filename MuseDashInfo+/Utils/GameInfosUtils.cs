@@ -1,6 +1,6 @@
 ﻿using Il2CppAssets.Scripts.Database;
 
-using MDIP.Manager;
+using MDIP.Managers;
 
 namespace MDIP.Utils;
 

@@ -5,7 +5,8 @@ using MDIP.Managers;
 
 namespace MDIP.Patches;
 
-//[HarmonyPatch(typeof(MultHitEnemyController), nameof(MultHitEnemyController.OnControllerMiss))]
+#if DEBUG
+[HarmonyPatch(typeof(MultHitEnemyController), nameof(MultHitEnemyController.OnControllerMiss))]
 public class MultHitEnemyControllerPatch
 {
     private static void Prefix(MultHitEnemyController __instance, int index)
@@ -15,3 +16,4 @@ public class MultHitEnemyControllerPatch
         NoteRecordManager.AddRecord(int.Parse(note.noteData.id), "OnControllerMiss", $"m_HasMiss:{__instance.m_HasMiss}");
     }
 }
+#endif

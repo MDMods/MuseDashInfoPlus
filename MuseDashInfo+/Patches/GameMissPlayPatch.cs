@@ -5,9 +5,8 @@ using Il2CppGameLogic;
 using HarmonyLib;
 using MelonLoader;
 
-using MDIP.Manager;
-using MDIP.Modules;
 using MDIP.Managers;
+using MDIP.Modules;
 using MDIP.Utils;
 
 namespace MDIP.Patches;
@@ -24,7 +23,9 @@ public class GameMissPlayMissCubePatch
             var type = (NoteType)note.noteData.type;
             var isDouble = note.isDouble;
 
-            //NoteRecordManager.AddRecord(idx, "MissCube", $"result:{result}");
+#if DEBUG
+            NoteRecordManager.AddRecord(idx, "MissCube", $"result:{result}");
+#endif
 
             if (result is 0 or 1)
             {

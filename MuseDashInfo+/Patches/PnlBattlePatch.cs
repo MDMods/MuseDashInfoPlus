@@ -5,9 +5,8 @@ using UnityEngine;
 using UnityEngine.UI;
 
 using MDIP.Utils;
-using MDIP.Manager;
-using MDIP.Modules;
 using MDIP.Managers;
+using MDIP.Modules;
 
 namespace MDIP.Patches;
 

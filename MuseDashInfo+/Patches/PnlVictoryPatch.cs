@@ -3,7 +3,7 @@ using HarmonyLib;
 using MelonLoader;
 using System;
 
-using MDIP.Manager;
+using MDIP.Managers;
 
 using static MDIP.Managers.GameStatsManager;
 
@@ -14,7 +14,9 @@ public class PnlVictorySetDetailInfoPatch
 {
     private static void Postfix(PnlVictory __instance)
     {
-        //NoteRecordManager.ExportToExcel();
+#if DEBUG
+        NoteRecordManager.ExportToExcel();
+#endif
 
         if (AccuracyRest != 0 || Math.Round(GetTrueAccuracy(), 2) != Math.Round(GetCalculatedAccuracy(), 2))
         {

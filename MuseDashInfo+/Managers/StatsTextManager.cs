@@ -1,9 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-using MDIP.Managers;
-
-namespace MDIP.Manager;
+namespace MDIP.Managers;
 
 public static class StatsTextManager
 {

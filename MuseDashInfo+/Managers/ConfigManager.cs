@@ -2,7 +2,7 @@
 
 using MDIP.Utils;
 
-namespace MDIP.Manager;
+namespace MDIP.Managers;
 
 public static class ConfigManager
 {

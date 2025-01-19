@@ -4,7 +4,6 @@ using Il2CppFormulaBase;
 using HarmonyLib;
 
 using MDIP.Modules;
-using MDIP.Manager;
 using MDIP.Managers;
 using MDIP.Utils;
 
@@ -18,7 +17,9 @@ public class BattleEnemyManagerSetPlayResultPatch
         var note = Singleton<StageBattleComponent>.instance.GetMusicDataByIdx(idx);
         var type = (NoteType)note.noteData.type;
 
-        //NoteRecordManager.AddRecord(idx, "SetPlayResult", $"result:{result}");
+#if DEBUG
+        NoteRecordManager.AddRecord(idx, "SetPlayResult", $"result:{result}");
+#endif
 
         switch (result)
         {

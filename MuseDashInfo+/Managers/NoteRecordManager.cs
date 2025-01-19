@@ -9,6 +9,7 @@ using MDIP.Modules;
 
 namespace MDIP.Managers;
 
+#if DEBUG
 public class NoteRecordManager
 {
     public static Dictionary<int, NoteRecord> Records { get; private set; } = new();
@@ -77,3 +78,4 @@ public class NoteRecordManager
         Melon<MDIPMod>.Logger.Warning($"Excel exported to: {Path.GetFullPath(filePath)}");
     }
 }
+# endif

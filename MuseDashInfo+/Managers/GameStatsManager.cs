@@ -82,6 +82,8 @@ public static class GameStatsManager
             _task.m_Score,
             _task.m_Score > _savedHighScore
         );
+
+#if DEBUG
         Melon<MDIPMod>.Logger.Error($"===== Accuracy Calculation Error =====");
         Melon<MDIPMod>.Logger.Msg($"Total:{AccuracyTotal} | Counted:{AccuracyCounted} | Rest:{AccuracyRest}");
         Melon<MDIPMod>.Logger.Msg($"Total => Music:{Total.Music} | Energy:{Total.Energy} | Block:{Total.Block} | Hitable:{Total.Hitable}");
@@ -91,6 +93,7 @@ public static class GameStatsManager
         Melon<MDIPMod>.Logger.Error($"======================================");
         Melon<MDIPMod>.Logger.Msg($"Calc Acc: {GetCalculatedAccuracy()} | True Acc:{GetTrueAccuracy()}");
         Melon<MDIPMod>.Logger.Error($"======================================");
+#endif
     }
 
     public static float GetTrueAccuracy() => _task.GetAccuracy() * 100f;
