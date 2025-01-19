@@ -27,6 +27,9 @@ public static class ConfigManager
     // Others
     private static MelonPreferences_Entry<bool> _replaceResultsScreenMissCount;
     private static MelonPreferences_Entry<string> _customSeparator;
+    private static MelonPreferences_Entry<string> _text1PositionOffset;
+    private static MelonPreferences_Entry<string> _text2PositionOffset;
+    private static MelonPreferences_Entry<string> _text3PositionOffset;
 
     // Upper right corner
     public static bool DisplayChartName => _displayChartName.Value;
@@ -47,6 +50,9 @@ public static class ConfigManager
     // Others
     public static bool ReplaceResultsScreenMissCount => _replaceResultsScreenMissCount.Value;
     public static string CustomSeparator => string.IsNullOrEmpty(_customSeparator?.Value) ? " / " : _customSeparator.Value;
+    public static string Text1PositionOffset => string.IsNullOrEmpty(_text1PositionOffset?.Value) ? "0,0" : _text1PositionOffset.Value;
+    public static string Text2PositionOffset => string.IsNullOrEmpty(_text2PositionOffset?.Value) ? "0,0" : _text2PositionOffset.Value;
+    public static string Text3PositionOffset => string.IsNullOrEmpty(_text3PositionOffset?.Value) ? "0,0" : _text3PositionOffset.Value;
 
     public static string FinalChartDifficultyTextFormat { get; private set; }
     public static string FinalGameStatsTextFormat { get; private set; }
@@ -76,6 +82,9 @@ public static class ConfigManager
 
         _replaceResultsScreenMissCount = _category.CreateEntry("ReplaceResultsScreenMissCount", true, description: "Show mod-calculated misses instead of game's default count on results screen\n以模组计算的 Miss 数替代结算页面的 Miss 数");
         _customSeparator = _category.CreateEntry("CustomSeparator", CustomSeparator, description: "Custom separator between stats\n自定义各个数据之间的分隔符");
+        _text1PositionOffset = _category.CreateEntry("Text1PositionOffset", Text1PositionOffset, description: "Position offset of custom text 1\n自定义文本1的位置偏移");
+        _text2PositionOffset = _category.CreateEntry("Text2PositionOffset", Text2PositionOffset, description: "Position offset of custom text 2\n自定义文本2的位置偏移");
+        _text3PositionOffset = _category.CreateEntry("Text3PositionOffset", Text3PositionOffset, description: "Position offset of custom text 3\n自定义文本3的位置偏移");
     }
 
     public static void Load() => _category.LoadFromFile(false);

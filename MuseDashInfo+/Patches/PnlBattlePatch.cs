@@ -104,6 +104,7 @@ public class PnlBattleGameStartPatch
                     false,
                     TextAnchor.UpperRight,
                     Constants.CHART_INFOS_POS,
+                    "0,0",
                     Constants.CHART_NAME_SIZE
                 );
                 var chartInfosText = ChartInfosObj.GetComponent<Text>();
@@ -121,6 +122,7 @@ public class PnlBattleGameStartPatch
                     true,
                     TextAnchor.LowerLeft,
                     new Vector3(Constants.SCORE_STATS_POS.x, Constants.Y_BEHIND_SCORE[stageType], Constants.SCORE_STATS_POS.z),
+                    ConfigManager.Text1PositionOffset,
                     Constants.SCORE_STATS_SIZE,
                     FontStyle.Bold,
                     true
@@ -141,6 +143,7 @@ public class PnlBattleGameStartPatch
                     false,
                     TextAnchor.UpperLeft,
                     new Vector3(Constants.X_BEHIND_SCORE_TEXT[stageType], Constants.GAME_STATS_POS.y, Constants.GAME_STATS_POS.z),
+                    ConfigManager.Text2PositionOffset,
                     Constants.GAME_STATS_SIZE,
                     FontStyle.Normal,
                     true
@@ -157,6 +160,7 @@ public class PnlBattleGameStartPatch
                     false,
                     TextAnchor.LowerLeft,
                     Constants.NOTE_STATS_POS,
+                    ConfigManager.Text3PositionOffset,
                     Constants.NOTE_STATS_SIZE,
                     FontStyle.Italic,
                     true
@@ -179,6 +183,7 @@ public class PnlBattleGameStartPatch
         bool skipRectReset,
         TextAnchor alignment,
         Vector3 position,
+        string positionOffset,
         int fontSize,
         FontStyle fontStyle = FontStyle.Normal,
         bool useCustomFont = false)
@@ -190,7 +195,9 @@ public class PnlBattleGameStartPatch
             Object.Destroy(obj.transform.Find("ImgIconApDjmax").gameObject);
             Object.Destroy(obj.GetComponent<ContentSizeFitter>());
 
-            if (!skipRectReset)
+            var offset = Utils.Utils.StringToVector2(positionOffset);
+
+            if (!skipRectReset || (offset.X != 0 && offset.Y != 0))
             {
                 var rectTransform = obj.GetComponent<RectTransform>();
                 rectTransform.anchorMin = rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
@@ -207,8 +214,9 @@ public class PnlBattleGameStartPatch
             text.alignment = alignment;
             text.fontStyle = fontStyle;
             text.fontSize = fontSize;
-
+            
             obj.transform.localPosition = position;
+            obj.transform.localPosition.Set(offset.X, offset.Y, obj.transform.localPosition.y);
             return obj;
     }
 }
