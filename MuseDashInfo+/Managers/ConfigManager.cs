@@ -85,9 +85,9 @@ public static class ConfigManager
 
         _replaceResultsScreenMissCount = _category.CreateEntry("ReplaceResultsScreenMissCount", true, description: "Show mod-calculated misses instead of game's default count on results screen\n以模组计算的 Miss 数替代结算页面的 Miss 数");
         _customSeparator = _category.CreateEntry("CustomSeparator", CustomSeparator, description: "Custom separator between stats\n自定义各个数据之间的分隔符");
-        _text1PositionOffset = _category.CreateEntry("Text1PositionOffset", Text1PositionOffset, description: "Position offset of custom text 1\n自定义文本1的位置偏移");
-        _text2PositionOffset = _category.CreateEntry("Text2PositionOffset", Text2PositionOffset, description: "Position offset of custom text 2\n自定义文本2的位置偏移");
-        _text3PositionOffset = _category.CreateEntry("Text3PositionOffset", Text3PositionOffset, description: "Position offset of custom text 3\n自定义文本3的位置偏移");
+        _text1PositionOffset = _category.CreateEntry("Text1PositionOffset", Text1PositionOffset, description: "Position offset of text 1\n自定义文本1的位置偏移");
+        _text2PositionOffset = _category.CreateEntry("Text2PositionOffset", Text2PositionOffset, description: "Position offset of text 2\n自定义文本2的位置偏移");
+        _text3PositionOffset = _category.CreateEntry("Text3PositionOffset", Text3PositionOffset, description: "Position offset of text 3\n自定义文本3的位置偏移");
     }
 
     public static void Load() => _category.LoadFromFile(false);
