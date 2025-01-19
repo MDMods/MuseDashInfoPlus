@@ -16,6 +16,9 @@ public static class ConfigManager
     private static MelonPreferences_Entry<bool> _displayNoteCounts;
     private static MelonPreferences_Entry<string> _customNoteCountsFormat;
     private static MelonPreferences_Entry<bool> _displayMissCounts;
+    private static MelonPreferences_Entry<string> _normalMissCountsColor;
+    private static MelonPreferences_Entry<string> _collectableMissCountsColor;
+    private static MelonPreferences_Entry<string> _greatCountsColor;
     private static MelonPreferences_Entry<bool> _displayAccuracy;
     private static MelonPreferences_Entry<bool> _displayHighestScore;
     private static MelonPreferences_Entry<bool> _displayScoreGap;
@@ -33,6 +36,9 @@ public static class ConfigManager
     public static bool DisplayNoteCounts => _displayNoteCounts.Value;
     public static string CustomNoteCountsFormat => string.IsNullOrEmpty(_customNoteCountsFormat?.Value) ? "{hit} of {total} notes" : _customNoteCountsFormat.Value;
     public static bool DisplayMissCounts => _displayMissCounts.Value;
+    public static string NormalMissCountsColor => string.IsNullOrEmpty(_normalMissCountsColor?.Value) ? Constants.WHITE_COLOR : _normalMissCountsColor.Value;
+    public static string CollectableMissCountsColor => string.IsNullOrEmpty(_collectableMissCountsColor?.Value) ? Constants.WHITE_COLOR : _collectableMissCountsColor.Value;
+    public static string GreatCountsColor => string.IsNullOrEmpty(_greatCountsColor?.Value) ? Constants.WHITE_COLOR : _greatCountsColor.Value;
     public static bool DisplayAccuracy => _displayAccuracy.Value;
     public static bool DisplayHighestScore => _displayHighestScore.Value;
     public static bool DisplayScoreGap => _displayScoreGap.Value;
@@ -59,6 +65,9 @@ public static class ConfigManager
         _displayNoteCounts = _category.CreateEntry("DisplayNoteCounts", true, description: "Show note counter\n显示物量计数器");
         _customNoteCountsFormat = _category.CreateEntry("CustomNoteCountsFormat", CustomNoteCountsFormat, description: "Custom note counter format\n{total} will be replaced with total notes\n{hit} will be replaced with current hit count\n自定义物量计数器文本\n{total} 将被替换为谱面总物量\n{hit} 将被替换为当前已击打数量");
         _displayMissCounts = _category.CreateEntry("DisplayMissCounts", true, description: "Show miss counter\n显示漏击计数器");
+        _normalMissCountsColor = _category.CreateEntry("NormalMissCountsColor", NormalMissCountsColor, description: "Text color of missed count\n漏击计数的文本颜色");
+        _collectableMissCountsColor = _category.CreateEntry("CollectableMissCountsColor", CollectableMissCountsColor, description: "Text color of collectable missed count\n音符/红心遗漏计数的文本颜色");
+        _greatCountsColor = _category.CreateEntry("GreatCountsColor", GreatCountsColor, description: "Text color of great count\nGreat 计数的文本颜色");
         _displayAccuracy = _category.CreateEntry("DisplayAccuracy", true, description: "Show current accuracy\n显示当前准确率");
         _displayHighestScore = _category.CreateEntry("DisplayHighestScore", false, description: "Show historical high score\n显示当前谱面历史最高分数");
         _displayScoreGap = _category.CreateEntry("DisplayScoreGap", true, description: "Show score difference from high score\n显示当前与最高分的分数差距");
@@ -75,7 +84,7 @@ public static class ConfigManager
 
     public static void ConstractTextFormats()
     {
-        string Separator = $"<size={Constants.Separator_SIZE}><color={Constants.Separator_COLOR}>{CustomSeparator}</color></size>";
+        string Separator = $"<size={Constants.SEPARATOR_SIZE}><color={Constants.SEPARATOR_COLOR}>{CustomSeparator}</color></size>";
 
         FinalChartDifficultyTextFormat = CustomChartDifficultyFormat;
 

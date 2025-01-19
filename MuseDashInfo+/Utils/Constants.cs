@@ -20,11 +20,21 @@ public static class Constants
     public static Vector3 SCORE_STATS_POS = new(55, -64, 0);
     public static Vector3 NOTE_STATS_POS = new(-866, -460, 0);
 
-    public static int Separator_SIZE = 34;
-    public static string Separator_COLOR = "#d2d2d2";
+    public static int SEPARATOR_SIZE = 34;
+    public static string SEPARATOR_COLOR = "#d2d2d2";
 
     public const string GAP_BEHIND_COLOR = "#9338fb";
     public const string GAP_AHEAD_COLOR = "#fe41f3";
+
+    public const string RANK_SSS_COLOR = "#fff000";
+    public const string RANK_SS_COLOR = "#ccf0fe";
+    public const string RANK_S_COLOR = "#ff0089";
+    public const string RANK_A_COLOR = "#ad00ff";
+    public const string RANK_B_COLOR = "#00bbff";
+    public const string RANK_C_COLOR = "#00ff23";
+    public const string RANK_D_COLOR = "#a2a2a2";
+
+    public const string WHITE_COLOR = "#fff";
 
     public static Dictionary<StageType, float> X_BEHIND_SCORE_TEXT = new()
     {

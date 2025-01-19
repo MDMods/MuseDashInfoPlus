@@ -116,15 +116,15 @@ public static class GameStatsManager
         var acc = GetCalculatedAccuracy();
         string color = acc switch
         {
-            >= 100f => "#fff000", // SSS
-            >= 95f => "#ccf0fe",  // SS
-            >= 90f => "#ff0089",  // S 
-            >= 80f => "#ad00ff",  // A
-            >= 70f => "#00bbff",  // B
-            >= 60f => "#00ff23",  // C
-            _ => "#a2a2a2"        // D
+            >= 100f => Constants.RANK_SSS_COLOR,
+            >= 95f => Constants.RANK_SS_COLOR,
+            >= 90f => Constants.RANK_S_COLOR,
+            >= 80f => Constants.RANK_A_COLOR,
+            >= 70f => Constants.RANK_B_COLOR,
+            >= 60f => Constants.RANK_C_COLOR,
+            _ => Constants.RANK_D_COLOR
         };
-        return $"<color={color}>{acc:F2}%</color>";
+        return $"{acc:F2}%".Color(color);
     }
 
     public static string FormatScoreGap()
@@ -137,19 +137,21 @@ public static class GameStatsManager
             : (ConfigManager.ScoreGapBehindColor, "");
 
         return Math.Abs(gap) < 1000
-            ? $"<color={color}>{prefix}{gap}</color>"
-            : $"<color={color}>{prefix}{gap / 1000}K</color>";
+            ? $"{prefix}{gap}".Color(color)
+            : $"{prefix}{gap / 1000}K".Color(color);
     }
 
     public static string FormatMissCounts()
     {
-        if (_current.Great + MissCount == 0) return "AP";
+        if (_current.Great + MissCount == 0) return "AP".Color(Constants.RANK_SSS_COLOR);
 
         var parts = new List<string>();
-        if (_current.Great > 0) parts.Add($"{_current.Great}G");
-        if (MissCountHitable + _miss.Block > 0) parts.Add($"{MissCountHitable + _miss.Block}M");
+        if (_current.Great > 0)
+            parts.Add($"{_current.Great}G".Color(ConfigManager.GreatCountsColor));
+        if (MissCountHitable + _miss.Block > 0)
+            parts.Add($"{MissCountHitable + _miss.Block}M".Color(ConfigManager.NormalMissCountsColor));
         if (!PnlBattleGameStartPatch.IsSpellMode && MissCountCollectable > 0)
-            parts.Add($"{MissCountCollectable}H");
+            parts.Add($"{MissCountCollectable}H".Color(ConfigManager.CollectableMissCountsColor));
 
         return string.Join(" ", parts);
     }
