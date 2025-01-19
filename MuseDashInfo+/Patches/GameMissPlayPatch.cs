@@ -52,7 +52,7 @@ public class GameMissPlayMissCubePatch
                 }
             }
 
-            if (type.IsRegularNote()) StatsTextManager.UpdateAllText();
+            if (type.IsRegularNote() && type != NoteType.Block) StatsTextManager.UpdateAllText();
         }
         catch (System.Exception e)
         {
