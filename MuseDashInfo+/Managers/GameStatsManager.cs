@@ -31,7 +31,8 @@ public static class GameStatsManager
 
     private static readonly HashSet<float> SpecialValues = new() { 0.6f, 0.7f, 0.8f, 0.9f, 1f };
     private const float PRECISION = 0.0001f;
-    private static HashSet<int> CountedNoteIds = new();
+    private static HashSet<int> PlayedNoteIds = new();
+    private static HashSet<int> MissedNoteIds = new();
 
     public record struct CurrentStats(
         int Perfect, int Great, int Music, int Energy, int Block, int RedPoint,
@@ -81,6 +82,15 @@ public static class GameStatsManager
             _task.m_Score,
             _task.m_Score > _savedHighScore
         );
+        Melon<MDIPMod>.Logger.Error($"===== Accuracy Calculation Error =====");
+        Melon<MDIPMod>.Logger.Msg($"Total:{AccuracyTotal} | Counted:{AccuracyCounted} | Rest:{AccuracyRest}");
+        Melon<MDIPMod>.Logger.Msg($"Total => Music:{Total.Music} | Energy:{Total.Energy} | Block:{Total.Block} | Hitable:{Total.Hitable}");
+        Melon<MDIPMod>.Logger.Msg($"Counted => Music:{Current.Music} | Energy:{Current.Energy} | Block:{Current.Block} Perfect:{Current.Perfect} | Great:{Current.Great} /2f | | RedPoint:{Current.RedPoint}");
+        Melon<MDIPMod>.Logger.Msg($"Miss => Music:{Miss.Music} | Energy:{Miss.Energy} | Block:{Miss.Block} | Hitable:{MissCountHitable} | LongPair:{Miss.LongPair}");
+        Melon<MDIPMod>.Logger.Msg($"{AccuracyTotal} - {Current.Perfect + Current.Great + Current.Block + Current.Music + Current.Energy + Current.RedPoint} - {Miss.Music + Miss.Energy + MissCountHitable - Miss.LongPair + Miss.Block} = {AccuracyRest}");
+        Melon<MDIPMod>.Logger.Error($"======================================");
+        Melon<MDIPMod>.Logger.Msg($"Calc Acc: {GetCalculatedAccuracy()} | True Acc:{GetTrueAccuracy()}");
+        Melon<MDIPMod>.Logger.Error($"======================================");
     }
 
     public static float GetTrueAccuracy() => _task.GetAccuracy() * 100f;
@@ -138,38 +148,48 @@ public static class GameStatsManager
 
     public static void CountNote(int id, CountNoteAction action, int doubleId = -1, bool isLongStart = false)
     {
-        if ((doubleId != -1 && CountedNoteIds.Contains(doubleId)) || (action != CountNoteAction.MissBlock && !CountedNoteIds.Add(id))) return;
-
         switch (action)
         {
             case CountNoteAction.Block:
-                _current.Block++;
+                if (PlayedNoteIds.Add(id))
+                    _current.Block++;
                 break;
             case CountNoteAction.MissMonster:
-                if (doubleId == -1) _miss.Monster++;
+                if (doubleId == -1)
+                {
+                    if (MissedNoteIds.Add(id))
+                        _miss.Monster++;
+                }
                 else
                 {
-                    CountedNoteIds.Add(doubleId);
-                    _miss.Monster++;
+                    if (MissedNoteIds.Add(id) && MissedNoteIds.Add(doubleId))
+                        _miss.Monster += 2;
                 }
                 break;
             case CountNoteAction.MissBlock:
-                if (!CountedNoteIds.Add(id))
+                if (MissedNoteIds.Add(id))
+                    _miss.Block++;
+                if (!PlayedNoteIds.Add(id))
                     _current.Block--;
-                _miss.Block++;
                 break;
             case CountNoteAction.MissLong:
-                _miss.Long++;
-                if (isLongStart) _miss.LongPair++;
+                if (MissedNoteIds.Add(id))
+                {
+                    _miss.Long++;
+                    if (isLongStart) _miss.LongPair++;
+                }
                 break;
             case CountNoteAction.MissGhost:
-                _miss.Ghost++;
+                if (MissedNoteIds.Add(id))
+                    _miss.Ghost++;
                 break;
             case CountNoteAction.MissEnergy:
-                _miss.Energy++;
+                if (MissedNoteIds.Add(id))
+                    _miss.Energy++;
                 break;
             case CountNoteAction.MissMusic:
-                _miss.Music++;
+                if (MissedNoteIds.Add(id))
+                    _miss.Music++;
                 break;
         }
     }
@@ -220,6 +240,7 @@ public static class GameStatsManager
         _total = default;
         _miss = default;
         SavedHighScore = 0;
-        CountedNoteIds.Clear();
+        PlayedNoteIds.Clear();
+        MissedNoteIds.Clear();
     }
 }
