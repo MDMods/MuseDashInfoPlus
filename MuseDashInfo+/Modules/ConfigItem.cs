@@ -137,11 +137,12 @@ namespace MDIP.Modules
 
             foreach (var property in type.GetProperties())
             {
-                var comment = property.GetCustomAttribute<ConfigCommentAttribute>();
-                if (comment != null)
+                var commentZh = property.GetCustomAttribute<ConfigCommentZhAttribute>();
+                var commentEn = property.GetCustomAttribute<ConfigCommentEnAttribute>();
+                if (commentZh != null && commentEn != null)
                 {
                     comments[$"{char.ToLowerInvariant(property.Name[0])}{property.Name[1..]}:"] =
-                        (comment.ChineseComment, comment.EnglishComment);
+                        (commentZh.Comment, commentEn.Comment);
                 }
             }
 
