@@ -1,4 +1,4 @@
-﻿using MDIP.Utils.Attributes;
+﻿using MDIP.Attributes;
 
 namespace MDIP.Modules.Configs;
 
