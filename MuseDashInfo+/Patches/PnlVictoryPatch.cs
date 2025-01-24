@@ -6,6 +6,7 @@ using System;
 using MDIP.Managers;
 
 using static MDIP.Managers.GameStatsManager;
+using MDIP.Utils;
 
 namespace MDIP.Patches;
 
@@ -31,7 +32,7 @@ public class PnlVictorySetDetailInfoPatch
             Melon<MDIPMod>.Logger.Error($"======================================");
         }
 
-        if (!ConfigManager.ReplaceResultsScreenMissCount) return;
+        if (!Configs.Main.ReplaceResultsScreenMissCount) return;
 
         try
         {

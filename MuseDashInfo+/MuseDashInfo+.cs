@@ -1,10 +1,12 @@
 ﻿using MelonLoader;
 using System.Linq;
+using System;
 
 using MDIP.Managers;
+using MDIP.Modules.Configs;
 using MDIP.Patches;
 using MDIP.Utils;
-using System;
+using MDIP.Modules;
 
 namespace MDIP;
 
@@ -26,19 +28,21 @@ public class MDIPMod : MelonMod
 
     public static bool IsSongDescLoaded { get; private set; }
 
-    public override void OnInitializeMelon()
-    {
-        Instance = this;
-    }
+    public override void OnInitializeMelon() => Instance = this;
 
     public override void OnLateInitializeMelon()
     {
         IsSongDescLoaded = RegisteredMelons.Any(mod => mod.MelonAssembly.Assembly.FullName.TrimStart().StartsWith("SongDesc"));
 
-        ConfigManager.Init();
-        ConfigManager.Load();
-        ConfigManager.Save();
-        ConfigManager.ConstractTextFormats();
+        ConfigManager.Instance.RegisterModule(ConfigName.MainConfigs, "MainConfigs.yml");
+        var mainConfigModule = ConfigManager.Instance.GetModule(ConfigName.MainConfigs);
+        mainConfigModule.RegisterUpdateCallback<MainConfigs>(cfg =>
+        {
+            Melon<MDIPMod>.Logger.Warning("Main configs updated!");
+            TextDataManager.ConstractTextFormats();
+        });
+        TextDataManager.ConstractTextFormats();
+        ConfigManager.Instance.SaveConfig(ConfigName.MainConfigs, Configs.Main);
     }
 
     public override void OnSceneWasLoaded(int buildIndex, string sceneName)
@@ -50,7 +54,7 @@ public class MDIPMod : MelonMod
 
             default:
                 GameStatsManager.Reset();
-                StatsTextManager.Reset();
+                TextObjManager.Reset();
 #if DEBUG
                 NoteRecordManager.Reset();
 #endif
@@ -68,6 +72,6 @@ public class MDIPMod : MelonMod
         lastUpdateSecond = DateTime.Now.Second;
 
         GameStatsManager.CheckMashing();
-        StatsTextManager.UpdateAllText();
+        TextObjManager.UpdateAllText();
     }
 }

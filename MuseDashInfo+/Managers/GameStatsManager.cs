@@ -135,8 +135,8 @@ public static class GameStatsManager
         if (gap == 0) return string.Empty;
 
         var (color, prefix) = gap > 0
-            ? (ConfigManager.ScoreGapAheadColor, "+")
-            : (ConfigManager.ScoreGapBehindColor, "");
+            ? (Configs.Main.ScoreGapAheadColor, "+")
+            : (Configs.Main.ScoreGapBehindColor, "");
 
         return Math.Abs(gap) < 1000
             ? $"{prefix}{gap}".Color(color)
@@ -149,11 +149,11 @@ public static class GameStatsManager
 
         var parts = new List<string>();
         if (_current.Great > 0)
-            parts.Add($"{_current.Great}G".Color(ConfigManager.GreatCountsColor));
+            parts.Add($"{_current.Great}G".Color(Configs.Main.GreatCountsColor));
         if (MissCountHitable + _miss.Block > 0)
-            parts.Add($"{MissCountHitable + _miss.Block}M".Color(ConfigManager.NormalMissCountsColor));
+            parts.Add($"{MissCountHitable + _miss.Block}M".Color(Configs.Main.NormalMissCountsColor));
         if (!PnlBattleGameStartPatch.IsSpellMode && MissCountCollectable > 0)
-            parts.Add($"{MissCountCollectable}H".Color(ConfigManager.CollectableMissCountsColor));
+            parts.Add($"{MissCountCollectable}H".Color(Configs.Main.CollectableMissCountsColor));
 
         return string.Join(" ", parts);
     }

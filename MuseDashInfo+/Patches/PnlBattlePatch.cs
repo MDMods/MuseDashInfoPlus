@@ -96,7 +96,7 @@ public class PnlBattleGameStartPatch
             FontUtils.LoadFonts(TextFontType.SnapsTaste);
 
             // Chart Infos
-            if (ConfigManager.DisplayChartName || ConfigManager.DisplayChartDifficulty)
+            if (Configs.Main.DisplayChartName || Configs.Main.DisplayChartDifficulty)
             {
                 ChartInfosObj = CreateTextObj(
                     "InfoPlus_ChartInfos",
@@ -114,7 +114,7 @@ public class PnlBattleGameStartPatch
             }
 
             // Score Stats 
-            if ((ConfigManager.DisplayHighestScore || ConfigManager.DisplayScoreGap) && !IsSpellMode)
+            if ((Configs.Main.DisplayHighestScore || Configs.Main.DisplayScoreGap) && !IsSpellMode)
             {
                 ScoreStatsObj = CreateTextObj(
                     "InfoPlus_ScoreStats",
@@ -122,7 +122,7 @@ public class PnlBattleGameStartPatch
                     true,
                     TextAnchor.LowerLeft,
                     new Vector3(Constants.SCORE_STATS_POS.x, Constants.Y_BEHIND_SCORE[stageType], Constants.SCORE_STATS_POS.z),
-                    ConfigManager.Text1PositionOffset,
+                    Configs.Main.Text1PositionOffset,
                     Constants.SCORE_STATS_SIZE,
                     FontStyle.Bold,
                     true
@@ -131,11 +131,11 @@ public class PnlBattleGameStartPatch
                 scoreStatsRect.anchorMin = new Vector2(1, 1);
                 scoreStatsRect.anchorMax = new Vector2(1, 1);
                 scoreStatsRect.pivot = new Vector2(1, 1);
-                StatsTextManager.SetScoreStatsInstance(ScoreStatsObj);
+                TextObjManager.SetScoreStatsInstance(ScoreStatsObj);
             }
 
             // Game Stats
-            if (ConfigManager.DisplayAccuracy || ConfigManager.DisplayMissCounts)
+            if (Configs.Main.DisplayAccuracy || Configs.Main.DisplayMissCounts)
             {
                 GameStatsObj = CreateTextObj(
                     "InfoPlus_GameStats",
@@ -143,16 +143,16 @@ public class PnlBattleGameStartPatch
                     false,
                     TextAnchor.UpperLeft,
                     new Vector3(Constants.X_BEHIND_SCORE_TEXT[stageType], Constants.GAME_STATS_POS.y, Constants.GAME_STATS_POS.z),
-                    ConfigManager.Text2PositionOffset,
+                    Configs.Main.Text2PositionOffset,
                     Constants.GAME_STATS_SIZE,
                     FontStyle.Normal,
                     true
                 );
-                StatsTextManager.SetGameStatsInstance(GameStatsObj);
+                TextObjManager.SetGameStatsInstance(GameStatsObj);
             }
             
             // Note Stats
-            if (ConfigManager.DisplayNoteCounts && !IsSpellMode)
+            if (Configs.Main.DisplayNoteCounts && !IsSpellMode)
             {
                 NoteStatsObj = CreateTextObj(
                     "InfoPlus_NoteStats",
@@ -160,16 +160,16 @@ public class PnlBattleGameStartPatch
                     false,
                     TextAnchor.LowerLeft,
                     Constants.NOTE_STATS_POS,
-                    ConfigManager.Text3PositionOffset,
+                    Configs.Main.Text3PositionOffset,
                     Constants.NOTE_STATS_SIZE,
                     FontStyle.Italic,
                     true
                 );
-                StatsTextManager.SetNoteStatsInstance(NoteStatsObj);
+                TextObjManager.SetNoteStatsInstance(NoteStatsObj);
             }
 
             GameStatsManager.Init();
-            StatsTextManager.UpdateAllText();
+            TextObjManager.UpdateAllText();
         }
         catch (System.Exception e)
         {

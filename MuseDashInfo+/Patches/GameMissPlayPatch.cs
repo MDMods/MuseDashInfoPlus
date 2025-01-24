@@ -61,7 +61,7 @@ public class GameMissPlayMissCubePatch
             if (type.IsRegularNote() && type != NoteType.Block && !note.isLongPressing)
             {
                 GameStatsManager.CheckMashing();
-                StatsTextManager.UpdateAllText();
+                TextObjManager.UpdateAllText();
             }
         }
         catch (System.Exception e)

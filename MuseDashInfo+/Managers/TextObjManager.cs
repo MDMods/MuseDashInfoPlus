@@ -1,10 +1,11 @@
-﻿using System;
+﻿using MDIP.Utils;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace MDIP.Managers;
 
-public static class StatsTextManager
+public static class TextObjManager
 {
     private static Text gameStatsText;
     private static Text scoreStatsText;
@@ -38,21 +39,21 @@ public static class StatsTextManager
         GameStatsManager.UpdateCurrentStats();
         if (gameStatsText != null)
         {
-            string text = ConfigManager.FinalGameStatsTextFormat;
+            string text = TextDataManager.GameStatsTextFormat;
             text = text.Replace("{acc}", GameStatsManager.FormatAccuracy());
             text = text.Replace("{miss}", GameStatsManager.FormatMissCounts());
             SetGameStatsText(text);
         }
         if (scoreStatsText != null)
         {
-            string text = ConfigManager.FinalScoreStatsTextFormat;
+            string text = TextDataManager.ScoreStatsTextFormat;
             text = text.Replace("{highest}", GameStatsManager.SavedHighScore.ToString());
             text = text.Replace("{gap}", GameStatsManager.FormatScoreGap());
             SetScoreStatsText(text);
         }
         if (hitStatsText != null)
         {
-            string text = ConfigManager.FinalNoteStatsTextFormat;
+            string text = TextDataManager.NoteStatsTextFormat;
             text = text.Replace("{total}", ((int)GameStatsManager.AccuracyTotal).ToString());
             text = text.Replace("{hit}", ((int)GameStatsManager.AccuracyCounted).ToString());
             SetNoteStatsText(text);
