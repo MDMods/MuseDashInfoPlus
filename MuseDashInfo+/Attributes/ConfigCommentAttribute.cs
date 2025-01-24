@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MDIP.Utils.Attributes;
+namespace MDIP.Attributes;
 
 [AttributeUsage(AttributeTargets.Property)]
 public class ConfigCommentAttribute : Attribute

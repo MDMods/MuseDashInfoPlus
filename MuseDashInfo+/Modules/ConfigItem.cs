@@ -7,8 +7,8 @@ using Version = System.Version;
 using YamlDotNet.Serialization;
 
 using MDIP.Modules.Configs;
-using MDIP.Utils.Attributes;
 using MDIP.Utils;
+using MDIP.Attributes;
 
 namespace MDIP.Modules
 {
