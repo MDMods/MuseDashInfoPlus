@@ -69,7 +69,7 @@ public static class Extensions
                (c >= 0x3000 && c <= 0x303F) ||    // CJK标点符号
                (c >= 0xFF00 && c <= 0xFFEF);      // 全角ASCII、全角标点
 
-    public static bool IsRegularNote(this NoteType noteType) => Utils.IsRegularNote((uint)noteType);
+    public static bool IsRegularNote(this NoteType noteType) => Helper.IsRegularNote((uint)noteType);
 
     public static int Count(this Il2CppSystem.Collections.Generic.List<MusicData> noteList, Func<MusicData, bool> predicate)
     {

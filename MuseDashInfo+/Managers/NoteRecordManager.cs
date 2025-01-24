@@ -9,7 +9,6 @@ using MDIP.Modules;
 
 namespace MDIP.Managers;
 
-#if DEBUG
 public class NoteRecordManager
 {
     public static Dictionary<int, NoteRecord> Records { get; private set; } = new();
@@ -21,7 +20,7 @@ public class NoteRecordManager
         if (!Records.ContainsKey(id))
         {
             var note = Singleton<StageBattleComponent>.instance.GetMusicDataByIdx(id);
-            if (note == null || !Utils.Utils.IsRegularNote(note.noteData.type)) return;
+            if (note == null || !Utils.Helper.IsRegularNote(note.noteData.type)) return;
             string longType = "-";
             if (note.isLongPressStart) longType = "Start";
             if (note.isLongPressing) longType = "Pressing";
@@ -41,13 +40,11 @@ public class NoteRecordManager
 
         var lines = new List<string>();
 
-        // 表头
         var header = new[] { "ID", "Type", "Double", "LongType", "Result" }
             .Concat(patchNames)
             .ToList();
         lines.Add(string.Join(",", header));
 
-        // 数据
         foreach (var kvp in recordDic.OrderBy(x => x.Key))
         {
             var record = kvp.Value;
@@ -78,4 +75,3 @@ public class NoteRecordManager
         Melon<MDIPMod>.Logger.Warning($"Excel exported to: {Path.GetFullPath(filePath)}");
     }
 }
-# endif

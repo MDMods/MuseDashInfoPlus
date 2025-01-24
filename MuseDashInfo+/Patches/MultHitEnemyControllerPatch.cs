@@ -5,15 +5,14 @@ using MDIP.Managers;
 
 namespace MDIP.Patches;
 
-#if DEBUG
 [HarmonyPatch(typeof(MultHitEnemyController), nameof(MultHitEnemyController.OnControllerMiss))]
 public class MultHitEnemyControllerPatch
 {
     private static void Prefix(MultHitEnemyController __instance, int index)
     {
-        var note = __instance.m_MusicData;
+        if (!Utils.Helper.OutputNoteRecordsToDesktop) return;
 
+        var note = __instance.m_MusicData;
         NoteRecordManager.AddRecord(int.Parse(note.noteData.id), "OnControllerMiss", $"m_HasMiss:{__instance.m_HasMiss}");
     }
 }
-#endif

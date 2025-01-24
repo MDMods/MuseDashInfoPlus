@@ -195,7 +195,7 @@ public class PnlBattleGameStartPatch
             Object.Destroy(obj.transform.Find("ImgIconApDjmax").gameObject);
             Object.Destroy(obj.GetComponent<ContentSizeFitter>());
 
-            var offset = Utils.Utils.StringToVector2(positionOffset);
+            var offset = Utils.Helper.StringToVector2(positionOffset);
 
             if (!skipRectReset || (offset.X != 0 && offset.Y != 0))
             {

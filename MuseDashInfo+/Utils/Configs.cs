@@ -15,6 +15,7 @@ namespace MDIP.Utils;
 public static class Configs
 {
     public static MainConfigs Main => ConfigManager.Instance.GetConfig<MainConfigs>(ConfigName.MainConfigs);
+    public static AdvancedConfigs Advanced => ConfigManager.Instance.GetConfig<AdvancedConfigs>(ConfigName.AdvancedConfigs);
 
     public static string GetConfigPath(string fileName)
     {

@@ -5,15 +5,14 @@ using MDIP.Managers;
 
 namespace MDIP.Patches;
 
-#if DEBUG
 [HarmonyPatch(typeof(BaseEnemyObjectController), nameof(BaseEnemyObjectController.ControllerMissCheck))]
 public class BaseEnemyObjectControllerPatch
 {
     private static void Postfix(BaseEnemyObjectController __instance, int i, Il2CppSystem.Decimal currentTick)
     {
-        var note = __instance.m_MusicData;
+        if (!Utils.Helper.OutputNoteRecordsToDesktop) return;
 
+        var note = __instance.m_MusicData;
         NoteRecordManager.AddRecord(int.Parse(note.noteData.id), "ControllerMissCheck", $"m_HasMiss:{__instance.m_HasMiss}");
     }
 }
-#endif

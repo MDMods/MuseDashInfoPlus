@@ -4,9 +4,9 @@ using System;
 
 using MDIP.Managers;
 using MDIP.Modules.Configs;
+using MDIP.Modules;
 using MDIP.Patches;
 using MDIP.Utils;
-using MDIP.Modules;
 
 namespace MDIP;
 
@@ -43,6 +43,9 @@ public class MDIPMod : MelonMod
         });
         TextDataManager.ConstractTextFormats();
         ConfigManager.Instance.SaveConfig(ConfigName.MainConfigs, Configs.Main);
+
+        ConfigManager.Instance.RegisterModule(ConfigName.AdvancedConfigs, "AdvancedConfigs.yml");
+        ConfigManager.Instance.SaveConfig(ConfigName.AdvancedConfigs, Configs.Advanced);
     }
 
     public override void OnSceneWasLoaded(int buildIndex, string sceneName)
@@ -53,13 +56,15 @@ public class MDIPMod : MelonMod
                 break;
 
             default:
+
+                if (Utils.Helper.OutputNoteRecordsToDesktop)
+                    NoteRecordManager.Reset();
+
                 GameStatsManager.Reset();
                 TextObjManager.Reset();
-#if DEBUG
-                NoteRecordManager.Reset();
-#endif
                 PnlBattleGameStartPatch.Reset();
                 FontUtils.UnloadFonts(TextFontType.SnapsTaste);
+
                 break;
         }
     }

@@ -5,7 +5,7 @@ using MelonLoader;
 
 namespace MDIP.Utils;
 
-public static class Utils
+public static class Helper
 {
     public static bool IsRegularNote(uint noteType) => noteType >= 1 && noteType <= 8;
 
@@ -37,4 +37,17 @@ public static class Utils
             return Vector2.Zero;
         }
     }
+
+    public static bool AmDebugger
+    {
+#if DEBUG
+        get => true;
+#else
+        get => false;
+#endif
+    }
+
+    public static bool OutputAccuracyCalculationDatas => AmDebugger || Configs.Advanced.OutputAccuracyCalculationData;
+
+    public static bool OutputNoteRecordsToDesktop => AmDebugger || Configs.Advanced.OutputNoteRecordsToDesktop;
 }

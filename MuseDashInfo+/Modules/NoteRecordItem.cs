@@ -2,7 +2,6 @@
 
 namespace MDIP.Modules;
 
-#if DEBUG
 public class NoteRecord
 {
     public int Id { get; private set; }
@@ -31,4 +30,3 @@ public class NoteRecord
         PatchInfosDic[name].Add(info);
     }
 }
-#endif

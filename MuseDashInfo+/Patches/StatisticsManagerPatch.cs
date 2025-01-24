@@ -7,15 +7,14 @@ using MDIP.Managers;
 
 namespace MDIP.Patches;
 
-#if DEBUG
 [HarmonyPatch(typeof(StatisticsManager), nameof(StatisticsManager.OnNoteResult))]
 public class StatisticsManagerPatch
 {
     private static void Prefix(StatisticsManager __instance, int result)
     {
-        var note = Singleton<StageBattleComponent>.instance.GetCurMusicData();
+        if (!Utils.Helper.OutputNoteRecordsToDesktop) return;
 
+        var note = Singleton<StageBattleComponent>.instance.GetCurMusicData();
         NoteRecordManager.AddRecord(int.Parse(note.noteData.id), "OnNoteResult", $"result:{result}");
     }
 }
-#endif
