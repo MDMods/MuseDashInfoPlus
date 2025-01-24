@@ -97,13 +97,13 @@ ReplaceResultsScreenMissCount = true
 # Custom separator between stats
 CustomSeparator = " / "
 
-# Position offset of custom text 1
+# Position offset of text 1
 Text1PositionOffset = "0,0"
 
-# Position offset of custom text 2
+# Position offset of text 2
 Text2PositionOffset = "0,0"
 
-# Position offset of custom text 3
+# Position offset of text 3
 Text3PositionOffset = "0,0"
 ```
 
