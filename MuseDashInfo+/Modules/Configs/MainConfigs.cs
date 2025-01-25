@@ -24,13 +24,29 @@ public class MainConfigs : ConfigBase
     [ConfigCommentEn("Score gap text color when lower than personal best")]
     public string ScoreGapBehindColor { get; set; } = Utils.Constants.COLOR_GAP_BEHIND;
 
-    [ConfigCommentZh("All-Perfect 指示文本")]
-    [ConfigCommentEn("Text of All-Perfect indicator")]
+    [ConfigCommentZh("All-Perfect 指示文本（支持富文本格式）")]
+    [ConfigCommentEn("Text of All-Perfect indicator (supports rich text format)")]
     public string TextAllPerfect { get; set; } = Utils.Constants.TEXT_ALL_PERFECT;
 
-    [ConfigCommentZh("理论值指示文本（0 Early & Late）")]
-    [ConfigCommentEn("Text of True-Perfect indicator (0 Early & Late)")]
+    [ConfigCommentZh("理论值（0 Early & Late）指示文本（支持富文本格式）")]
+    [ConfigCommentEn("Text of True-Perfect (0 Early & Late) indicator (supports rich text format)")]
     public string TextTruePerfect { get; set; } = Utils.Constants.TEXT_TRUE_PERFECT;
+
+    [ConfigCommentZh("显示 Early & Late 计数器")]
+    [ConfigCommentEn("Show Early & Late counts")]
+    public bool ShowEarlyLateCounts { get; set; } = true;
+
+    [ConfigCommentZh("Early & Late 计数器的显示模式\n1: 仅在 AP 时显示\n2: 总是显示")]
+    [ConfigCommentEn("Display mode of Early & Late counts\n1: Show only when AP\n2: Always show")]
+    public int EarlyLateCountsDisplayMode { get; set; } = 1;
+
+    [ConfigCommentZh("Early 计数器的文本颜色")]
+    [ConfigCommentEn("Text color of Early count")]
+    public string EarlyCountsColor { get; set; } = Utils.Constants.COLOR_WHITE;
+
+    [ConfigCommentZh("Late 计数器的文本颜色")]
+    [ConfigCommentEn("Text color of Late count")]
+    public string LateCountsColor { get; set; } = Utils.Constants.COLOR_WHITE;
 
     [ConfigCommentZh("AP 准确度文本颜色")]
     [ConfigCommentEn("Accuracy text color of AP rank")]
