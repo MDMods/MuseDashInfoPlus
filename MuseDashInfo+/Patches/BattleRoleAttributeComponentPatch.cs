@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using Il2CppAssets.Scripts.GameCore.HostComponent;
+using Il2CppAssets.Scripts.PeroTools.Commons;
 using Il2CppFormulaBase;
 using Il2CppGameLogic;
 using Il2CppSystem;
@@ -12,10 +13,11 @@ public class BattleRoleAttributeComponentAttackScorePatch
 {
     private static void Prefix(BattleRoleAttributeComponent __instance, int idx, int result, TimeNodeOrder tno)
     {
-        if (tno == null) return;
+        MusicData md = Singleton<StageBattleComponent>.instance.GetMusicDataByIdx(idx);
+        if (md.isLongPressing || md.isMul || tno == null) return;
 
         Decimal d = (Decimal)GameGlobal.gTouch.tickTime - tno.md.tick;
-        if (d > new Decimal(0.025)) GameStatsManager.AddLate(idx);
-        else if (d < new Decimal(-0.025)) GameStatsManager.AddEarly(idx);
+        if (d > new Decimal(0.025)) GameStatsManager.AddLate();
+        else if (d < new Decimal(-0.025)) GameStatsManager.AddEarly();
     }
 }

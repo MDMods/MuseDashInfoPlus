@@ -33,7 +33,6 @@ public static class GameStatsManager
     private const float PRECISION = 0.0001f;
     private static HashSet<int> PlayedNoteIds = new();
     private static HashSet<int> MissedNoteIds = new();
-    private static HashSet<int> PerfectedNoteIds = new();
 
     private static MusicData MashingNote;
     private static int MashedNum = -1;
@@ -186,16 +185,8 @@ public static class GameStatsManager
         return string.Join(" ", parts);
     }
 
-    public static void AddEarly(int id)
-    {
-        if (PerfectedNoteIds.Add(id))
-            _current.Early++;
-    }
-    public static void AddLate(int id)
-    {
-        if (PerfectedNoteIds.Add(id))
-            _current.Late++;
-    }
+    public static void AddEarly() => _current.Early++;
+    public static void AddLate() => _current.Late++;
 
     public static void CountNote(int id, CountNoteAction action, int doubleId = -1, bool isLongStart = false)
     {
@@ -335,6 +326,5 @@ public static class GameStatsManager
         SavedHighScore = 0;
         PlayedNoteIds.Clear();
         MissedNoteIds.Clear();
-        PerfectedNoteIds.Clear();
     }
 }
