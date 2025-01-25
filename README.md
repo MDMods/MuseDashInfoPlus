@@ -35,14 +35,30 @@ Configuration files are organized by category and stored in the `..\MuseDash\Use
 
 All configuration files are **automatically generated upon first launch**. Changes take effect after **restarting the game**.
 
-`MainConfigs.yml`: Primary configuration file
-`TextFieldLowerLeftConfigs.yml`: Text configuration for lower-left screen area
-`TextFieldLowerRightConfigs.yml`: Text configuration for lower-right screen area
-`TextFieldScoreBelowConfigs.yml`: Text configuration for area right of the "SCORE" label (position remains fixed relative to label)
-`TextFieldScoreRightConfigs.yml`: Text configuration for area right of the score display (position remains fixed relative to score)
-`TextFieldUpperLeftConfigs.yml`: Text configuration for area below the "SCORE" label (position remains fixed relative to label)
-`TextFieldUpperRightConfigs.yml`: Text configuration for upper-right screen area
-`AdvancedConfigs.yml`: For advanced users only - do not modify unless you understand the parameters
+- `MainConfigs.yml`: Primary configuration file
+- `TextFieldLowerLeftConfigs.yml`: Text configuration for lower-left screen area
+- `TextFieldLowerRightConfigs.yml`: Text configuration for lower-right screen area
+- `TextFieldScoreBelowConfigs.yml`: Text configuration for area right of the "SCORE" label (position remains fixed relative to label)
+- `TextFieldScoreRightConfigs.yml`: Text configuration for area right of the score display (position remains fixed relative to score)
+- `TextFieldUpperLeftConfigs.yml`: Text configuration for area below the "SCORE" label (position remains fixed relative to label)
+- `TextFieldUpperRightConfigs.yml`: Text configuration for upper-right screen area
+- `AdvancedConfigs.yml`: For advanced users only - do not modify unless you understand the parameters
+
+### Data Placeholders
+
+In text configuration files, you'll find entries like `text: '{overview} / {stats}'`. The `{dataName}` placeholders will be replaced according to the following rules. These can be combined freely:
+
+- `{hiScore}`: Personal best score for current chart
+- `{gap}`: Difference between current score and personal best
+- `{total}`: Total note count in current chart
+- `{hit}`: Currently hit note count
+- `{song}`: Current chart name
+- `{diff}`: Current chart difficulty (numeric)
+- `{level}`: Current chart difficulty (text)
+- `{author}`: Current chart author
+- `{acc}`: Current accuracy
+- `{overview}`: TP/AP indicator, shows current accuracy if below 100%
+- `{stats}`: Data including Miss/Great/Early/Late counts
 
 Note: Rich text are supported for some configuration entries. For example: `<size=40><color=#e1bb8a>{total}</color></size>`. If you're unfamiliar with rich text, please google it. For line breaks, use `\n`.
 
