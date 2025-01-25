@@ -120,9 +120,9 @@ public static class GameStatsManager
     public static string FormatAccuracy()
     {
         var acc = GetCalculatedAccuracy();
+        if (acc >= 100f) return "100%".Colored(Constants.COLOR_RANK_AP);
         string color = acc switch
         {
-            >= 100f => Constants.COLOR_RANK_AP,
             >= 95f => Constants.COLOR_RANK_SS,
             >= 90f => Constants.COLOR_RANK_S,
             >= 80f => Constants.COLOR_RANK_A,
