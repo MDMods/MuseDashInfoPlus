@@ -2,30 +2,26 @@
 
 [English](README.md) | [中文](README_zh.md)
 
-### Overview
+## Overview
 
-MuseDashInfo+ is a lightweight Muse Dash mod that displays additional game information.
+MuseDashInfo+ is a highly customizable Muse Dash game mod that displays additional in-game information.
 
-This mod was inspired by MuseDashCustomPlay.
+This mod is inspired by MuseDashCustomPlay.
 
-### Features
+## Features
 
-- **Chart Info**: Shows the current song name and chart difficulty level
-- **Note Counter**: Shows total and hit note counts in real-time
-- **Miss Counter**: Shows current Great/Miss counts and missed music note/heart counts
-- **Current Accuracy**: Shows real-time accuracy
-- **High Score/Gap**: Shows your highest score and the current score gap from your best record
-- **Replace Miss Count**: Replaces the game's original miss counter with the actual miss count, which includes ghost misses and missed during i-frame (This option also fixes a vanilla bug where hitting only the bottom note of a double note incorrectly counts as three misses)
+Displays various information including **Chart Info (Song Name/Difficulty/Author/Level), Accuracy, Miss Count, Great Count, Early Count, Late Count, Note Counter (Hit/Total), Personal Best Score, and Score Gap**.
 
-All features can be toggled individually, and some support custom text formatting.
+All data elements can be freely customized in terms of visibility, position, size, color, font, and even custom text formatting.
 
-### Notes
+## Important Notes
 
 - If you loaded [SongDesc](https://github.com/mdmods/songdesc) mod, Chart Info will be disabled by default, use configuration to re-enable
-- The Touhou Danmaku mode does not support the Note Counter/Hi-Score/Hi-Score Gap
+- Text outline feature is currently not supported and will be available in future updates
+- Some data may not function properly for Touhou Danmaku charts due to compatibility issues
 - The Note Counter treats hold notes as two separate notes (counting both the start and end), while the Miss Counter and vanilla game count each hold note as a single note
 
-### Previews
+## Previews
 
 ![Preview 1](Static/Preview1.webp)
 
@@ -33,93 +29,34 @@ All features can be toggled individually, and some support custom text formattin
 
 ![Preview 3](Static/Preview3.webp)
 
-### Configuration
+## Configuration
 
-The mod's settings can be modified in `..\MuseDash\UserData\Info+.cfg`.
+Configuration files are organized by category and stored in the `..\MuseDash\UserData\Info+\` directory. All configuration entries include comments. Please understand the purpose of each setting before making modifications.
 
-This file is automatically **generated after the first launch**. Changes take effect after **restarting the game**. The following is a sample configuration file with default values:
+All configuration files are **automatically generated upon first launch**. Changes take effect after **restarting the game**.
 
-```
-[Info+]
+`MainConfigs.yml`: Primary configuration file
+`TextFieldLowerLeftConfigs.yml`: Text configuration for lower-left screen area
+`TextFieldLowerRightConfigs.yml`: Text configuration for lower-right screen area
+`TextFieldScoreBelowConfigs.yml`: Text configuration for area right of the "SCORE" label (position remains fixed relative to label)
+`TextFieldScoreRightConfigs.yml`: Text configuration for area right of the score display (position remains fixed relative to score)
+`TextFieldUpperLeftConfigs.yml`: Text configuration for area below the "SCORE" label (position remains fixed relative to label)
+`TextFieldUpperRightConfigs.yml`: Text configuration for upper-right screen area
+`AdvancedConfigs.yml`: For advanced users only - do not modify unless you understand the parameters
 
-# Show song name
-DisplayChartName = true
+Note: Rich text are supported for some configuration entries. For example: `<size=40><color=#e1bb8a>{total}</color></size>`. If you're unfamiliar with rich text, please google it. For line breaks, use `\n`.
 
-# Song name color
-ChartNameColor = "#fdfdfa"
-
-# Show difficulty level
-DisplayChartDifficulty = true
-
-# Custom difficulty text format
-# {diff} will be replaced with EASY/HARD/MASTER
-# {level} will be replaced with the chart level
-CustomChartDifficultyFormat = "{diff} - Level {level}"
-
-# Show note counter
-DisplayNoteCounts = true
-
-# Custom note counter format
-# {total} will be replaced with total notes
-# {hit} will be replaced with current hit count
-CustomNoteCountsFormat = "{hit} of {total} notes"
-
-# Show miss counter
-DisplayMissCounts = true
-
-# Text color of missed count
-NormalMissCountsColor = "#fdfdfa"
-
-# Text color of collectable missed count
-CollectableMissCountsColor = "#fdfdfa"
-
-# Text color of great count
-GreatCountsColor = "#fdfdfa"
-
-# Show current accuracy
-DisplayAccuracy = true
-
-# Show personal best score
-DisplayHighestScore = false
-
-# Show score difference from high score
-DisplayScoreGap = true
-
-# Score gap text color when higher than personal best
-ScoreGapAheadColor = "#fe41f3"
-
-# Score gap text color when lower than personal best
-ScoreGapBehindColor = "#9338fb"
-
-# Show mod-calculated misses instead of game's default count on results screen
-ReplaceResultsScreenMissCount = true
-
-# Custom separator between stats
-CustomSeparator = " / "
-
-# Position offset of text 1
-Text1PositionOffset = "0,0"
-
-# Position offset of text 2
-Text2PositionOffset = "0,0"
-
-# Position offset of text 3
-Text3PositionOffset = "0,0"
-```
-
-Note: All the custom format strings above support rich text formatting. for example: `<size=40><color=#e1bb8a>{total}</color></size>`.
-
-### Usage
+## Installation
 
 1. Install MelonLoader into Muse Dash based on the dependency listed below
 2. Download the [Latest Release ](https://github.com/KARPED1EM/MuseDashInfoPlus/releases)and place `Info+.dll` in the `..\MuseDash\Mods\` directory
 3. Launch the game and enjoy
 
-### Dependencies
+## Dependencies
 
 - [MelonLoader](https://github.com/LavaGang/MelonLoader/releases) v0.6.1
 - [Muse Dash on Steam](https://store.steampowered.com/app/774171/Muse_Dash/)
 
-### Developer Notes
+## Developer Notes
 
 I'm relatively new to Unity modding and have focused primarily on making the things work. The implementation might not be the most elegant. If you have any questions or would like to help improve this mod, please feel free to open an [Issue](https://github.com/KARPED1EM/MuseDashInfoPlus/issues/new) or submit a [Pull Request](https://github.com/KARPED1EM/MuseDashInfoPlus/compare). Your support is greatly appreciated!

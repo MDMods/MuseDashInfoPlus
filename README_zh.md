@@ -2,30 +2,26 @@
 
 [English](README.md) | [中文](README_zh.md)
 
-### 概述
+## 概述
 
-MuseDashInfo+ 是一个轻量级的 MuseDash 游戏模组，用于显示额外的游戏信息。
+MuseDashInfo+ 是一个高度客制化的 MuseDash 游戏模组，用于显示额外的游戏信息。
 
 本模组受 MuseDashCustomPlay 启发。
 
-### 功能特性
+## 功能特性
 
-- **谱面信息**：在游戏界面右上角显示当前歌曲名称与铺面难度等级
-- **物量计数器**：在游戏界面左下角实时显示谱面总物量和已击打数量
-- **漏击计数器**：在游戏界面左上角实时显示当前的 Great/Miss 和音符/红心遗漏数
-- **当前准确率**：在游戏界面左上角实时显示当前准确率
-- **最高分/差值**：在游戏界面分数右侧实时显示当前谱面最高分/与最高分的差距
-- **替换 Miss 数**：游戏原版的 Miss 并不包括幽灵以及受伤硬直状态中的 Miss，开启该选项将结算页面的 Miss 数替换为模组计算出的实际 Miss 数（该选项也会修复原版端双押只击打下面的 Note 造成多出来一个 Miss 的 Bug）
+在游戏内显示各种信息，如 **谱面信息（歌名/难度/作者/等级）、准确率、Miss 计数、Great 计数、Early 计数、Late 计数、物量计数（已击打/总物量）、历史最高分、与最高分差值** 等。
 
-以上功能均可单独启用或关闭，部分支持自定义文本格式。
+您可以随意调整各项数据的开关、位置、大小、颜色、字体甚至是自定义的文本格式。
 
-### 注意事项
+## 注意事项
 
 - 若您加载了 [SongDesc](https://github.com/MDMods/SongDesc) 模组，谱面信息将默认隐藏
-- 东方特殊谱面不支持物量计数器/最高分/最高分差值
-- 物量计数器会将长条视为两个 Note，首尾各算一个，而 Miss 计数器与游戏原版都将长条视为一个 Note
+- 目前字体描边的功能还未受支持，请等待后续更新
+- 东方特殊谱面由于不受支持将导致部分数据无法正常工作
+- 物量计数器会将长条视为两个 Note，首尾各算一个
 
-### 预览
+## 预览
 
 ![预览1](Static/Preview1.webp)
 
@@ -33,93 +29,50 @@ MuseDashInfo+ 是一个轻量级的 MuseDash 游戏模组，用于显示额外�
 
 ![预览3](Static/Preview3.webp)
 
-### 配置
+## 配置
 
-您可以在 `..\MuseDash\UserData\Info+.cfg` 里更改该模组的配置。
+该模组的配置文件按照类别分开储存于不同文件，您可以在 `..\MuseDash\UserData\Info+\` 目录中找到它们，文件内的所有配置项都包含了注释，请明确配置项实际作用后更改。
 
-该文件会在**首次启动后自动生成**，修改配置后**重启游戏生效**。以下是配置示例以及默认值：
+所有配置文件会在**首次启动后自动生成**，修改配置后**重启游戏生效**。
 
-```
-[Info+]
+- `MainConfigs.yml` 为主要配置文件
+- `TextFieldLowerLeftConfigs.yml` 为屏幕左下角的文本配置文件
+- `TextFieldLowerRightConfigs.yml` 为屏幕右下角的文本配置文件
+- `TextFieldScoreBelowConfigs.yml` 为 “得分” 字样右方的文本配置文件，无论场景如何，该文本总会位于 “得分” 字样的右方
+- `TextFieldScoreRightConfigs.yml` 为分数右方的文本配置文件，无论分数多少，该文本总会位于分数右方
+- `TextFieldUpperLeftConfigs.yml` 为 ”得分“ 字样下方的文本配置文件，无论场景如何，该文本总会位于 ”得分“ 字样的下方
+- `TextFieldUpperRightConfigs.yml` 为屏幕右上角的文本配置文件
+- `AdvancedConfigs.yml` 仅供高级玩家使用，若您不知道里面的配置有何含义，请不要更改
 
-# 显示歌曲名
-DisplayChartName = true
+### 数据占位符
 
-# 歌曲名颜色
-ChartNameColor = "#fdfdfa"
+您会在文本配置文件中看到类似 `text: '{overview} / {stats}'` 这样的配置项。`{dataName}` 将会按照下述的规则替换，您可以随意搭配使用。
 
-# 显示谱面难度
-DisplayChartDifficulty = true
+- `{hiScore}:` 当前谱面的个人最佳分数
+- `{gap}:` 当前得分与个人最佳分数的差距
+- `{total}:` 当前谱面的总物量
+- `{hit}:` 当前已经击打的物量
+- `{song}:` 当前谱面名称
+- `{diff}:` 当前谱面难度（数字）
+- `{level}:` 当前谱面难度（文本）
+- `{author}:` 当前谱面作者
+- `{acc}:` 当前准确率
+- `{overview}:` TP / AP 指示，若当前准确率低于 100%，则改为显示当前准确率
+- `{stats}:` Miss / Great / Early / Late 等数据
 
-# 自定义歌曲难度文本
-# {diff} 将被替换为 EASY/HARD/MASTER
-# {level} 将被替换为谱面等级
-CustomChartDifficultyFormat = "{diff} - Level {level}"
+提示：若配置项提示支持富文本，代表该配置项将会依照您填入的富文本生成对应文本。例：`<size=40><color=#e1bb8a>{total}</color></size>` 。如果您不知道什么是富文本，请自行搜索；如果您需要换行，使用 `\n` 。
 
-# 显示物量计数器
-DisplayNoteCounts = true
-
-# 自定义物量计数器文本
-# {total} 将被替换为谱面总物量
-# {hit} 将被替换为当前已击打数量
-CustomNoteCountsFormat = "{hit} of {total} notes"
-
-# 显示漏击计数器
-DisplayMissCounts = true
-
-# 漏击计数的文本颜色
-NormalMissCountsColor = "#fdfdfa"
-
-# 音符/红心遗漏计数的文本颜色
-CollectableMissCountsColor = "#fdfdfa"
-
-# Great 计数的文本颜色
-GreatCountsColor = "#fdfdfa"
-
-# 显示当前准确率
-DisplayAccuracy = true
-
-# 显示当前谱面历史最高分数
-DisplayHighestScore = false
-
-# 显示当前与最高分的分数差距
-DisplayScoreGap = true
-
-# 当分数超过历史最高分时的分数差值文本颜色
-ScoreGapAheadColor = "#fe41f3"
-
-# 当分数低于历史最高分时的分数差值文本颜色
-ScoreGapBehindColor = "#9338fb"
-
-# 以模组计算的 Miss 数替代结算页面的 Miss 数
-ReplaceResultsScreenMissCount = true
-
-# 自定义各个数据之间的分隔符
-CustomSeparator = " / "
-
-# 自定义文本1的位置偏移
-Text1PositionOffset = "0,0"
-
-# 自定义文本2的位置偏移
-Text2PositionOffset = "0,0"
-
-# 自定义文本3的位置偏移
-Text3PositionOffset = "0,0"
-```
-
-提示：上述自定义字符串均支持富文本，例：`<size=40><color=#e1bb8a>{total}</color></size>`。
-
-### 如何使用
+## 如何使用
 
 - 根据下列出的依赖项安装 MelonLoader 至 Muse Dash
 - 下载 [Latest Release](https://github.com/KARPED1EM/MuseDashInfoPlus/releases) 并将 `Info+.dll` 放置于 `..\MuseDash\Mods\` 目录下
 - 启动游戏即可
 
-### 依赖项
+## 依赖项
 
 - [MelonLoader](https://github.com/LavaGang/MelonLoader/releases) v0.6.1
 - [Muse Dash on Steam](https://store.steampowered.com/app/774171/Muse_Dash/)
 
-### 开发者说明
+## 开发者说明
 
 我对 Unity 游戏模组开发了解不多，目前主要致力于让功能正常运作，实现方式可能不够优雅。如果你有任何问题或愿意帮助改进这个模组，欢迎提交 [Issue](https://github.com/KARPED1EM/MuseDashInfoPlus/issues/new) 或 [Pull Request](https://github.com/KARPED1EM/MuseDashInfoPlus/compare)，非常感谢你的支持！
