@@ -92,7 +92,7 @@ public static class GameStatsManager
 
         if (Helper.OutputAccuracyCalculationDatas)
         {
-            Melon<MDIPMod>.Logger.Warning($"===== Accuracy Stats =====");
+            Melon<MDIPMod>.Logger.Warning($"=========== Accuracy Stats ===========");
             Melon<MDIPMod>.Logger.Msg($"Total:{AccuracyTotal} | Counted:{AccuracyCounted} | Rest:{AccuracyRest}");
             Melon<MDIPMod>.Logger.Msg($"Total => Music:{Total.Music} | Energy:{Total.Energy} | Block:{Total.Block} | Hitable:{Total.Hitable}");
             Melon<MDIPMod>.Logger.Msg($"Counted => Music:{Current.Music} | Energy:{Current.Energy} | Block:{Current.Block} Perfect:{Current.Perfect} | Great:{Current.Great} /2f | | RedPoint:{Current.RedPoint}");
