@@ -54,6 +54,9 @@ public static class TextDataManager
                 result = result.Replace(pair.Key, pair.Value);
         }
 
+        var trimChars = new[] { '|', '\\', '-', '/', '~', '_', '=', '+' };
+        result = result.Trim().Trim(trimChars).Trim();
+
         _formattedTexts[cacheKey] = result;
         return result;
     }

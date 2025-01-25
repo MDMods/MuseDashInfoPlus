@@ -74,6 +74,8 @@ public static class GameStatsManager
         _miss.Music - _miss.Energy - MissCountHitable - _miss.LongPair - _miss.Block;
 
     public static bool IsInGame => _task != null && _stage != null;
+    public static bool IsAllPerfect => IsInGame && _current.Great + MissCount < 1;
+    public static bool IsTruePerfect => IsInGame && _current.Early + _current.Late < 1;
 
     public static void UpdateCurrentStats()
     {
@@ -117,8 +119,9 @@ public static class GameStatsManager
 
     public static string FormatAccuracy()
     {
+        if (IsTruePerfect) return Constants.TEXT_TRUE_PERFECT;
+        if (IsAllPerfect) return Constants.TEXT_ALL_PERFECT.Colored(Constants.COLOR_RANK_AP);
         var acc = GetCalculatedAccuracy();
-        if (acc >= 100f) return "100%".Colored(Constants.COLOR_RANK_AP);
         string color = acc switch
         {
             >= 95f => Constants.COLOR_RANK_SS,
@@ -149,12 +152,10 @@ public static class GameStatsManager
     {
         var parts = new List<string>();
 
-        if (_current.Great + MissCount < 1) // AP
+        if (IsAllPerfect)
         {
-            if (_current.Early + _current.Late < 1) // TP
-                return Configs.Main.TextTruePerfect;
-
-            parts.Add(Configs.Main.TextAllPerfect.Colored(Constants.COLOR_RANK_AP));
+            if (IsTruePerfect)
+                return string.Empty;
 
             if (Configs.Main.ShowEarlyLateCounts)
             {
@@ -164,7 +165,7 @@ public static class GameStatsManager
                     parts.Add($"{_current.Late}L".Colored(Configs.Main.LateCountsColor));
             }
         }
-        else // Not AP
+        else
         {
             if (_current.Great > 0)
                 parts.Add($"{_current.Great}G".Colored(Configs.Main.GreatCountsColor));
