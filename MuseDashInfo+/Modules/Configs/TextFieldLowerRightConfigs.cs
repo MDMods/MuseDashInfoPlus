@@ -8,7 +8,7 @@ public class TextFieldLowerRightConfigs : ConfigBase, ITextConfig
     public string Text { get; set; } = "";
     public float OffsetX { get; set; } = 0;
     public float OffsetY { get; set; } = 0;
-    public string Font { get; set; } = "Snaps Taste";
+    public string Font { get; set; } = "Lato";
     public int FontSize { get; set; } = 30;
     public string FontColor { get; set; } = Utils.Constants.COLOR_WHITE;
     public bool FontOutlineEnabled { get; set; } = false;

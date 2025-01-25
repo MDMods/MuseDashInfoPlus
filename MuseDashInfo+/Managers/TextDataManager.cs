@@ -31,15 +31,10 @@ public static class TextDataManager
     public static void UpdateValues()
     {
         UpdateCachedValue("{acc}", GameStatsManager.FormatAccuracy());
-        UpdateCachedValue("{overview}", GameStatsManager.FormatAccuracy());
+        UpdateCachedValue("{overview}", GameStatsManager.FormatOverview());
         UpdateCachedValue("{stats}", GameStatsManager.FormatStats());
         UpdateCachedValue("{gap}", GameStatsManager.FormatScoreGap());
         UpdateCachedValue("{hit}", ((int)GameStatsManager.AccuracyCounted).ToString());
-        UpdateCachedValue("{miss}", (GameStatsManager.MissCountHitable + GameStatsManager.Miss.Block).ToString());
-        UpdateCachedValue("{missCollectable}", GameStatsManager.MissCountCollectable.ToString());
-        UpdateCachedValue("{great}", GameStatsManager.Current.Great.ToString());
-        UpdateCachedValue("{early}", GameStatsManager.Current.Early.ToString());
-        UpdateCachedValue("{late}", GameStatsManager.Current.Late.ToString());
     }
 
     private static void InvalidateFormattedTexts()

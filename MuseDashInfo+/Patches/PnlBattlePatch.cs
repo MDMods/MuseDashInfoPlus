@@ -212,7 +212,13 @@ public class PnlBattleGameStartPatch
                 case "Snaps Taste":
                     text.font = FontUtils.GetFont(FontType.SnapsTaste);
                     break;
-            }
+                case "Lato":
+                    text.font = FontUtils.GetFont(FontType.LatoRegular);
+                    break;
+                case "Normal":
+                    text.font = FontUtils.GetFont(FontType.Normal);
+                    break;
+        }
             text.alignment = alignment;
             text.fontStyle = fontStyle;
             text.fontSize = config.FontSize;
