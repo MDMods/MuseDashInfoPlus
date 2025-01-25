@@ -33,10 +33,10 @@ public static class Constants
     public const string COLOR_WHITE = "#fdfdfa";
 
     public static Vector3 POS_LOWER_LEFT_TEXT { get; private set; } = new(-866, -460, 0);
-    public static Vector3 POS_LOWER_RIGHT_TEXT { get; private set; } = new(700, -460, 0); // TODO
+    public static Vector3 POS_LOWER_RIGHT_TEXT { get; private set; } = new(850, -460, 0);
     public static Vector3 POS_SCORE_BELOW_TEXT { get; private set; } = new(0, -135, 0);
     public static Vector3 POS_SCORE_RIGHT_TEXT { get; private set; } = new(55, -64, 0);
-    public static Vector3 POS_UPPER_LEFT_TEXT { get; private set; } = new(-866, 470, 0); // TODO
+    public static Vector3 POS_UPPER_LEFT_TEXT { get; private set; } = new(-830, 340, 0);
     public static Vector3 POS_UPPER_RIGHT_TEXT { get; private set; } = new(720, 470, 0);
 
     public static Dictionary<StageType, float> X_OFFSET_SCORE_BELOW_TEXT { get; private set; } = new()
