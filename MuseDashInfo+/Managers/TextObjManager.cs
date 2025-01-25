@@ -23,24 +23,25 @@ public static class TextObjManager
         lastUpdateTick = now;
 
         GameStatsManager.UpdateCurrentStats();
+        TextDataManager.UpdateValues();
 
         if (TextLowerLeftObj != null && Configs.TextFieldLowerLeft.Enabled)
-            TextLowerLeftObj.SetText(FormatText(Configs.TextFieldLowerLeft.Text));
+            TextLowerLeftObj.SetText(TextDataManager.GetFormattedText(Configs.TextFieldLowerLeft.Text));
 
         if (TextLowerRightObj != null && Configs.TextFieldLowerRight.Enabled)
-            TextLowerRightObj.SetText(FormatText(Configs.TextFieldLowerRight.Text));
+            TextLowerRightObj.SetText(TextDataManager.GetFormattedText(Configs.TextFieldLowerRight.Text));
 
         if (TextScoreBelowObj != null && Configs.TextFieldScoreBelow.Enabled)
-            TextScoreBelowObj.SetText(FormatText(Configs.TextFieldScoreBelow.Text));
+            TextScoreBelowObj.SetText(TextDataManager.GetFormattedText(Configs.TextFieldScoreBelow.Text));
 
         if (TextScoreRightObj != null && Configs.TextFieldScoreRight.Enabled)
-            TextScoreRightObj.SetText(FormatText(Configs.TextFieldScoreRight.Text));
+            TextScoreRightObj.SetText(TextDataManager.GetFormattedText(Configs.TextFieldScoreRight.Text));
 
         if (TextUpperLeftObj != null && Configs.TextFieldUpperLeft.Enabled)
-            TextUpperLeftObj.SetText(FormatText(Configs.TextFieldUpperLeft.Text));
+            TextUpperLeftObj.SetText(TextDataManager.GetFormattedText(Configs.TextFieldUpperLeft.Text));
 
         if (TextUpperRightObj != null && Configs.TextFieldUpperRight.Enabled)
-            TextUpperRightObj.SetText(FormatText(Configs.TextFieldUpperRight.Text));
+            TextUpperRightObj.SetText(TextDataManager.GetFormattedText(Configs.TextFieldUpperRight.Text));
     }
 
     private static void SetText(this GameObject obj, string text)
@@ -49,21 +50,6 @@ public static class TextObjManager
         var textComponent = obj.GetComponent<Text>();
         if (textComponent == null) return;
         textComponent.text = text;
-    }
-
-    private static string FormatText(string text)
-    {
-        if (string.IsNullOrWhiteSpace(text)) return string.Empty;
-        text = text.Replace("{acc}", GameStatsManager.FormatAccuracy());
-        text = text.Replace("{stats}", GameStatsManager.FormatStats());
-        text = text.Replace("{highest}", GameStatsManager.SavedHighScore.ToString());
-        text = text.Replace("{gap}", GameStatsManager.FormatScoreGap());
-        text = text.Replace("{total}", ((int)GameStatsManager.AccuracyTotal).ToString());
-        text = text.Replace("{hit}", ((int)GameStatsManager.AccuracyCounted).ToString());
-        text = text.Replace("{song}", GameUtils.MusicName);
-        text = text.Replace("{diff}", GameUtils.MusicDiffStr);
-        text = text.Replace("{level}", GameUtils.MusicLevel);
-        return text;
     }
 
     public static void Reset()
