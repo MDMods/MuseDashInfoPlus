@@ -16,7 +16,6 @@ public static class GameStatsManager
 {
     private static StageBattleComponent _stage;
     private static TaskStageTarget _task;
-    private static BattleRoleAttributeComponent _battle;
 
     private static int _savedHighScore = 0;
     public static bool SavedHighScoreLocked = false;
@@ -34,6 +33,7 @@ public static class GameStatsManager
     private const float PRECISION = 0.0001f;
     private static HashSet<int> PlayedNoteIds = new();
     private static HashSet<int> MissedNoteIds = new();
+    private static HashSet<int> PerfectedNoteIds = new();
 
     private static MusicData MashingNote;
     private static int MashedNum = -1;
@@ -82,8 +82,8 @@ public static class GameStatsManager
         _current = new CurrentStats(
             _task.m_PerfectResult,
             _task.m_GreatResult,
-            _battle.early,
-            _battle.late,
+            _current.Early,
+            _current.Late,
             _task.m_MusicCount,
             _task.m_EnergyCount,
             _current.Block,
@@ -186,6 +186,17 @@ public static class GameStatsManager
         return string.Join(" ", parts);
     }
 
+    public static void AddEarly(int id)
+    {
+        if (PerfectedNoteIds.Add(id))
+            _current.Early++;
+    }
+    public static void AddLate(int id)
+    {
+        if (PerfectedNoteIds.Add(id))
+            _current.Late++;
+    }
+
     public static void CountNote(int id, CountNoteAction action, int doubleId = -1, bool isLongStart = false)
     {
         switch (action)
@@ -278,7 +289,6 @@ public static class GameStatsManager
         {
             _stage = Singleton<StageBattleComponent>.instance;
             _task = Singleton<TaskStageTarget>.instance;
-            _battle = Singleton<BattleRoleAttributeComponent>.instance;
             _savedHighScore = Math.Max(BattleHelper.GetCurrentMusicHighScore(), SavedHighScore);
 
             foreach (var note in _stage.GetMusicData())
@@ -315,7 +325,6 @@ public static class GameStatsManager
     {
         _stage = null;
         _task = null;
-        _battle = null;
 
         _current = default;
         _total = default;
@@ -326,5 +335,6 @@ public static class GameStatsManager
         SavedHighScore = 0;
         PlayedNoteIds.Clear();
         MissedNoteIds.Clear();
+        PerfectedNoteIds.Clear();
     }
 }
