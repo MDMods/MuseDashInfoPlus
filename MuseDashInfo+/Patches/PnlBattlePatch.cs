@@ -70,7 +70,7 @@ public class PnlBattleGameStartPatch
             var imgIconAp = curPnlBattleUISub.transform.Find(imgIconApPath)?.gameObject;
             if (imgIconAp != null) imgIconAp.transform.localPosition = new Vector3(9999, 9999, -9999);
 
-            FontUtils.LoadFonts(TextFontType.SnapsTaste);
+            FontUtils.LoadFonts();
 
             // Text Field Lower Left
             if (Configs.TextFieldLowerLeft.Enabled)
@@ -210,7 +210,7 @@ public class PnlBattleGameStartPatch
             switch (config.Font)
             {
                 case "Snaps Taste":
-                    text.font = FontUtils.GetFont(TextFontType.SnapsTaste);
+                    text.font = FontUtils.GetFont(FontType.SnapsTaste);
                     break;
             }
             text.alignment = alignment;

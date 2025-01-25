@@ -1,42 +1,57 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+
+using MDIP.Modules;
 
 namespace MDIP.Utils;
 
 public static class FontUtils
 {
-    private static Font fontSnapsTaste;
-    private static Font fontLatoRegular;
-
-    public static void LoadFonts(TextFontType type = TextFontType.All)
+    private static readonly Dictionary<FontType, Font> _fonts = new();
+    private static readonly Dictionary<FontType, string> _fontPaths = new()
     {
-        if (type == TextFontType.SnapsTaste || type == TextFontType.All)
-            fontSnapsTaste = Addressables.LoadAssetAsync<Font>("Snaps Taste").WaitForCompletion();
-        if (type == TextFontType.LatoRegular || type == TextFontType.All)
-            fontSnapsTaste = Addressables.LoadAssetAsync<Font>("Lato-Regular").WaitForCompletion();
-    }
+        { FontType.SnapsTaste, "Snaps Taste" },
+        { FontType.LatoRegular, "Lato-Regular" },
+        { FontType.Normal, "Normal" }
+    };
 
-    public static void UnloadFonts(TextFontType type = TextFontType.All)
+    public static void LoadFonts(FontType type = FontType.All)
     {
-        if (type == TextFontType.SnapsTaste || type == TextFontType.All)
-            Addressables.Release(fontSnapsTaste);
-        if (type == TextFontType.LatoRegular || type == TextFontType.All)
-            Addressables.Release(fontLatoRegular);
-    }
-
-    public static Font GetFont(TextFontType type)
-        => type switch
+        if (type == FontType.All)
         {
-            TextFontType.SnapsTaste => fontSnapsTaste,
-            TextFontType.LatoRegular => fontLatoRegular,
-            _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
-        };
-}
+            foreach (var fontType in _fontPaths.Keys)
+                LoadFont(fontType);
+            return;
+        }
 
-public enum TextFontType
-{
-    SnapsTaste = 0,
-    LatoRegular = 1,
-    All = -1
+        LoadFont(type);
+    }
+
+    private static void LoadFont(FontType type)
+    {
+        if (_fontPaths.TryGetValue(type, out string path))
+            _fonts[type] = Addressables.LoadAssetAsync<Font>(path).WaitForCompletion();
+    }
+
+    public static void UnloadFonts(FontType type = FontType.All)
+    {
+        if (type == FontType.All)
+        {
+            foreach (var curFont in _fonts.Values)
+                Addressables.Release(curFont);
+            _fonts.Clear();
+            return;
+        }
+
+        if (_fonts.TryGetValue(type, out Font font))
+        {
+            Addressables.Release(font);
+            _fonts.Remove(type);
+        }
+    }
+
+    public static Font GetFont(FontType type)
+        => _fonts.TryGetValue(type, out Font font) ? font : throw new ArgumentException($"Font {type} not loaded");
 }
