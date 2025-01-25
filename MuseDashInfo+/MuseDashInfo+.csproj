@@ -31,7 +31,6 @@
 
   <ItemGroup Label="NuGet references">
     <PackageReference Include="Lib.Harmony" Version="2.2.2" />
-    <PackageReference Include="YamlDotNet" Version="16.3.0" />
   </ItemGroup>
 	
   <Target Name="Copy" AfterTargets="Build" Condition="'$(MuseDash)' != ''">

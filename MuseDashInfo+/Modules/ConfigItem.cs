@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Version = System.Version;
-using YamlDotNet.Serialization;
 
 using MDIP.Modules.Configs;
 using MDIP.Utils;
@@ -15,19 +14,17 @@ namespace MDIP.Modules
     public class ConfigItem
     {
         private readonly string _name;
-        private readonly IDeserializer _deserializer;
-        private readonly ISerializer _serializer;
+        private readonly YamlParser _yamlParser;
         private readonly Dictionary<Type, object> _configCache;
         private readonly Dictionary<Type, Action<object>> _updateCallbacks;
 
         public string ConfigPath { get; }
 
-        public ConfigItem(string name, string configPath, IDeserializer deserializer, ISerializer serializer)
+        public ConfigItem(string name, string configPath, YamlParser yamlParser)
         {
             _name = name;
             ConfigPath = configPath;
-            _deserializer = deserializer;
-            _serializer = serializer;
+            _yamlParser = yamlParser;
             _configCache = new Dictionary<Type, object>();
             _updateCallbacks = new Dictionary<Type, Action<object>>();
         }
@@ -48,7 +45,7 @@ namespace MDIP.Modules
         {
             config.LastModified = DateTime.Now;
             var comments = GetConfigComments<T>();
-            var yaml = _serializer.Serialize(config);
+            var yaml = _yamlParser.Serialize(config);
 
             var lines = yaml.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
             yaml = string.Empty;
@@ -108,7 +105,7 @@ namespace MDIP.Modules
             try
             {
                 var yaml = File.ReadAllText(ConfigPath);
-                var oldConfig = _deserializer.Deserialize<T>(yaml);
+                var oldConfig = _yamlParser.Deserialize<T>(yaml);
                 var newConfig = new T();
 
                 if (Version.Parse(oldConfig.Version) < Version.Parse(newConfig.Version))

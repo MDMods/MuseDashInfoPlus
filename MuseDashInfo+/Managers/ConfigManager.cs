@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
-using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.NamingConventions;
 
 using MDIP.Modules;
 using MDIP.Modules.Configs;
@@ -33,20 +31,13 @@ namespace MDIP.Managers
 
         private readonly Dictionary<string, ConfigItem> _modules;
         private readonly FileSystemWatcher _watcher;
-        private readonly IDeserializer _deserializer;
-        private readonly ISerializer _serializer;
+        private readonly YamlParser _yamlParser;
         private bool _disposed;
 
         private ConfigManager()
         {
             _modules = new Dictionary<string, ConfigItem>();
-            _deserializer = new DeserializerBuilder()
-                .WithNamingConvention(CamelCaseNamingConvention.Instance)
-                .WithAttemptingUnquotedStringTypeDeserialization()
-                .Build();
-            _serializer = new SerializerBuilder()
-                .WithNamingConvention(CamelCaseNamingConvention.Instance)
-                .Build();
+            _yamlParser = new YamlParser();
 
             _watcher = new FileSystemWatcher
             {
@@ -80,7 +71,7 @@ namespace MDIP.Managers
             }
 
             var configPath = Configs.GetConfigPath(configFileName);
-            var module = new ConfigItem(name, configPath, _deserializer, _serializer);
+            var module = new ConfigItem(name, configPath, _yamlParser);
             _modules[name] = module;
 
             _watcher.Path = Path.GetDirectoryName(configPath);
