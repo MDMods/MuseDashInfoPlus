@@ -126,6 +126,7 @@ public static class GameStatsManager
 
     public static string FormatAccuracy()
     {
+        if (IsAllPerfect) return "100%".Colored(Constants.COLOR_RANK_AP);
         var acc = GetCalculatedAccuracy();
         string color = IsTruePerfect ? Constants.COLOR_RANK_TP : acc switch
         {
