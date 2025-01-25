@@ -42,6 +42,7 @@ namespace MDIP.Managers
             _modules = new Dictionary<string, ConfigItem>();
             _deserializer = new DeserializerBuilder()
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                .WithAttemptingUnquotedStringTypeDeserialization()
                 .Build();
             _serializer = new SerializerBuilder()
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)

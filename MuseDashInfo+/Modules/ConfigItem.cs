@@ -89,6 +89,8 @@ namespace MDIP.Modules
         private string GetBackupPath(string version)
         {
             var directory = Path.GetDirectoryName(ConfigPath) + "/Backups";
+            if (!Directory.Exists(directory))
+                Directory.CreateDirectory(directory);
             var fileName = Path.GetFileNameWithoutExtension(ConfigPath);
             var extension = Path.GetExtension(ConfigPath);
             return Path.Combine(directory, $"{fileName}.v{version}{extension}");

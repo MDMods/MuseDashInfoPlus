@@ -5,7 +5,7 @@ namespace MDIP.Modules.Configs;
 public class TextFieldUpperRightConfigs : ConfigBase, ITextConfig
 {
     public bool Enabled { get; set; } = true;
-    public string Text { get; set; } = "<b>{song}</b>\n<size=27>{diff} - Level {level}</size>";
+    public string Text { get; set; } = "<b>{song}</b>\\n<size=27>{diff} - Level {level}</size>";
     public float OffsetX { get; set; } = 0;
     public float OffsetY { get; set; } = 0;
     public string Font { get; set; } = "";

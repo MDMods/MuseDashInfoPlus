@@ -26,22 +26,22 @@ public static class TextObjManager
         TextDataManager.UpdateValues();
 
         if (TextLowerLeftObj != null && Configs.TextFieldLowerLeft.Enabled)
-            TextLowerLeftObj.SetText(TextDataManager.GetFormattedText(Configs.TextFieldLowerLeft.Text));
+            TextLowerLeftObj.SetText(TextDataManager.GetFormattedText(Configs.TextFieldLowerLeft.Text.UnEscapeReturn()));
 
         if (TextLowerRightObj != null && Configs.TextFieldLowerRight.Enabled)
-            TextLowerRightObj.SetText(TextDataManager.GetFormattedText(Configs.TextFieldLowerRight.Text));
+            TextLowerRightObj.SetText(TextDataManager.GetFormattedText(Configs.TextFieldLowerRight.Text.UnEscapeReturn()));
 
         if (TextScoreBelowObj != null && Configs.TextFieldScoreBelow.Enabled)
-            TextScoreBelowObj.SetText(TextDataManager.GetFormattedText(Configs.TextFieldScoreBelow.Text));
+            TextScoreBelowObj.SetText(TextDataManager.GetFormattedText(Configs.TextFieldScoreBelow.Text.UnEscapeReturn()));
 
         if (TextScoreRightObj != null && Configs.TextFieldScoreRight.Enabled)
-            TextScoreRightObj.SetText(TextDataManager.GetFormattedText(Configs.TextFieldScoreRight.Text));
+            TextScoreRightObj.SetText(TextDataManager.GetFormattedText(Configs.TextFieldScoreRight.Text.UnEscapeReturn()));
 
         if (TextUpperLeftObj != null && Configs.TextFieldUpperLeft.Enabled)
-            TextUpperLeftObj.SetText(TextDataManager.GetFormattedText(Configs.TextFieldUpperLeft.Text));
+            TextUpperLeftObj.SetText(TextDataManager.GetFormattedText(Configs.TextFieldUpperLeft.Text.UnEscapeReturn()));
 
         if (TextUpperRightObj != null && Configs.TextFieldUpperRight.Enabled)
-            TextUpperRightObj.SetText(TextDataManager.GetFormattedText(Configs.TextFieldUpperRight.Text));
+            TextUpperRightObj.SetText(TextDataManager.GetFormattedText(Configs.TextFieldUpperRight.Text.UnEscapeReturn()));
     }
 
     private static void SetText(this GameObject obj, string text)
