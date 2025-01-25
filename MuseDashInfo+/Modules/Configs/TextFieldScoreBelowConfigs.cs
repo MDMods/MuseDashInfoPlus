@@ -5,7 +5,7 @@ namespace MDIP.Modules.Configs;
 public class TextFieldScoreBelowConfigs : ConfigBase, ITextConfig
 {
     public bool Enabled { get; set; } = true;
-    public string Text { get; set; } = "{acc} / {stats}";
+    public string Text { get; set; } = "{overview} / {stats}";
     public float OffsetX { get; set; } = 0;
     public float OffsetY { get; set; } = 0;
     public string Font { get; set; } = "Snaps Taste";

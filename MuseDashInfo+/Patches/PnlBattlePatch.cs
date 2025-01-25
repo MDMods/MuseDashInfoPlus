@@ -170,6 +170,7 @@ public class PnlBattleGameStartPatch
             }
 
             GameStatsManager.Init();
+            TextDataManager.UpdateConstants();
             TextObjManager.UpdateAllText();
         }
         catch (System.Exception e)

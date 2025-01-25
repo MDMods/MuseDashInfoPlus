@@ -48,6 +48,10 @@ public class MainConfigs : ConfigBase
     [ConfigCommentEn("Text color of Late count")]
     public string LateCountsColor { get; set; } = Utils.Constants.COLOR_LATE_COUNT;
 
+    [ConfigCommentZh("TP 准确度文本颜色")]
+    [ConfigCommentEn("Accuracy text color of TP rank")]
+    public string RankTPColor { get; set; } = Utils.Constants.COLOR_RANK_TP;
+
     [ConfigCommentZh("AP 准确度文本颜色")]
     [ConfigCommentEn("Accuracy text color of AP rank")]
     public string RankAPColor { get; set; } = Utils.Constants.COLOR_RANK_AP;

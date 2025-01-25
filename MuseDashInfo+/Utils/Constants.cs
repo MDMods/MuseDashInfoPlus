@@ -8,7 +8,7 @@ namespace MDIP.Utils;
 public static class Constants
 {
     public const string TEXT_ALL_PERFECT = "AP";
-    public const string TEXT_TRUE_PERFECT = "<color=#ff0050>TP</color>";
+    public const string TEXT_TRUE_PERFECT = "TP";
 
     public const string TEXT_DIFF_1 = "Easy";
     public const string TEXT_DIFF_2 = "Hard";
@@ -22,6 +22,7 @@ public static class Constants
     public const string COLOR_EARLY_COUNT = "#38bfee";
     public const string COLOR_LATE_COUNT = "#ff089f";
 
+    public const string COLOR_RANK_TP = "#ff0050";
     public const string COLOR_RANK_AP = "#fff000";
     public const string COLOR_RANK_SS = "#ccf0fe";
     public const string COLOR_RANK_S = "#ff0089";

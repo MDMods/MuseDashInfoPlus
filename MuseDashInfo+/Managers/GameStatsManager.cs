@@ -117,13 +117,19 @@ public static class GameStatsManager
             rounded - PRECISION : rounded) * 100f;
     }
 
+    public static string FormatOverview()
+    {
+        if (IsTruePerfect) return Constants.TEXT_TRUE_PERFECT.Colored(Constants.COLOR_RANK_TP);
+        if (IsAllPerfect) return Constants.TEXT_ALL_PERFECT.Colored(Constants.COLOR_RANK_AP);
+        return FormatAccuracy();
+    }
+
     public static string FormatAccuracy()
     {
-        if (IsTruePerfect) return Constants.TEXT_TRUE_PERFECT;
-        if (IsAllPerfect) return Constants.TEXT_ALL_PERFECT.Colored(Constants.COLOR_RANK_AP);
         var acc = GetCalculatedAccuracy();
-        string color = acc switch
+        string color = IsTruePerfect ? Constants.COLOR_RANK_TP : acc switch
         {
+            >= 100f => Constants.COLOR_RANK_AP,
             >= 95f => Constants.COLOR_RANK_SS,
             >= 90f => Constants.COLOR_RANK_S,
             >= 80f => Constants.COLOR_RANK_A,

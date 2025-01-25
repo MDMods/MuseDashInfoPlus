@@ -18,19 +18,28 @@ public static class TextDataManager
         }
     }
 
-    public static void UpdateValues()
+    public static void UpdateConstants()
     {
-        UpdateCachedValue("{acc}", GameStatsManager.FormatAccuracy());
-        UpdateCachedValue("{stats}", GameStatsManager.FormatStats());
-        UpdateCachedValue("{highest}", GameStatsManager.SavedHighScore.ToString());
-        UpdateCachedValue("{gap}", GameStatsManager.FormatScoreGap());
+        UpdateCachedValue("{hiScore}", GameStatsManager.SavedHighScore.ToString());
         UpdateCachedValue("{total}", ((int)GameStatsManager.AccuracyTotal).ToString());
-        UpdateCachedValue("{hit}", ((int)GameStatsManager.AccuracyCounted).ToString());
         UpdateCachedValue("{song}", GameUtils.MusicName.TruncateByWidth(45));
         UpdateCachedValue("{diff}", GameUtils.MusicDiffStr);
         UpdateCachedValue("{level}", GameUtils.MusicLevel);
+        UpdateCachedValue("{author}", GameUtils.MusicAuthor);
+    }
 
-        UpdateCachedValue("{level}", GameUtils.MusicLevel);
+    public static void UpdateValues()
+    {
+        UpdateCachedValue("{acc}", GameStatsManager.FormatAccuracy());
+        UpdateCachedValue("{overview}", GameStatsManager.FormatAccuracy());
+        UpdateCachedValue("{stats}", GameStatsManager.FormatStats());
+        UpdateCachedValue("{gap}", GameStatsManager.FormatScoreGap());
+        UpdateCachedValue("{hit}", ((int)GameStatsManager.AccuracyCounted).ToString());
+        UpdateCachedValue("{miss}", (GameStatsManager.MissCountHitable + GameStatsManager.Miss.Block).ToString());
+        UpdateCachedValue("{missCollectable}", GameStatsManager.MissCountCollectable.ToString());
+        UpdateCachedValue("{great}", GameStatsManager.Current.Great.ToString());
+        UpdateCachedValue("{early}", GameStatsManager.Current.Early.ToString());
+        UpdateCachedValue("{late}", GameStatsManager.Current.Late.ToString());
     }
 
     private static void InvalidateFormattedTexts()

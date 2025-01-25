@@ -11,6 +11,7 @@ public static class GameUtils
     public static string MusicName => GlobalDataBase.dbBattleStage.selectedMusicName;
     public static int MusicDiff => GlobalDataBase.dbBattleStage.selectedDifficulty;
     public static string MusicLevel => GlobalDataBase.dbBattleStage.selectedMusicInfo.GetMusicLevelStringByDiff(MusicDiff);
+    public static string MusicAuthor => GlobalDataBase.dbBattleStage.selectedMusicInfo.author;
     public static string MusicDiffStr => (MusicDiff switch
     {
         1 => Configs.Main.TextDiff1,
