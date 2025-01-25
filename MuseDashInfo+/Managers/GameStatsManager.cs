@@ -119,7 +119,7 @@ public static class GameStatsManager
         var acc = GetCalculatedAccuracy();
         string color = acc switch
         {
-            >= 100f => Constants.COLOR_RANK_SSS,
+            >= 100f => Constants.COLOR_RANK_AP,
             >= 95f => Constants.COLOR_RANK_SS,
             >= 90f => Constants.COLOR_RANK_S,
             >= 80f => Constants.COLOR_RANK_A,
@@ -146,7 +146,7 @@ public static class GameStatsManager
 
     public static string FormatStats()
     {
-        if (_current.Great + MissCount == 0) return "AP".Colored(Constants.COLOR_RANK_SSS);
+        if (_current.Great + MissCount == 0) return "AP".Colored(Constants.COLOR_RANK_AP);
 
         var parts = new List<string>();
         if (_current.Great > 0)

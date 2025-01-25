@@ -5,15 +5,15 @@ namespace MDIP.Modules.Configs;
 public class MainConfigs : ConfigBase
 {
     [ConfigCommentZh("漏击计数的文本颜色")]
-    [ConfigCommentEn("Text color of missed count")]
+    [ConfigCommentEn("Accuracy text color of missed count")]
     public string NormalMissCountsColor { get; set; } = Utils.Constants.COLOR_WHITE;
 
     [ConfigCommentZh("音符/红心遗漏计数的文本颜色")]
-    [ConfigCommentEn("Text color of collectable missed count")]
+    [ConfigCommentEn("Accuracy text color of collectable missed count")]
     public string CollectableMissCountsColor { get; set; } = Utils.Constants.COLOR_WHITE;
 
     [ConfigCommentZh("Great 计数的文本颜色")]
-    [ConfigCommentEn("Text color of great count")]
+    [ConfigCommentEn("Accuracy text color of great count")]
     public string GreatCountsColor { get; set; } = Utils.Constants.COLOR_WHITE;
 
     [ConfigCommentZh("当分数超过历史最高分时的分数差值文本颜色")]
@@ -32,32 +32,32 @@ public class MainConfigs : ConfigBase
     [ConfigCommentEn("Text of True-Perfect indicator (0 Early & Late)")]
     public string TextTruePerfect { get; set; } = Utils.Constants.TEXT_TRUE_PERFECT;
 
-    [ConfigCommentZh("SSS Rank 文本颜色")]
-    [ConfigCommentEn("Text color of SSS rank")]
-    public string RankSSSColor { get; set; } = Utils.Constants.COLOR_RANK_SSS;
+    [ConfigCommentZh("AP 准确度文本颜色")]
+    [ConfigCommentEn("Accuracy text color of AP rank")]
+    public string RankAPColor { get; set; } = Utils.Constants.COLOR_RANK_AP;
 
-    [ConfigCommentZh("SS Rank 文本颜色")]
-    [ConfigCommentEn("Text color of SS rank")]
+    [ConfigCommentZh("SS 准确度文本颜色")]
+    [ConfigCommentEn("Accuracy text color of SS rank")]
     public string RankSSColor { get; set; } = Utils.Constants.COLOR_RANK_SS;
 
-    [ConfigCommentZh("S Rank 文本颜色")]
-    [ConfigCommentEn("Text color of S rank")]
+    [ConfigCommentZh("S 准确度文本颜色")]
+    [ConfigCommentEn("Accuracy text color of S rank")]
     public string RankSColor { get; set; } = Utils.Constants.COLOR_RANK_S;
 
-    [ConfigCommentZh("A Rank 文本颜色")]
-    [ConfigCommentEn("Text color of A rank")]
+    [ConfigCommentZh("A 准确度文本颜色")]
+    [ConfigCommentEn("Accuracy text color of A rank")]
     public string RankAColor { get; set; } = Utils.Constants.COLOR_RANK_A;
 
-    [ConfigCommentZh("B Rank 文本颜色")]
-    [ConfigCommentEn("Text color of B rank")]
+    [ConfigCommentZh("B 准确度文本颜色")]
+    [ConfigCommentEn("Accuracy text color of B rank")]
     public string RankBColor { get; set; } = Utils.Constants.COLOR_RANK_B;
 
-    [ConfigCommentZh("C Rank 文本颜色")]
-    [ConfigCommentEn("Text color of C rank")]
+    [ConfigCommentZh("C 准确度文本颜色")]
+    [ConfigCommentEn("Accuracy text color of C rank")]
     public string RankCColor { get; set; } = Utils.Constants.COLOR_RANK_C;
 
-    [ConfigCommentZh("D Rank 文本颜色")]
-    [ConfigCommentEn("Text color of D rank")]
+    [ConfigCommentZh("D 准确度文本颜色")]
+    [ConfigCommentEn("Accuracy text color of D rank")]
     public string RankDColor { get; set; } = Utils.Constants.COLOR_RANK_D;
 
     [ConfigCommentZh("EASY 难度文本（支持富文本格式）")]
