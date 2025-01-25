@@ -78,7 +78,7 @@ public class MDIPMod : MelonMod
                 GameStatsManager.Reset();
                 TextObjManager.Reset();
                 GameUtils.Reset();
-                FontUtils.UnloadFonts(TextFontType.All);
+                FontUtils.UnloadFonts(TextFontType.SnapsTaste);
 
                 break;
         }
