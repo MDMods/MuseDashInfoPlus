@@ -19,7 +19,7 @@ public static class TextObjManager
     public static void UpdateAllText()
     {
         long now = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-        if (now - lastUpdateTick < 123) return;
+        if (now - lastUpdateTick < Configs.Advanced.DataRefreshIntervalLimit) return;
         lastUpdateTick = now;
 
         GameStatsManager.UpdateCurrentStats();
