@@ -39,13 +39,29 @@ public class MDIPMod : MelonMod
         mainConfigModule.RegisterUpdateCallback<MainConfigs>(cfg =>
         {
             Melon<MDIPMod>.Logger.Warning("Main configs updated!");
-            TextDataManager.ConstractTextFormats();
         });
-        TextDataManager.ConstractTextFormats();
         ConfigManager.Instance.SaveConfig(ConfigName.MainConfigs, Configs.Main);
 
         ConfigManager.Instance.RegisterModule(ConfigName.AdvancedConfigs, "AdvancedConfigs.yml");
         ConfigManager.Instance.SaveConfig(ConfigName.AdvancedConfigs, Configs.Advanced);
+
+        ConfigManager.Instance.RegisterModule(ConfigName.TextFieldLowerLeftConfigs, "TextFieldLowerLeftConfigs.yml");
+        ConfigManager.Instance.SaveConfig(ConfigName.TextFieldLowerLeftConfigs, Configs.TextFieldLowerLeft);
+
+        ConfigManager.Instance.RegisterModule(ConfigName.TextFieldLowerRightConfigs, "TextFieldLowerRightConfigs.yml");
+        ConfigManager.Instance.SaveConfig(ConfigName.TextFieldLowerRightConfigs, Configs.TextFieldLowerRight);
+
+        ConfigManager.Instance.RegisterModule(ConfigName.TextFieldScoreBelowConfigs, "TextFieldScoreBelowConfigs.yml");
+        ConfigManager.Instance.SaveConfig(ConfigName.TextFieldScoreBelowConfigs, Configs.TextFieldScoreBelow);
+
+        ConfigManager.Instance.RegisterModule(ConfigName.TextFieldScoreRightConfigs, "TextFieldScoreRightConfigs.yml");
+        ConfigManager.Instance.SaveConfig(ConfigName.TextFieldScoreRightConfigs, Configs.TextFieldScoreRight);
+
+        ConfigManager.Instance.RegisterModule(ConfigName.TextFieldUpperLeftConfigs, "TextFieldUpperLeftConfigs.yml");
+        ConfigManager.Instance.SaveConfig(ConfigName.TextFieldUpperLeftConfigs, Configs.TextFieldUpperLeft);
+
+        ConfigManager.Instance.RegisterModule(ConfigName.TextFieldUpperRightConfigs, "TextFieldUpperRightConfigs.yml");
+        ConfigManager.Instance.SaveConfig(ConfigName.TextFieldUpperRightConfigs, Configs.TextFieldUpperRight);
     }
 
     public override void OnSceneWasLoaded(int buildIndex, string sceneName)
@@ -57,13 +73,13 @@ public class MDIPMod : MelonMod
 
             default:
 
-                if (Utils.Helper.OutputNoteRecordsToDesktop)
+                if (Helper.OutputNoteRecordsToDesktop)
                     NoteRecordManager.Reset();
 
                 GameStatsManager.Reset();
                 TextObjManager.Reset();
-                PnlBattleGameStartPatch.Reset();
-                FontUtils.UnloadFonts(TextFontType.SnapsTaste);
+                GameUtils.Reset();
+                FontUtils.UnloadFonts(TextFontType.All);
 
                 break;
         }

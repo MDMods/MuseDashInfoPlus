@@ -1,14 +1,15 @@
 ﻿using Il2CppGameLogic;
+using System.Linq;
 using System;
+using UnityEngine;
 
 using MDIP.Modules;
-using System.Linq;
 
 namespace MDIP.Utils;
 
 public static class Extensions
 {
-    public static string Color(this string text, string color) => $"<color={color}>{text}</color>";
+    public static string Colored(this string text, string color) => $"<color={color}>{text}</color>";
 
     public static string TruncateByWidth(this string input, int maxWidth)
     {
@@ -70,6 +71,13 @@ public static class Extensions
                (c >= 0xFF00 && c <= 0xFFEF);      // 全角ASCII、全角标点
 
     public static bool IsRegularNote(this NoteType noteType) => Helper.IsRegularNote((uint)noteType);
+
+    public static Color ToColor(this string color)
+    {
+        if (ColorUtility.TryParseHtmlString(color, out Color result))
+            return result;
+        return Color.white;
+    }
 
     public static int Count(this Il2CppSystem.Collections.Generic.List<MusicData> noteList, Func<MusicData, bool> predicate)
     {

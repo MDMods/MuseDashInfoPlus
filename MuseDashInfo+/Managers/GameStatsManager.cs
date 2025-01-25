@@ -90,7 +90,7 @@ public static class GameStatsManager
             _task.m_Score > _savedHighScore
         );
 
-        if (Utils.Helper.OutputAccuracyCalculationDatas)
+        if (Helper.OutputAccuracyCalculationDatas)
         {
             Melon<MDIPMod>.Logger.Warning($"===== Accuracy Stats =====");
             Melon<MDIPMod>.Logger.Msg($"Total:{AccuracyTotal} | Counted:{AccuracyCounted} | Rest:{AccuracyRest}");
@@ -119,15 +119,15 @@ public static class GameStatsManager
         var acc = GetCalculatedAccuracy();
         string color = acc switch
         {
-            >= 100f => Constants.RANK_SSS_COLOR,
-            >= 95f => Constants.RANK_SS_COLOR,
-            >= 90f => Constants.RANK_S_COLOR,
-            >= 80f => Constants.RANK_A_COLOR,
-            >= 70f => Constants.RANK_B_COLOR,
-            >= 60f => Constants.RANK_C_COLOR,
-            _ => Constants.RANK_D_COLOR
+            >= 100f => Constants.COLOR_RANK_SSS,
+            >= 95f => Constants.COLOR_RANK_SS,
+            >= 90f => Constants.COLOR_RANK_S,
+            >= 80f => Constants.COLOR_RANK_A,
+            >= 70f => Constants.COLOR_RANK_B,
+            >= 60f => Constants.COLOR_RANK_C,
+            _ => Constants.COLOR_RANK_D
         };
-        return $"{acc:F2}%".Color(color);
+        return $"{acc:F2}%".Colored(color);
     }
 
     public static string FormatScoreGap()
@@ -140,21 +140,21 @@ public static class GameStatsManager
             : (Configs.Main.ScoreGapBehindColor, "");
 
         return Math.Abs(gap) < 1000
-            ? $"{prefix}{gap}".Color(color)
-            : $"{prefix}{gap / 1000}K".Color(color);
+            ? $"{prefix}{gap}".Colored(color)
+            : $"{prefix}{gap / 1000}K".Colored(color);
     }
 
-    public static string FormatMissCounts()
+    public static string FormatStats()
     {
-        if (_current.Great + MissCount == 0) return "AP".Color(Constants.RANK_SSS_COLOR);
+        if (_current.Great + MissCount == 0) return "AP".Colored(Constants.COLOR_RANK_SSS);
 
         var parts = new List<string>();
         if (_current.Great > 0)
-            parts.Add($"{_current.Great}G".Color(Configs.Main.GreatCountsColor));
+            parts.Add($"{_current.Great}G".Colored(Configs.Main.GreatCountsColor));
         if (MissCountHitable + _miss.Block > 0)
-            parts.Add($"{MissCountHitable + _miss.Block}M".Color(Configs.Main.NormalMissCountsColor));
-        if (!PnlBattleGameStartPatch.IsSpellMode && MissCountCollectable > 0)
-            parts.Add($"{MissCountCollectable}H".Color(Configs.Main.CollectableMissCountsColor));
+            parts.Add($"{MissCountHitable + _miss.Block}M".Colored(Configs.Main.NormalMissCountsColor));
+        if (!Utils.GameUtils.IsSpellMode && MissCountCollectable > 0)
+            parts.Add($"{MissCountCollectable}H".Colored(Configs.Main.CollectableMissCountsColor));
 
         return string.Join(" ", parts);
     }

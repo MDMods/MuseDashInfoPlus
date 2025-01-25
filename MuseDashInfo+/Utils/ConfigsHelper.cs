@@ -17,6 +17,13 @@ public static class Configs
     public static MainConfigs Main => ConfigManager.Instance.GetConfig<MainConfigs>(ConfigName.MainConfigs);
     public static AdvancedConfigs Advanced => ConfigManager.Instance.GetConfig<AdvancedConfigs>(ConfigName.AdvancedConfigs);
 
+    public static TextFieldLowerLeftConfigs TextFieldLowerLeft => ConfigManager.Instance.GetConfig<TextFieldLowerLeftConfigs>(ConfigName.TextFieldLowerLeftConfigs);
+    public static TextFieldLowerRightConfigs TextFieldLowerRight => ConfigManager.Instance.GetConfig<TextFieldLowerRightConfigs>(ConfigName.TextFieldLowerRightConfigs);
+    public static TextFieldScoreBelowConfigs TextFieldScoreBelow => ConfigManager.Instance.GetConfig<TextFieldScoreBelowConfigs>(ConfigName.TextFieldScoreBelowConfigs);
+    public static TextFieldScoreRightConfigs TextFieldScoreRight => ConfigManager.Instance.GetConfig<TextFieldScoreRightConfigs>(ConfigName.TextFieldScoreRightConfigs);
+    public static TextFieldUpperLeftConfigs TextFieldUpperLeft => ConfigManager.Instance.GetConfig<TextFieldUpperLeftConfigs>(ConfigName.TextFieldUpperLeftConfigs);
+    public static TextFieldUpperRightConfigs TextFieldUpperRight => ConfigManager.Instance.GetConfig<TextFieldUpperRightConfigs>(ConfigName.TextFieldUpperRightConfigs);
+
     public static string GetConfigPath(string fileName)
     {
         string configFolder = Path.Combine(Application.dataPath, @"..\UserData\Info+");

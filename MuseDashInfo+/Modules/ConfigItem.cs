@@ -132,13 +132,28 @@ namespace MDIP.Modules
 
         private Dictionary<string, (string zh, string en)> GetConfigComments<T>() where T : ConfigBase
         {
-            var type = typeof(T);
             var comments = new Dictionary<string, (string zh, string en)>();
+            var type = typeof(T);
 
             foreach (var property in type.GetProperties())
             {
                 var commentZh = property.GetCustomAttribute<ConfigCommentZhAttribute>();
                 var commentEn = property.GetCustomAttribute<ConfigCommentEnAttribute>();
+
+                if ((commentZh == null || commentEn == null) && property.DeclaringType != null)
+                {
+                    var interfaces = property.DeclaringType.GetInterfaces();
+                    foreach (var iface in interfaces)
+                    {
+                        var ifaceProp = iface.GetProperty(property.Name);
+                        if (ifaceProp != null)
+                        {
+                            commentZh ??= ifaceProp.GetCustomAttribute<ConfigCommentZhAttribute>();
+                            commentEn ??= ifaceProp.GetCustomAttribute<ConfigCommentEnAttribute>();
+                        }
+                    }
+                }
+
                 if (commentZh != null && commentEn != null)
                 {
                     comments[$"{char.ToLowerInvariant(property.Name[0])}{property.Name[1..]}:"] =

@@ -4,9 +4,10 @@ using MelonLoader;
 using UnityEngine;
 using UnityEngine.UI;
 
-using MDIP.Utils;
+using MDIP.Interfaces;
 using MDIP.Managers;
 using MDIP.Modules;
+using MDIP.Utils;
 
 namespace MDIP.Patches;
 
@@ -14,30 +15,6 @@ namespace MDIP.Patches;
 public class PnlBattleGameStartPatch
 {
     private static GameObject TextObjectTemplate;
-    private static GameObject ChartInfosObj;
-    private static GameObject GameStatsObj;
-    private static GameObject ScoreStatsObj;
-    private static GameObject NoteStatsObj;
-
-    public static bool IsSpellMode { get; private set; }
-
-    public static void Reset()
-    {
-        DestroyObjectAndReset(ref TextObjectTemplate);
-        DestroyObjectAndReset(ref ChartInfosObj);
-        DestroyObjectAndReset(ref GameStatsObj);
-        DestroyObjectAndReset(ref ScoreStatsObj);
-        DestroyObjectAndReset(ref NoteStatsObj);
-
-        IsSpellMode = false;
-    }
-
-    private static void DestroyObjectAndReset(ref GameObject obj)
-    {
-        if (obj == null) return;
-        try { Object.Destroy(obj); } catch { }
-        obj = null;
-    }
 
     private static void Postfix(PnlBattle __instance)
     {
@@ -50,7 +27,7 @@ public class PnlBattleGameStartPatch
             if (!pnlBattleOthers?.activeSelf ?? false)
             {
                 curPnlBattleUISub = __instance.transform.Find("PnlBattleUI/PnlBattleSpell").gameObject;
-                IsSpellMode = true;
+                GameUtils.IsSpellMode = true;
             }
             TextObjectTemplate = Object.Instantiate(pnlBattleOthers.transform.Find("Score/Djmax/TxtScore_djmax").gameObject);
             Object.Destroy(TextObjectTemplate.transform.Find("ImgIconApDjmax").gameObject);
@@ -89,83 +66,106 @@ public class PnlBattleGameStartPatch
             imgPauseRect.sizeDelta = new Vector2(70, 70);
             imgPauseRect.anchoredPosition = new Vector2(0, 0);
 
-            // Remove AP icon
+            // Hide AP icon
             var imgIconAp = curPnlBattleUISub.transform.Find(imgIconApPath)?.gameObject;
             if (imgIconAp != null) imgIconAp.transform.localPosition = new Vector3(9999, 9999, -9999);
 
-            FontUtils.LoadFonts(TextFontType.SnapsTaste);
+            FontUtils.LoadFonts(TextFontType.All);
 
-            // Chart Infos
-            if (Configs.Main.DisplayChartName || Configs.Main.DisplayChartDifficulty)
+            // Text Field Lower Left
+            if (Configs.TextFieldLowerLeft.Enabled)
             {
-                ChartInfosObj = CreateTextObj(
-                    "InfoPlus_ChartInfos",
-                    curPnlBattleUISub.transform.Find("Up"),
+                var TextLowerLeftObj = CreateTextObj(
+                    "InfoPlus_TextLowerLeft",
+                    curPnlBattleUISub.transform.Find("Below"),
+                    Configs.TextFieldLowerLeft,
+                    Constants.POS_LOWER_LEFT_TEXT,
                     false,
-                    TextAnchor.UpperRight,
-                    Constants.CHART_INFOS_POS,
-                    "0,0",
-                    Constants.CHART_NAME_SIZE
+                    TextAnchor.LowerLeft,
+                    FontStyle.Italic
                 );
-                var chartInfosText = ChartInfosObj.GetComponent<Text>();
-                chartInfosText.lineSpacing = 0.8f;
-                chartInfosText.text = GameInfosUtils.GetChartInfosString();
-                ChartInfosObj.transform.localScale = new Vector3(1, 0.95f, 1);
+                TextObjManager.TextLowerLeftObj = TextLowerLeftObj;
             }
 
-            // Score Stats 
-            if ((Configs.Main.DisplayHighestScore || Configs.Main.DisplayScoreGap) && !IsSpellMode)
+            // Text Field Lower Right
+            if (Configs.TextFieldLowerRight.Enabled)
             {
-                ScoreStatsObj = CreateTextObj(
-                    "InfoPlus_ScoreStats",
+                var TextLowerRightObj = CreateTextObj(
+                    "InfoPlus_TextLowerRight",
+                    curPnlBattleUISub.transform.Find("Below"),
+                    Configs.TextFieldLowerRight,
+                    Constants.POS_LOWER_RIGHT_TEXT,
+                    false,
+                    TextAnchor.LowerRight,
+                    FontStyle.Italic
+                );
+                TextObjManager.TextLowerRightObj = TextLowerRightObj;
+            }
+
+            // Text Field Score Below
+            if (Configs.TextFieldScoreBelow.Enabled)
+            {
+                var TextScoreBelowObj = CreateTextObj(
+                    "InfoPlus_TextScoreBelow",
+                    curPnlBattleUISub.transform.Find("Score"),
+                    Configs.TextFieldScoreBelow,
+                    new Vector3(Constants.X_OFFSET_SCORE_BELOW_TEXT[stageType], Constants.POS_SCORE_BELOW_TEXT.y, Constants.POS_SCORE_BELOW_TEXT.z),
+                    false,
+                    TextAnchor.UpperLeft,
+                    FontStyle.Normal
+                );
+                TextObjManager.TextScoreBelowObj = TextScoreBelowObj;
+            }
+
+            // Text Field Score Right
+            if (Configs.TextFieldScoreRight.Enabled)
+            {
+                var TextScoreRightObj = CreateTextObj(
+                    "InfoPlus_TextScoreRight",
                     curPnlBattleUISub.transform.Find(imgIconApPath[..imgIconApPath.LastIndexOf('/')]),
+                    Configs.TextFieldScoreRight,
+                    new Vector3(Constants.POS_SCORE_RIGHT_TEXT.x, Constants.Y_OFFSET_SCORE_RIGHT_TEXT[stageType], Constants.POS_SCORE_RIGHT_TEXT.z),
                     true,
                     TextAnchor.LowerLeft,
-                    new Vector3(Constants.SCORE_STATS_POS.x, Constants.Y_BEHIND_SCORE[stageType], Constants.SCORE_STATS_POS.z),
-                    Configs.Main.Text1PositionOffset,
-                    Constants.SCORE_STATS_SIZE,
-                    FontStyle.Bold,
-                    true
+                    FontStyle.Bold
                 );
-                var scoreStatsRect = ScoreStatsObj.GetComponent<RectTransform>();
+                var scoreStatsRect = TextScoreRightObj.GetComponent<RectTransform>();
                 scoreStatsRect.anchorMin = new Vector2(1, 1);
                 scoreStatsRect.anchorMax = new Vector2(1, 1);
                 scoreStatsRect.pivot = new Vector2(1, 1);
-                TextObjManager.SetScoreStatsInstance(ScoreStatsObj);
+                TextObjManager.TextScoreRightObj = TextScoreRightObj;
             }
 
-            // Game Stats
-            if (Configs.Main.DisplayAccuracy || Configs.Main.DisplayMissCounts)
+            // Text Field Upper Left
+            if (Configs.TextFieldUpperLeft.Enabled)
             {
-                GameStatsObj = CreateTextObj(
-                    "InfoPlus_GameStats",
-                    curPnlBattleUISub.transform.Find("Score"),
+                var TextUpperLeftObj = CreateTextObj(
+                    "InfoPlus_TextUpperLeft",
+                    curPnlBattleUISub.transform.Find("Up"),
+                    Configs.TextFieldUpperLeft,
+                    Constants.POS_UPPER_LEFT_TEXT,
                     false,
                     TextAnchor.UpperLeft,
-                    new Vector3(Constants.X_BEHIND_SCORE_TEXT[stageType], Constants.GAME_STATS_POS.y, Constants.GAME_STATS_POS.z),
-                    Configs.Main.Text2PositionOffset,
-                    Constants.GAME_STATS_SIZE,
-                    FontStyle.Normal,
-                    true
+                    FontStyle.Bold
                 );
-                TextObjManager.SetGameStatsInstance(GameStatsObj);
+                TextObjManager.TextUpperLeftObj = TextUpperLeftObj;
             }
-            
-            // Note Stats
-            if (Configs.Main.DisplayNoteCounts && !IsSpellMode)
+
+            // Text Field Upper Right
+            if (Configs.TextFieldUpperRight.Enabled)
             {
-                NoteStatsObj = CreateTextObj(
-                    "InfoPlus_NoteStats",
-                    curPnlBattleUISub.transform.Find("Below"),
+                var TextUpperRightObj = CreateTextObj(
+                    "InfoPlus_TextUpperRight",
+                    curPnlBattleUISub.transform.Find("Up"),
+                    Configs.TextFieldUpperRight,
+                    Constants.POS_UPPER_RIGHT_TEXT,
                     false,
-                    TextAnchor.LowerLeft,
-                    Constants.NOTE_STATS_POS,
-                    Configs.Main.Text3PositionOffset,
-                    Constants.NOTE_STATS_SIZE,
-                    FontStyle.Italic,
-                    true
+                    TextAnchor.UpperRight,
+                    FontStyle.Normal
                 );
-                TextObjManager.SetNoteStatsInstance(NoteStatsObj);
+                var chartInfosText = TextUpperRightObj.GetComponent<Text>();
+                chartInfosText.lineSpacing = 0.8f;
+                TextUpperRightObj.transform.localScale = new Vector3(1, 0.95f, 1);
             }
 
             GameStatsManager.Init();
@@ -180,13 +180,11 @@ public class PnlBattleGameStartPatch
     private static GameObject CreateTextObj(
         string objectName,
         Transform parent,
+        ITextConfig config,
+        Vector3 position,
         bool skipRectReset,
         TextAnchor alignment,
-        Vector3 position,
-        string positionOffset,
-        int fontSize,
-        FontStyle fontStyle = FontStyle.Normal,
-        bool useCustomFont = false)
+        FontStyle fontStyle = FontStyle.Normal)
         {
             var obj = parent.Find(objectName)?.gameObject ??
                       Object.Instantiate(TextObjectTemplate, parent);
@@ -195,9 +193,7 @@ public class PnlBattleGameStartPatch
             Object.Destroy(obj.transform.Find("ImgIconApDjmax").gameObject);
             Object.Destroy(obj.GetComponent<ContentSizeFitter>());
 
-            var offset = Utils.Helper.StringToVector2(positionOffset);
-
-            if (!skipRectReset || (offset.X != 0 && offset.Y != 0))
+            if (!skipRectReset)
             {
                 var rectTransform = obj.GetComponent<RectTransform>();
                 rectTransform.anchorMin = rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
@@ -209,14 +205,25 @@ public class PnlBattleGameStartPatch
             }
 
             var text = obj.GetComponent<Text>();
-            if (useCustomFont)
-                text.font = FontUtils.GetFont(TextFontType.SnapsTaste);
+            switch (config.Font)
+            {
+                case "Snaps Taste":
+                    text.font = FontUtils.GetFont(TextFontType.SnapsTaste);
+                    break;
+                case "Lato":
+                    text.font = FontUtils.GetFont(TextFontType.LatoRegular);
+                    break;
+            }
             text.alignment = alignment;
             text.fontStyle = fontStyle;
-            text.fontSize = fontSize;
+            text.fontSize = config.FontSize;
+            text.color = config.FontColor.ToColor();
             
-            obj.transform.localPosition = position;
-            obj.transform.localPosition.Set(offset.X, offset.Y, obj.transform.localPosition.y);
+            obj.transform.localPosition = new(
+                position.x + config.OffsetX,
+                position.y + config.OffsetY,
+                position.z);
+
             return obj;
-    }
+        }
 }

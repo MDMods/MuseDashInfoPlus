@@ -16,7 +16,7 @@ public class PnlVictorySetDetailInfoPatch
     private static void Postfix(PnlVictory __instance)
     {
 
-        if (Utils.Helper.OutputNoteRecordsToDesktop)
+        if (Helper.OutputNoteRecordsToDesktop)
             NoteRecordManager.ExportToExcel();
 
         if (AccuracyRest != 0 || Math.Round(GetTrueAccuracy(), 2) != Math.Round(GetCalculatedAccuracy(), 2))

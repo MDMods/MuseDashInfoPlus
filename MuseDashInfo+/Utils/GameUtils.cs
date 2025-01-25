@@ -1,0 +1,23 @@
+﻿using Il2CppAssets.Scripts.Database;
+
+namespace MDIP.Utils;
+
+public static class GameUtils
+{
+    public static bool IsSpellMode { get; set; } = false;
+
+    public static void Reset() => IsSpellMode = false;
+
+    public static string MusicName => GlobalDataBase.dbBattleStage.selectedMusicName;
+    public static int MusicDiff => GlobalDataBase.dbBattleStage.selectedDifficulty;
+    public static string MusicLevel => GlobalDataBase.dbBattleStage.selectedMusicInfo.GetMusicLevelStringByDiff(MusicDiff);
+    public static string MusicDiffStr => (MusicDiff switch
+    {
+        1 => Configs.Main.TextDiff1,
+        2 => Configs.Main.TextDiff2,
+        3 => Configs.Main.TextDiff3,
+        4 => Configs.Main.TextDiff4,
+        5 => Configs.Main.TextDiff5,
+        _ => "Unknown"
+    }).ToUpper();
+}
