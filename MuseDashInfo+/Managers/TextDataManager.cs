@@ -26,8 +26,10 @@ public static class TextDataManager
         UpdateCachedValue("{gap}", GameStatsManager.FormatScoreGap());
         UpdateCachedValue("{total}", ((int)GameStatsManager.AccuracyTotal).ToString());
         UpdateCachedValue("{hit}", ((int)GameStatsManager.AccuracyCounted).ToString());
-        UpdateCachedValue("{song}", GameUtils.MusicName);
+        UpdateCachedValue("{song}", GameUtils.MusicName.TruncateByWidth(45));
         UpdateCachedValue("{diff}", GameUtils.MusicDiffStr);
+        UpdateCachedValue("{level}", GameUtils.MusicLevel);
+
         UpdateCachedValue("{level}", GameUtils.MusicLevel);
     }
 
