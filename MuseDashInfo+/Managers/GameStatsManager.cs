@@ -8,8 +8,8 @@ using System;
 using MelonLoader;
 
 using MDIP.Utils;
-using MDIP.Patches;
 using MDIP.Modules;
+using System.Text;
 
 namespace MDIP.Managers;
 
@@ -17,6 +17,7 @@ public static class GameStatsManager
 {
     private static StageBattleComponent _stage;
     private static TaskStageTarget _task;
+    private static BattleRoleAttributeComponent _battle;
 
     private static int _savedHighScore = 0;
     public static bool SavedHighScoreLocked = false;
@@ -39,7 +40,7 @@ public static class GameStatsManager
     private static int MashedNum = -1;
 
     public record struct CurrentStats(
-        int Perfect, int Great, int Music, int Energy, int Block, int RedPoint,
+        int Perfect, int Great, int Early, int Late, int Music, int Energy, int Block, int RedPoint,
         int Score, bool IsHighScore = false
     );
 
@@ -82,6 +83,8 @@ public static class GameStatsManager
         _current = new CurrentStats(
             _task.m_PerfectResult,
             _task.m_GreatResult,
+            _battle.early,
+            _battle.late,
             _task.m_MusicCount,
             _task.m_EnergyCount,
             _current.Block,
@@ -146,15 +149,40 @@ public static class GameStatsManager
 
     public static string FormatStats()
     {
-        if (_current.Great + MissCount == 0) return "AP".Colored(Constants.COLOR_RANK_AP);
-
         var parts = new List<string>();
-        if (_current.Great > 0)
-            parts.Add($"{_current.Great}G".Colored(Configs.Main.GreatCountsColor));
-        if (MissCountHitable + _miss.Block > 0)
-            parts.Add($"{MissCountHitable + _miss.Block}M".Colored(Configs.Main.NormalMissCountsColor));
-        if (!Utils.GameUtils.IsSpellMode && MissCountCollectable > 0)
-            parts.Add($"{MissCountCollectable}H".Colored(Configs.Main.CollectableMissCountsColor));
+
+        if (_current.Great + MissCount == 0) // AP
+        {
+            if (_current.Early + _current.Late == 0) // TP
+                return Configs.Main.TextTruePerfect;
+
+            parts.Add(Configs.Main.TextAllPerfect.Colored(Constants.COLOR_RANK_AP));
+
+            if (Configs.Main.ShowEarlyLateCounts)
+            {
+                if (_current.Early > 0)
+                    parts.Add($"{_current.Early}E".Colored(Configs.Main.EarlyCountsColor));
+                if (_current.Late > 0)
+                    parts.Add($"{_current.Late}L".Colored(Configs.Main.LateCountsColor));
+            }
+        }
+        else // Not AP
+        {
+            if (_current.Great > 0)
+                parts.Add($"{_current.Great}G".Colored(Configs.Main.GreatCountsColor));
+            if (MissCountHitable + _miss.Block > 0)
+                parts.Add($"{MissCountHitable + _miss.Block}M".Colored(Configs.Main.NormalMissCountsColor));
+            if (!Utils.GameUtils.IsSpellMode && MissCountCollectable > 0)
+                parts.Add($"{MissCountCollectable}H".Colored(Configs.Main.CollectableMissCountsColor));
+
+            if (Configs.Main.EarlyLateCountsDisplayMode == 2)
+            {
+                if (_current.Early > 0)
+                    parts.Add($"{_current.Early}E".Colored(Configs.Main.EarlyCountsColor));
+                if (_current.Late > 0)
+                    parts.Add($"{_current.Late}L".Colored(Configs.Main.LateCountsColor));
+            }
+        }
 
         return string.Join(" ", parts);
     }
@@ -251,6 +279,7 @@ public static class GameStatsManager
         {
             _stage = Singleton<StageBattleComponent>.instance;
             _task = Singleton<TaskStageTarget>.instance;
+            _battle = Singleton<BattleRoleAttributeComponent>.instance;
             _savedHighScore = Math.Max(BattleHelper.GetCurrentMusicHighScore(), SavedHighScore);
 
             foreach (var note in _stage.GetMusicData())
@@ -287,6 +316,8 @@ public static class GameStatsManager
     {
         _stage = null;
         _task = null;
+        _battle = null;
+
         _current = default;
         _total = default;
         _miss = default;

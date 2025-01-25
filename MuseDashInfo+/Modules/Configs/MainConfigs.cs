@@ -42,11 +42,11 @@ public class MainConfigs : ConfigBase
 
     [ConfigCommentZh("Early 计数器的文本颜色")]
     [ConfigCommentEn("Text color of Early count")]
-    public string EarlyCountsColor { get; set; } = Utils.Constants.COLOR_WHITE;
+    public string EarlyCountsColor { get; set; } = Utils.Constants.COLOR_EARLY_COUNT;
 
     [ConfigCommentZh("Late 计数器的文本颜色")]
     [ConfigCommentEn("Text color of Late count")]
-    public string LateCountsColor { get; set; } = Utils.Constants.COLOR_WHITE;
+    public string LateCountsColor { get; set; } = Utils.Constants.COLOR_LATE_COUNT;
 
     [ConfigCommentZh("AP 准确度文本颜色")]
     [ConfigCommentEn("Accuracy text color of AP rank")]

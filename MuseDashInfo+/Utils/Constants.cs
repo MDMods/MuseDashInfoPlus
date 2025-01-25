@@ -19,6 +19,9 @@ public static class Constants
     public const string COLOR_GAP_BEHIND = "#9338fb";
     public const string COLOR_GAP_AHEAD = "#fe41f3";
 
+    public const string COLOR_EARLY_COUNT = "#38bfee";
+    public const string COLOR_LATE_COUNT = "#ff089f";
+
     public const string COLOR_RANK_AP = "#fff000";
     public const string COLOR_RANK_SS = "#ccf0fe";
     public const string COLOR_RANK_S = "#ff0089";
