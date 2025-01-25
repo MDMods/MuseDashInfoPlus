@@ -75,7 +75,7 @@ public class PnlBattleGameStartPatch
             // Text Field Lower Left
             if (Configs.TextFieldLowerLeft.Enabled)
             {
-                var TextLowerLeftObj = CreateTextObj(
+                var obj = CreateTextObj(
                     "InfoPlus_TextLowerLeft",
                     curPnlBattleUISub.transform.Find("Below"),
                     Configs.TextFieldLowerLeft,
@@ -84,13 +84,13 @@ public class PnlBattleGameStartPatch
                     TextAnchor.LowerLeft,
                     FontStyle.Italic
                 );
-                TextObjManager.TextLowerLeftObj = TextLowerLeftObj;
+                TextObjManager.TextLowerLeftObj = obj;
             }
 
             // Text Field Lower Right
             if (Configs.TextFieldLowerRight.Enabled)
             {
-                var TextLowerRightObj = CreateTextObj(
+                var obj = CreateTextObj(
                     "InfoPlus_TextLowerRight",
                     curPnlBattleUISub.transform.Find("Below"),
                     Configs.TextFieldLowerRight,
@@ -99,13 +99,13 @@ public class PnlBattleGameStartPatch
                     TextAnchor.LowerRight,
                     FontStyle.Italic
                 );
-                TextObjManager.TextLowerRightObj = TextLowerRightObj;
+                TextObjManager.TextLowerRightObj = obj;
             }
 
             // Text Field Score Below
             if (Configs.TextFieldScoreBelow.Enabled)
             {
-                var TextScoreBelowObj = CreateTextObj(
+                var obj = CreateTextObj(
                     "InfoPlus_TextScoreBelow",
                     curPnlBattleUISub.transform.Find("Score"),
                     Configs.TextFieldScoreBelow,
@@ -114,13 +114,13 @@ public class PnlBattleGameStartPatch
                     TextAnchor.UpperLeft,
                     FontStyle.Normal
                 );
-                TextObjManager.TextScoreBelowObj = TextScoreBelowObj;
+                TextObjManager.TextScoreBelowObj = obj;
             }
 
             // Text Field Score Right
             if (Configs.TextFieldScoreRight.Enabled)
             {
-                var TextScoreRightObj = CreateTextObj(
+                var obj = CreateTextObj(
                     "InfoPlus_TextScoreRight",
                     curPnlBattleUISub.transform.Find(imgIconApPath[..imgIconApPath.LastIndexOf('/')]),
                     Configs.TextFieldScoreRight,
@@ -129,17 +129,17 @@ public class PnlBattleGameStartPatch
                     TextAnchor.LowerLeft,
                     FontStyle.Bold
                 );
-                var scoreStatsRect = TextScoreRightObj.GetComponent<RectTransform>();
-                scoreStatsRect.anchorMin = new Vector2(1, 1);
-                scoreStatsRect.anchorMax = new Vector2(1, 1);
-                scoreStatsRect.pivot = new Vector2(1, 1);
-                TextObjManager.TextScoreRightObj = TextScoreRightObj;
+                var rect = obj.GetComponent<RectTransform>();
+                rect.anchorMin = new Vector2(1, 1);
+                rect.anchorMax = new Vector2(1, 1);
+                rect.pivot = new Vector2(1, 1);
+                TextObjManager.TextScoreRightObj = obj;
             }
 
             // Text Field Upper Left
             if (Configs.TextFieldUpperLeft.Enabled)
             {
-                var TextUpperLeftObj = CreateTextObj(
+                var obj = CreateTextObj(
                     "InfoPlus_TextUpperLeft",
                     curPnlBattleUISub.transform.Find("Up"),
                     Configs.TextFieldUpperLeft,
@@ -148,13 +148,13 @@ public class PnlBattleGameStartPatch
                     TextAnchor.UpperLeft,
                     FontStyle.Bold
                 );
-                TextObjManager.TextUpperLeftObj = TextUpperLeftObj;
+                TextObjManager.TextUpperLeftObj = obj;
             }
 
             // Text Field Upper Right
             if (Configs.TextFieldUpperRight.Enabled)
             {
-                var TextUpperRightObj = CreateTextObj(
+                var obj = CreateTextObj(
                     "InfoPlus_TextUpperRight",
                     curPnlBattleUISub.transform.Find("Up"),
                     Configs.TextFieldUpperRight,
@@ -163,9 +163,10 @@ public class PnlBattleGameStartPatch
                     TextAnchor.UpperRight,
                     FontStyle.Normal
                 );
-                var chartInfosText = TextUpperRightObj.GetComponent<Text>();
-                chartInfosText.lineSpacing = 0.8f;
-                TextUpperRightObj.transform.localScale = new Vector3(1, 0.95f, 1);
+                var text = obj.GetComponent<Text>();
+                text.lineSpacing = 0.8f;
+                obj.transform.localScale = new Vector3(1, 0.95f, 1);
+                TextObjManager.TextUpperRightObj = obj;
             }
 
             GameStatsManager.Init();

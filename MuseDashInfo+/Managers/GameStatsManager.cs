@@ -3,13 +3,12 @@ using Il2CppAssets.Scripts.GameCore.HostComponent;
 using Il2CppAssets.Scripts.PeroTools.Commons;
 using Il2CppFormulaBase;
 using Il2CppGameLogic;
+using MelonLoader;
 using System.Collections.Generic;
 using System;
-using MelonLoader;
 
 using MDIP.Utils;
 using MDIP.Modules;
-using System.Text;
 
 namespace MDIP.Managers;
 
@@ -151,9 +150,9 @@ public static class GameStatsManager
     {
         var parts = new List<string>();
 
-        if (_current.Great + MissCount == 0) // AP
+        if (_current.Great + MissCount < 1) // AP
         {
-            if (_current.Early + _current.Late == 0) // TP
+            if (_current.Early + _current.Late < 1) // TP
                 return Configs.Main.TextTruePerfect;
 
             parts.Add(Configs.Main.TextAllPerfect.Colored(Constants.COLOR_RANK_AP));
