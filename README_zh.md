@@ -17,7 +17,6 @@ MuseDashInfo+ 是一个高度客制化的 MuseDash 游戏模组，用于显示�
 ## 注意事项
 
 - 若您加载了 [SongDesc](https://github.com/MDMods/SongDesc) 模组，谱面信息将默认隐藏
-- 目前字体描边的功能还未受支持，请等待后续更新
 - 东方特殊谱面由于不受支持将导致部分数据无法正常工作
 - 物量计数器会将长条视为两个 Note，首尾各算一个
 

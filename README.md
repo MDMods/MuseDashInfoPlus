@@ -17,7 +17,6 @@ All data elements can be freely customized in terms of visibility, position, siz
 ## Important Notes
 
 - If you loaded [SongDesc](https://github.com/mdmods/songdesc) mod, Chart Info will be disabled by default, use configuration to re-enable
-- Text outline feature is currently not supported and will be available in future updates
 - Some data may not function properly for Touhou Danmaku charts due to compatibility issues
 - The Note Counter treats hold notes as two separate notes (counting both the start and end), while the Miss Counter and vanilla game count each hold note as a single note
 
