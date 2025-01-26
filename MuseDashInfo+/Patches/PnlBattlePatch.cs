@@ -20,37 +20,52 @@ public class PnlBattleGameStartPatch
 
     private static float currentY => ScoreTransform?.localPosition.y ?? Constants.SCORE_ZOOM_OUT_Y;
     private static float prevY = Constants.SCORE_ZOOM_OUT_Y;
-    private static bool isMovingDown = false;
-    private static float currentScale = 3f;
+    private static bool isZooming = false;
+    private static bool isZoomingIn = false;
     private static float targetScale = 3f;
-    private static float zoomProgress = 1f;
+    private static float currentScale = 3f;
+    private static float zoomProgress = 0f;
     private const float zoomSpeed = 2f;
+    private const float SIGNIFICANT_Y_CHANGE = 10f;
 
     public static void CheckAndZoom()
     {
         if (CurPnlBattle == null || ScoreTransform == null) return;
 
-        if (currentY < prevY && !isMovingDown && prevY == Constants.SCORE_ZOOM_OUT_Y)
+        if (Mathf.Abs(currentScale - CurPnlBattle.localScale.y) > 0.01f)
         {
-            isMovingDown = true;
-            targetScale = 1f;
-            zoomProgress = 0f;
-        }
-        else if (currentY > prevY && isMovingDown && prevY == Constants.SCORE_ZOOM_IN_Y)
-        {
-            isMovingDown = false;
-            targetScale = 3f;
-            zoomProgress = 0f;
+            currentScale = CurPnlBattle.localScale.y;
+            targetScale = currentScale;
         }
 
-        zoomProgress = Mathf.Min(zoomProgress + Time.fixedDeltaTime * zoomSpeed, 1f);
+        float yChange = currentY - prevY;
+        if (!isZooming && Mathf.Abs(yChange) > SIGNIFICANT_Y_CHANGE)
+        {
+            isZoomingIn = yChange < 0;
+            isZooming = true;
+            zoomProgress = 0f;
+            targetScale = isZoomingIn ? 1f : 3f;
+        }
 
-        float easedProgress;
-        if (isMovingDown) easedProgress = EaseOutCubic(zoomProgress);
-        else easedProgress = EaseInCubic(zoomProgress);
+        if (isZooming)
+        {
+            zoomProgress = Mathf.Min(zoomProgress + Time.fixedDeltaTime * zoomSpeed, 1f);
 
-        currentScale = Mathf.Lerp(isMovingDown ? 3f : 1f, isMovingDown ? 1f : 3f, easedProgress);
-        CurPnlBattle.localScale = new Vector3(1f, currentScale, 1f);
+            float easedProgress = isZoomingIn ? EaseOutCubic(zoomProgress) : EaseInCubic(zoomProgress);
+            currentScale = Mathf.Lerp(isZoomingIn ? 3f : 1f, targetScale, easedProgress);
+
+            CurPnlBattle.localScale = new Vector3(1f, currentScale, 1f);
+
+            if (zoomProgress >= 1f)
+            {
+                isZooming = false;
+                currentScale = targetScale;
+            }
+        }
+        else
+        {
+            CurPnlBattle.localScale = new Vector3(1f, currentScale, 1f);
+        }
 
         prevY = currentY;
     }
@@ -65,10 +80,11 @@ public class PnlBattleGameStartPatch
         ScoreTransform = null;
 
         prevY = Constants.SCORE_ZOOM_OUT_Y;
-        isMovingDown = false;
-        currentScale = 3f;
+        isZooming = false;
+        isZoomingIn = false;
         targetScale = 3f;
-        zoomProgress = 1f;
+        currentScale = 3f;
+        zoomProgress = 0f;
     }
 
     private static void Postfix(PnlBattle __instance)
@@ -100,6 +116,11 @@ public class PnlBattleGameStartPatch
             {
                 throw new System.Exception("Unknown battle stage type, everything will not be loaded!");
             }
+
+            // Zoom out all UI
+            curPnlBattle.transform.localScale = new(1f, 3f, 1f);
+            CurPnlBattle = curPnlBattle.transform;
+            ScoreTransform = curPnlBattle.transform.Find("Score");
 
             TextObjectTemplate = Object.Instantiate(pnlBattleOthers.transform.Find("Score/Djmax/TxtScore_djmax").gameObject);
             Object.Destroy(TextObjectTemplate.transform.Find("ImgIconApDjmax").gameObject);
@@ -249,11 +270,6 @@ public class PnlBattleGameStartPatch
             GameStatsManager.Init();
             TextDataManager.UpdateConstants();
             TextObjManager.UpdateAllText();
-
-            // Zoom out all UI
-            CurPnlBattle = curPnlBattle.transform;
-            CurPnlBattle.localScale = new(1f, 3f, 1f);
-            ScoreTransform = curPnlBattle.transform.Find("Score");
         }
         catch (System.Exception e)
         {
