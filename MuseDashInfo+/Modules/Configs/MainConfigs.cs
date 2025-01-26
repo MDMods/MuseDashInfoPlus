@@ -4,6 +4,10 @@ namespace MDIP.Modules.Configs;
 
 public class MainConfigs : ConfigBase
 {
+    [ConfigCommentZh("准确率显示模式\n1：从100%倒减\n2：实时计算")]
+    [ConfigCommentEn("Accuracy display mode\n1: Subtract from 100%\n2: Calculate in real-time")]
+    public int AccuracyDisplayMode { get; set; } = 1;
+
     [ConfigCommentZh("漏击计数的文本颜色")]
     [ConfigCommentEn("Accuracy text color of missed count")]
     public string NormalMissCountsColor { get; set; } = Utils.Constants.COLOR_WHITE;
@@ -36,7 +40,7 @@ public class MainConfigs : ConfigBase
     [ConfigCommentEn("Show Early & Late counts")]
     public bool ShowEarlyLateCounts { get; set; } = true;
 
-    [ConfigCommentZh("Early & Late 计数器的显示模式\n1: 仅在 AP 时显示\n2: 总是显示")]
+    [ConfigCommentZh("Early & Late 计数器的显示模式\n1：仅在 AP 时显示\n2：总是显示")]
     [ConfigCommentEn("Display mode of Early & Late counts\n1: Show only when AP\n2: Always show")]
     public int EarlyLateCountsDisplayMode { get; set; } = 1;
 
