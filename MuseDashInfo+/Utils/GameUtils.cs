@@ -4,9 +4,16 @@ namespace MDIP.Utils;
 
 public static class GameUtils
 {
+    public static bool IsOthersMode { get; set; } = false;
     public static bool IsSpellMode { get; set; } = false;
+    public static bool IsWisadelMode { get; set; } = false;
 
-    public static void Reset() => IsSpellMode = false;
+    public static void Reset()
+    {
+        IsOthersMode = false;
+        IsSpellMode = false;
+        IsWisadelMode = false;
+    }
 
     public static string MusicName => GlobalDataBase.dbBattleStage.selectedMusicName;
     public static int MusicDiff => GlobalDataBase.dbBattleStage.selectedDifficulty;

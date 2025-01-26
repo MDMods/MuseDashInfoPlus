@@ -6,6 +6,7 @@ using MDIP.Managers;
 using MDIP.Modules.Configs;
 using MDIP.Modules;
 using MDIP.Utils;
+using MDIP.Patches;
 
 namespace MDIP;
 
@@ -75,6 +76,7 @@ public class MDIPMod : MelonMod
                 if (Helper.OutputNoteRecordsToDesktop)
                     NoteRecordManager.Reset();
 
+                PnlBattleGameStartPatch.Reset();
                 GameStatsManager.Reset();
                 TextObjManager.Reset();
                 GameUtils.Reset();
@@ -84,10 +86,19 @@ public class MDIPMod : MelonMod
         }
     }
 
+    public override void OnFixedUpdate()
+    {
+        base.OnFixedUpdate();
+
+        if (GameStatsManager.IsInGame)
+            PnlBattleGameStartPatch.CheckAndZoom();
+    }
+
     private static int lastUpdateSecond = -1;
     public override void OnLateUpdate()
     {
         base.OnLateUpdate();
+
         if (lastUpdateSecond == DateTime.Now.Second || !GameStatsManager.IsInGame) return;
         lastUpdateSecond = DateTime.Now.Second;
 

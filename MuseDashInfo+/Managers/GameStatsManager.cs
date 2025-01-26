@@ -75,7 +75,7 @@ public static class GameStatsManager
 
     public static bool IsInGame => _task != null && _stage != null;
     public static bool IsAllPerfect => IsInGame && _current.Great + MissCount < 1;
-    public static bool IsTruePerfect => IsInGame && _current.Early + _current.Late < 1;
+    public static bool IsTruePerfect => IsAllPerfect && _current.Early + _current.Late < 1;
 
     public static void UpdateCurrentStats()
     {

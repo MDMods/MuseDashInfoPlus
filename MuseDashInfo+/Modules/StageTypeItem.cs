@@ -1,10 +1,11 @@
 ﻿namespace MDIP.Modules;
 
-public enum StageType
+public enum ScoreStyleType
 {
     OtherEN,
     OtherCN,
     GC,
     Djmax,
+    ArkNight,
     Unknown
 }
