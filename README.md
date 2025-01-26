@@ -33,7 +33,7 @@ All data elements can be freely customized in terms of visibility, position, siz
 
 Configuration files are organized by category and stored in the `..\MuseDash\UserData\Info+\` directory. All configuration entries include comments. Please understand the purpose of each setting before making modifications.
 
-All configuration files are **automatically generated upon first launch**. Changes take effect after **restarting the game**.
+All configuration files are **automatically generated upon first launch**. After modifying the configuration, **save the file for it to take effect** (if you are in the game, it will take effect in the next game).
 
 - `MainConfigs.yml`: Primary configuration file
 - `TextFieldLowerLeftConfigs.yml`: Text configuration for lower-left screen area
