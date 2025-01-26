@@ -321,6 +321,13 @@ public class PnlBattleGameStartPatch
             text.fontStyle = fontStyle;
             text.fontSize = config.FontSize;
             text.color = config.FontColor.ToColor();
+
+            if (config.FontOutlineEnabled)
+            {
+                var outline = obj.AddComponent<Outline>();
+                outline.effectColor = config.FontOutlineColor.ToColor();
+                outline.effectDistance = new Vector2(config.FontOutlineWidth, config.FontOutlineWidth);
+            }
             
             obj.transform.localPosition = new(
                 position.x + config.OffsetX,
