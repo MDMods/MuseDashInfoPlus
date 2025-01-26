@@ -71,6 +71,11 @@ public class MDIPMod : MelonMod
             case "GameMain":
                 break;
 
+            case "Welcome":
+            case "UISystem_PC":
+                ConfigManager.Instance.ActivateWatcher();
+                break;
+
             default:
 
                 if (Helper.OutputNoteRecordsToDesktop)

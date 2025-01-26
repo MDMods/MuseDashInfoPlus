@@ -93,7 +93,7 @@ namespace MDIP.Modules
             return Path.Combine(directory, $"{fileName}.v{version}{extension}");
         }
 
-        private T LoadConfig<T>() where T : ConfigBase, new()
+        public T LoadConfig<T>() where T : ConfigBase, new()
         {
             if (!File.Exists(ConfigPath))
             {

@@ -9,6 +9,7 @@ using UnityEngine;
 using MDIP.Managers;
 using MDIP.Modules.Configs;
 using MDIP.Modules;
+using MelonLoader;
 
 namespace MDIP.Utils;
 
@@ -26,11 +27,14 @@ public static class Configs
 
     public static string GetConfigPath(string fileName)
     {
-        string configFolder = Path.Combine(Application.dataPath, @"..\UserData\Info+");
+        string configFolder = Path.GetFullPath(Path.Combine(Application.dataPath, "..", "UserData", "Info+"));
         if (!Directory.Exists(configFolder))
+        {
             Directory.CreateDirectory(configFolder);
-
-        return Path.Combine(configFolder, fileName);
+            Melon<MDIPMod>.Logger.Msg("Created config directory");
+        }
+        string fullPath = Path.GetFullPath(Path.Combine(configFolder, fileName));
+        return fullPath;
     }
 
     public static string GenerateComments(string chineseComment, string englishComment)

@@ -41,7 +41,15 @@ namespace MDIP.Managers
 
             _watcher = new FileSystemWatcher
             {
-                NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.CreationTime
+                Filter = "*.yml",
+                NotifyFilter = NotifyFilters.Attributes
+                     | NotifyFilters.CreationTime
+                     | NotifyFilters.DirectoryName
+                     | NotifyFilters.FileName
+                     | NotifyFilters.LastAccess
+                     | NotifyFilters.LastWrite
+                     | NotifyFilters.Security
+                     | NotifyFilters.Size
             };
 
             _watcher.Changed += OnConfigFileChanged;
@@ -62,6 +70,8 @@ namespace MDIP.Managers
             _disposed = true;
         }
 
+        public void ActivateWatcher() => _watcher.EnableRaisingEvents = true;
+
         public void RegisterModule(string name, string configFileName)
         {
             if (_modules.ContainsKey(name))
@@ -75,8 +85,6 @@ namespace MDIP.Managers
             _modules[name] = module;
 
             _watcher.Path = Path.GetDirectoryName(configPath);
-            _watcher.Filter = Path.GetFileName(configPath);
-            _watcher.EnableRaisingEvents = true;
         }
 
         public ConfigItem GetModule(string moduleName)
@@ -105,14 +113,24 @@ namespace MDIP.Managers
 
         private void OnConfigFileChanged(object sender, FileSystemEventArgs e)
         {
-            foreach (var module in _modules.Values)
+            Melon<MDIPMod>.Logger.Msg($"Config file changed: {e.Name}");
+            for (int i = 0; i < 3; i++)
             {
-                if (module.ConfigPath == e.FullPath)
+                try
                 {
-                    Thread.Sleep(100); // Wait for file to be released
-                    module.ReloadConfig();
-                    break;
+                    Thread.Sleep(100);
+                    foreach (var module in _modules.Values)
+                    {
+                        if (module.ConfigPath == e.FullPath)
+                        {
+                            Melon<MDIPMod>.Logger.Msg($"Reloading: {e.Name}");
+                            module.ReloadConfig();
+                            break;
+                        }
+                    }
+                    return;
                 }
+                catch (IOException) { continue; }
             }
         }
     }
