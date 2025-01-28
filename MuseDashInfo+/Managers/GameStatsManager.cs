@@ -35,7 +35,7 @@ public static class GameStatsManager
     private static HashSet<int> MissedNoteIds = new();
 
     private static MusicData MashingNote;
-    private static int MashedNum = -1;
+    private static int MashedNum = 0;
 
     public record struct CurrentStats(
         int Perfect, int Great, int Early, int Late, int Music, int Energy, int Block, int RedPoint,
@@ -257,7 +257,7 @@ public static class GameStatsManager
     public static void ResetMashing()
     {
         MashingNote = null;
-        MashedNum = -1;
+        MashedNum = 0;
     }
 
     public static void CheckMashing()
@@ -266,9 +266,11 @@ public static class GameStatsManager
         bool timesup = _stage.realTimeTick > (MashingNote.tick + MashingNote.configData.length) * 1000;
         if (timesup)
         {
-            bool reachHigh = MashedNum >= MashingNote.GetMulHitHighThreshold();
-            if (!reachHigh && !MissedNoteIds.Contains(int.Parse(MashingNote.noteData.id)))
+            bool tooLow = MashedNum < MashingNote.GetMulHitLowThreshold();
+
+            if (tooLow && !MissedNoteIds.Contains(int.Parse(MashingNote.noteData.id)))
                 _miss.Mul++;
+
             ResetMashing();
         }
     }
@@ -279,10 +281,7 @@ public static class GameStatsManager
         {
             MashingNote = note;
             MashedNum++;
-            if (MashedNum < note.GetMulHitHighThreshold())
-                return;
         }
-        ResetMashing();
     }
 
     public static void Init()

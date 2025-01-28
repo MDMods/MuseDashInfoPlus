@@ -33,8 +33,9 @@
     <PackageReference Include="Lib.Harmony" Version="2.2.2" />
   </ItemGroup>
 	
-  <Target Name="Copy" AfterTargets="Build" Condition="'$(MuseDash)' != ''">
-	<Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(MuseDash)/Mods/" Condition="'$(Configuration)' == 'Debug'" />
+  <Target Name="Copy" AfterTargets="Build" Condition="'$(MD_DIRECTORY)' != ''">
+	<Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(MD_DIRECTORY)/Mods/" Condition="'$(Configuration)' == 'Debug'" />
+    <Message Text="Copied DLL -&gt; $(MD_DIRECTORY)\Mods\$(AssemblyName).dll" Importance="High"/>
   </Target>
 
 </Project>
