@@ -7,18 +7,10 @@ public static class Helper
 {
 	public static Func<MusicData, bool> IsSingleNoteFunc = note => IsRegularNote(note.noteData.type) && !note.isLongPressing;
 
-	public static bool AmDebugger
-	{
-#if DEBUG
-		get => true;
-#else
-		get => false;
-#endif
-	}
+	public static bool OutputAccuracyCalculationDatas => Configs.Advanced.OutputAccuracyCalculationData;
 
-	public static bool OutputAccuracyCalculationDatas => AmDebugger || Configs.Advanced.OutputAccuracyCalculationData;
+	public static bool OutputNoteRecordsToDesktop => Configs.Advanced.OutputNoteRecordsToDesktop;
 
-	public static bool OutputNoteRecordsToDesktop => AmDebugger || Configs.Advanced.OutputNoteRecordsToDesktop;
 	public static bool IsRegularNote(uint noteType) => noteType >= 1 && noteType <= 8;
 
 	public static Vector2 StringToVector2(string text)
