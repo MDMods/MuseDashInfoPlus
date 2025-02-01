@@ -2,8 +2,8 @@
 
 [AttributeUsage(AttributeTargets.Property)]
 public class ConfigCommentEnAttribute(
-	string comment
+    string comment
 ) : Attribute
 {
-	public string Comment { get; } = comment;
+    public string Comment { get; } = comment;
 }
