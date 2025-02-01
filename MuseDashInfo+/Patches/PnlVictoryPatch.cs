@@ -1,10 +1,4 @@
-﻿using System;
-using HarmonyLib;
-using Il2Cpp;
-using MDIP.Managers;
-using MDIP.Utils;
-using MelonLoader;
-using UnityEngine;
+﻿using Il2Cpp;
 using UnityEngine.UI;
 using static MDIP.Managers.GameStatsManager;
 

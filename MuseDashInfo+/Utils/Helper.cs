@@ -1,7 +1,5 @@
-﻿using System;
-using System.Numerics;
-using Il2CppGameLogic;
-using MelonLoader;
+﻿using Il2CppGameLogic;
+using Vector2 = System.Numerics.Vector2;
 
 namespace MDIP.Utils;
 

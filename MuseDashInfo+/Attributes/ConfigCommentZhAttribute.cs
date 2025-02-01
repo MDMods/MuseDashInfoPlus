@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace MDIP.Attributes;
+﻿namespace MDIP.Attributes;
 
 [AttributeUsage(AttributeTargets.Property)]
 public class ConfigCommentZhAttribute : Attribute

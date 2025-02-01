@@ -1,15 +1,11 @@
-﻿using HarmonyLib;
-using Il2Cpp;
-using Il2CppSystem;
-using MDIP.Managers;
-using MDIP.Utils;
+﻿using Il2Cpp;
 
 namespace MDIP.Patches;
 
 [HarmonyPatch(typeof(BaseEnemyObjectController), nameof(BaseEnemyObjectController.ControllerMissCheck))]
 public class BaseEnemyObjectControllerPatch
 {
-	private static void Postfix(BaseEnemyObjectController __instance, int i, Decimal currentTick)
+	private static void Postfix(BaseEnemyObjectController __instance, int i, decimal currentTick)
 	{
 		if (!Helper.OutputNoteRecordsToDesktop) return;
 

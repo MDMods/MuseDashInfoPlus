@@ -1,9 +1,6 @@
-﻿using HarmonyLib;
-using Il2CppAssets.Scripts.GameCore.Managers;
+﻿using Il2CppAssets.Scripts.GameCore.Managers;
 using Il2CppAssets.Scripts.PeroTools.Commons;
 using Il2CppFormulaBase;
-using MDIP.Managers;
-using MDIP.Utils;
 
 namespace MDIP.Patches;
 

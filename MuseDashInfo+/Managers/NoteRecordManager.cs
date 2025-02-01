@@ -1,11 +1,5 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Il2CppAssets.Scripts.PeroTools.Commons;
+﻿using Il2CppAssets.Scripts.PeroTools.Commons;
 using Il2CppFormulaBase;
-using MDIP.Modules;
-using MDIP.Utils;
-using MelonLoader;
 
 namespace MDIP.Managers;
 

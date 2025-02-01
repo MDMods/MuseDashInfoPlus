@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace MDIP.Modules;
+﻿namespace MDIP.Modules;
 
 public class NoteRecord
 {

@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
+﻿using System.Reflection;
 using MDIP.Attributes;
-using MDIP.Modules.Configs;
-using MDIP.Utils;
-using MelonLoader;
 using Version = System.Version;
 
 namespace MDIP.Modules;

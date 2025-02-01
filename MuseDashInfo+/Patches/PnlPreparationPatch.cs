@@ -1,6 +1,4 @@
-﻿using HarmonyLib;
-using Il2Cpp;
-using MDIP.Managers;
+﻿using Il2Cpp;
 
 namespace MDIP.Patches;
 

@@ -1,12 +1,3 @@
-using System;
-using System.Linq;
-using MDIP.Managers;
-using MDIP.Modules;
-using MDIP.Modules.Configs;
-using MDIP.Patches;
-using MDIP.Utils;
-using MelonLoader;
-
 namespace MDIP;
 
 /// <summary>

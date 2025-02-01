@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace MDIP.Modules.Configs;
+﻿namespace MDIP.Modules.Configs;
 
 public abstract class ConfigBase
 {

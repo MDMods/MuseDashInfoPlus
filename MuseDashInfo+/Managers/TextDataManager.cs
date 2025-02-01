@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using MDIP.Utils;
-
-namespace MDIP.Managers;
+﻿namespace MDIP.Managers;
 
 public static class TextDataManager
 {

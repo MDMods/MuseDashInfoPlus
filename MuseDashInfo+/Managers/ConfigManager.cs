@@ -1,13 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using MDIP.Modules;
-using MDIP.Modules.Configs;
-using MDIP.Utils;
-using MelonLoader;
-
-namespace MDIP.Managers;
+﻿namespace MDIP.Managers;
 
 public static class ConfigManager
 {

@@ -1,7 +1,4 @@
-﻿using System;
-using MDIP.Utils;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine.UI;
 
 namespace MDIP.Managers;
 

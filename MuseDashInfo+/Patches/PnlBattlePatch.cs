@@ -1,12 +1,5 @@
-﻿using System;
-using HarmonyLib;
-using Il2CppAssets.Scripts.UI.Panels;
+﻿using Il2CppAssets.Scripts.UI.Panels;
 using MDIP.Interfaces;
-using MDIP.Managers;
-using MDIP.Modules;
-using MDIP.Utils;
-using MelonLoader;
-using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 

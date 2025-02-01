@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using Il2CppAssets.Scripts.Database;
+﻿using Il2CppAssets.Scripts.Database;
 using Il2CppAssets.Scripts.GameCore.HostComponent;
 using Il2CppAssets.Scripts.PeroTools.Commons;
 using Il2CppFormulaBase;
 using Il2CppGameLogic;
-using MDIP.Modules;
-using MDIP.Utils;
-using MelonLoader;
 using GameUtils = MDIP.Utils.GameUtils;
 
 namespace MDIP.Managers;
