@@ -20,8 +20,7 @@ public static class GameStatsManager
 	private static readonly HashSet<int> PlayedNoteIds = [];
 	private static readonly HashSet<int> MissedNoteIds = [];
 
-	private static MusicData MashingNote;
-	private static int MashedNum;
+	private static readonly Dictionary<int, (MusicData, int)> _mashingNotes = new();
 
 	private static CurrentStats _current;
 	private static TotalStats _total;
@@ -232,41 +231,49 @@ public static class GameStatsManager
 			case CountNoteAction.MissMul:
 				if (MissedNoteIds.Add(id))
 				{
-					ResetMashing();
+					ResetMashing(id);
 					_miss.Mul++;
 				}
 				break;
 		}
 	}
 
-	public static void ResetMashing()
+	public static void ResetMashing(int id = -1)
 	{
-		MashingNote = null;
-		MashedNum = 0;
+		if (id < 0)
+			_mashingNotes.Clear();
+		else
+			_mashingNotes.Remove(id);
 	}
 
 	public static void CheckMashing()
 	{
-		if (MashingNote == null) return;
-		var timesup = _stage.realTimeTick > (MashingNote.tick + MashingNote.configData.length) * 1000;
-		if (timesup)
-		{
-			var tooLow = MashedNum < MashingNote.GetMulHitLowThreshold();
+		if (_mashingNotes.Count < 1) return;
 
-			if (tooLow && !MissedNoteIds.Contains(int.Parse(MashingNote.noteData.id)))
+		foreach (var kvp in _mashingNotes)
+		{
+			var (id, (note, mashedNum)) = kvp;
+			if (_stage.realTimeTick <= note.missTick * 1000)
+				continue;
+
+			var tooLow = mashedNum < note.GetMulHitMidThreshold();
+			if (tooLow && !MissedNoteIds.Contains(id))
 				_miss.Mul++;
 
-			ResetMashing();
+			ResetMashing(id);
 		}
 	}
 
 	public static void Mashing(MusicData note)
 	{
-		if (!MissedNoteIds.Contains(int.Parse(note.noteData.id)))
-		{
-			MashingNote = note;
-			MashedNum++;
-		}
+		var id = int.Parse(note.noteData.id);
+		if (MissedNoteIds.Contains(id))
+			return;
+
+		_mashingNotes.TryAdd(id, (note, 0));
+		_mashingNotes[id] = (_mashingNotes[id].Item1, _mashingNotes[id].Item2 + 1);
+
+		CheckMashing();
 	}
 
 	public static void Init()
