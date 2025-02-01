@@ -16,6 +16,8 @@ public class MDIPMod : MelonMod
 	{
 		IsSongDescLoaded = RegisteredMelons.Any(mod => mod.MelonAssembly.Assembly.FullName.TrimStart().StartsWith("SongDesc"));
 
+		ConfigManager.Init();
+
 		ConfigManager.RegisterModule(ConfigName.MainConfigs, "MainConfigs.yml");
 		var mainConfigModule = ConfigManager.GetModule(ConfigName.MainConfigs);
 		mainConfigModule.RegisterUpdateCallback<MainConfigs>(cfg =>
