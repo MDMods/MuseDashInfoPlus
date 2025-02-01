@@ -72,7 +72,6 @@ public class MDIPMod : MelonMod
 				break;
 
 			case "Welcome":
-			case "UISystem_PC":
 				ConfigManager.ActivateWatcher();
 				break;
 
