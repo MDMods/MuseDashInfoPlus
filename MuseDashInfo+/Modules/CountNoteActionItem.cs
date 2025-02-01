@@ -2,12 +2,12 @@
 
 public enum CountNoteAction
 {
-    Block,
-    MissMonster,
-    MissBlock,
-    MissLong,
-    MissGhost,
-    MissEnergy,
-    MissMusic,
-    MissMul,
+	Block,
+	MissMonster,
+	MissBlock,
+	MissLong,
+	MissGhost,
+	MissEnergy,
+	MissMusic,
+	MissMul
 }

@@ -1,137 +1,139 @@
-﻿using MelonLoader;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
-
 using MDIP.Modules;
 using MDIP.Modules.Configs;
 using MDIP.Utils;
+using MelonLoader;
 
-namespace MDIP.Managers
+namespace MDIP.Managers;
+
+public class ConfigManager : IDisposable
 {
-    public class ConfigManager : IDisposable
-    {
-        private static readonly object _lock = new();
-        private static ConfigManager _instance;
-        public static ConfigManager Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    lock (_lock)
-                    {
-                        _instance ??= new ConfigManager();
-                    }
-                }
-                return _instance;
-            }
-        }
+	private static readonly object _lock = new();
+	private static ConfigManager _instance;
 
-        private readonly Dictionary<string, ConfigItem> _modules;
-        private readonly FileSystemWatcher _watcher;
-        private readonly YamlParser _yamlParser;
-        private bool _disposed;
+	private readonly Dictionary<string, ConfigItem> _modules;
+	private readonly FileSystemWatcher _watcher;
+	private readonly YamlParser _yamlParser;
+	private bool _disposed;
 
-        private ConfigManager()
-        {
-            _modules = new Dictionary<string, ConfigItem>();
-            _yamlParser = new YamlParser();
+	public static ConfigManager Instance
+	{
+		get
+		{
+			if (_instance == null)
+			{
+				lock (_lock)
+				{
+					_instance ??= new();
+				}
+			}
 
-            _watcher = new FileSystemWatcher
-            {
-                Filter = "*.yml",
-                NotifyFilter = NotifyFilters.Attributes
-                     | NotifyFilters.CreationTime
-                     | NotifyFilters.DirectoryName
-                     | NotifyFilters.FileName
-                     | NotifyFilters.LastAccess
-                     | NotifyFilters.LastWrite
-                     | NotifyFilters.Security
-                     | NotifyFilters.Size
-            };
+			return _instance;
+		}
+	}
 
-            _watcher.Changed += OnConfigFileChanged;
-        }
+	private ConfigManager()
+	{
+		_modules = new();
+		_yamlParser = new();
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+		_watcher = new()
+		{
+			Filter = "*.yml",
+			NotifyFilter = NotifyFilters.Attributes
+			               | NotifyFilters.CreationTime
+			               | NotifyFilters.DirectoryName
+			               | NotifyFilters.FileName
+			               | NotifyFilters.LastAccess
+			               | NotifyFilters.LastWrite
+			               | NotifyFilters.Security
+			               | NotifyFilters.Size
+		};
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (_disposed) return;
+		_watcher.Changed += OnConfigFileChanged;
+	}
 
-            if (disposing) _watcher?.Dispose();
+	public void Dispose()
+	{
+		Dispose(true);
+		GC.SuppressFinalize(this);
+	}
 
-            _disposed = true;
-        }
+	protected virtual void Dispose(bool disposing)
+	{
+		if (_disposed) return;
 
-        public void ActivateWatcher() => _watcher.EnableRaisingEvents = true;
+		if (disposing) _watcher?.Dispose();
 
-        public void RegisterModule(string name, string configFileName)
-        {
-            if (_modules.ContainsKey(name))
-            {
-                Melon<MDIPMod>.Logger.Error($"Module {name} already exists");
-                return;
-            }
+		_disposed = true;
+	}
 
-            var configPath = Configs.GetConfigPath(configFileName);
-            var module = new ConfigItem(name, configPath, _yamlParser);
-            _modules[name] = module;
+	public void ActivateWatcher() => _watcher.EnableRaisingEvents = true;
 
-            _watcher.Path = Path.GetDirectoryName(configPath);
-        }
+	public void RegisterModule(string name, string configFileName)
+	{
+		if (_modules.ContainsKey(name))
+		{
+			Melon<MDIPMod>.Logger.Error($"Module {name} already exists");
+			return;
+		}
 
-        public ConfigItem GetModule(string moduleName)
-        {
-            if (!_modules.TryGetValue(moduleName, out var module))
-                throw new Exception($"Module {moduleName} not found");
+		var configPath = Configs.GetConfigPath(configFileName);
+		var module = new ConfigItem(name, configPath, _yamlParser);
+		_modules[name] = module;
 
-            return module;
-        }
+		_watcher.Path = Path.GetDirectoryName(configPath);
+	}
 
-        public T GetConfig<T>(string moduleName) where T : ConfigBase, new()
-        {
-            if (!_modules.TryGetValue(moduleName, out var module))
-                throw new Exception($"Module {moduleName} not found");
+	public ConfigItem GetModule(string moduleName)
+	{
+		if (!_modules.TryGetValue(moduleName, out var module))
+			throw new($"Module {moduleName} not found");
 
-            return module.GetConfig<T>();
-        }
+		return module;
+	}
 
-        public void SaveConfig<T>(string moduleName, T config) where T : ConfigBase
-        {
-            if (!_modules.TryGetValue(moduleName, out var module))
-                throw new Exception($"Module {moduleName} not found");
+	public T GetConfig<T>(string moduleName) where T : ConfigBase, new()
+	{
+		if (!_modules.TryGetValue(moduleName, out var module))
+			throw new($"Module {moduleName} not found");
 
-            module.SaveConfig(config);
-        }
+		return module.GetConfig<T>();
+	}
 
-        private void OnConfigFileChanged(object sender, FileSystemEventArgs e)
-        {
-            Melon<MDIPMod>.Logger.Msg($"Config file changed: {e.Name}");
-            for (int i = 0; i < 3; i++)
-            {
-                try
-                {
-                    Thread.Sleep(100);
-                    foreach (var module in _modules.Values)
-                    {
-                        if (module.ConfigPath == e.FullPath)
-                        {
-                            Melon<MDIPMod>.Logger.Msg($"Reloading: {e.Name}");
-                            module.ReloadConfig();
-                            break;
-                        }
-                    }
-                    return;
-                }
-                catch (IOException) { continue; }
-            }
-        }
-    }
+	public void SaveConfig<T>(string moduleName, T config) where T : ConfigBase
+	{
+		if (!_modules.TryGetValue(moduleName, out var module))
+			throw new($"Module {moduleName} not found");
+
+		module.SaveConfig(config);
+	}
+
+	private void OnConfigFileChanged(object sender, FileSystemEventArgs e)
+	{
+		Melon<MDIPMod>.Logger.Msg($"Config file changed: {e.Name}");
+		for (var i = 0; i < 3; i++)
+		{
+			try
+			{
+				Thread.Sleep(100);
+				foreach (var module in _modules.Values)
+				{
+					if (module.ConfigPath == e.FullPath)
+					{
+						Melon<MDIPMod>.Logger.Msg($"Reloading: {e.Name}");
+						module.ReloadConfig();
+						break;
+					}
+				}
+
+				return;
+			}
+			catch (IOException)
+			{ }
+		}
+	}
 }

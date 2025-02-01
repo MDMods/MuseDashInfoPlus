@@ -10,7 +10,8 @@ This mod is inspired by MuseDashCustomPlay.
 
 ## Features
 
-Displays various information including **Chart Info (Song Name/Difficulty/Author/Level), Accuracy, Miss Count, Great Count, Early Count, Late Count, Note Counter (Hit/Total), Personal Best Score, and Score Gap**.
+Displays various information including **Chart Info (Song Name/Difficulty/Author/Level), Accuracy, Miss Count, Great Count, Early Count, Late Count, Note
+Counter (Hit/Total), Personal Best Score, and Score Gap**.
 
 All data elements can be freely customized in terms of visibility, position, size, color, font, and even custom text formatting.
 
@@ -30,9 +31,11 @@ All data elements can be freely customized in terms of visibility, position, siz
 
 ## Configuration
 
-Configuration files are organized by category and stored in the `..\MuseDash\UserData\Info+\` directory. All configuration entries include comments. Please understand the purpose of each setting before making modifications.
+Configuration files are organized by category and stored in the
+`..\MuseDash\UserData\Info+\` directory. All configuration entries include comments. Please understand the purpose of each setting before making modifications.
 
-All configuration files are **automatically generated upon first launch**. After modifying the configuration, **save the file for it to take effect** (if you are in the game, it will take effect in the next game).
+All configuration files are **automatically generated upon first launch**. After modifying the configuration, **save the file for it to take effect
+** (if you are in the game, it will take effect in the next game).
 
 - `MainConfigs.yml`: Primary configuration file
 - `TextFieldLowerLeftConfigs.yml`: Text configuration for lower-left screen area
@@ -45,7 +48,8 @@ All configuration files are **automatically generated upon first launch**. After
 
 ### Data Placeholders
 
-In text configuration files, you'll find entries like `text: '{overview} / {stats}'`. The `{dataName}` placeholders will be replaced according to the following rules. These can be combined freely:
+In text configuration files, you'll find entries like `text: '{overview} / {stats}'`. The
+`{dataName}` placeholders will be replaced according to the following rules. These can be combined freely:
 
 - `{hiScore}`: Personal best score for current chart
 - `{gap}`: Difference between current score and personal best
@@ -59,7 +63,8 @@ In text configuration files, you'll find entries like `text: '{overview} / {stat
 - `{overview}`: TP/AP indicator, shows current accuracy if below 100%
 - `{stats}`: Data including Miss/Great/Early/Late counts
 
-Note: Rich text are supported for some configuration entries. For example: `<size=40><color=#e1bb8a>{total}</color></size>`. If you're unfamiliar with rich text, please google it. For line breaks, use `\n`.
+Note: Rich text are supported for some configuration entries. For example:
+`<size=40><color=#e1bb8a>{total}</color></size>`. If you're unfamiliar with rich text, please google it. For line breaks, use `\n`.
 
 ## Installation
 

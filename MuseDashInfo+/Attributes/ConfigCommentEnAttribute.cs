@@ -5,10 +5,7 @@ namespace MDIP.Attributes;
 [AttributeUsage(AttributeTargets.Property)]
 public class ConfigCommentEnAttribute : Attribute
 {
-    public string Comment { get; }
+	public string Comment { get; }
 
-    public ConfigCommentEnAttribute(string comment)
-    {
-        Comment = comment;
-    }
+	public ConfigCommentEnAttribute(string comment) => Comment = comment;
 }

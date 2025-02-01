@@ -1,41 +1,41 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <RootNamespace>MDIP</RootNamespace>
-	<AssemblyName>Info+</AssemblyName>
-  </PropertyGroup>
-	
-  <ItemDefinitionGroup>
-    <PackageReference ExcludeAssets="runtime" />
-    <Reference Private="false" />
-  </ItemDefinitionGroup>
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <RootNamespace>MDIP</RootNamespace>
+        <AssemblyName>Info+</AssemblyName>
+    </PropertyGroup>
 
-  <ItemGroup Label="Local references">
-    <Reference Include="../References/MelonLoader.dll" />
-    <Reference Include="../References/Assembly-CSharp.dll" />
-    <Reference Include="../References/Il2Cppmscorlib.dll" />
-    <Reference Include="../References/Il2CppInterop.Runtime.dll" />
-    <Reference Include="../References/Il2CppPeroTools2.Resources.dll" />
-    <Reference Include="../References/Il2CppSirenix.Serialization.dll" />
-	<Reference Include="../References/Unity.Addressables.dll" />
-	<Reference Include="../References/Unity.ResourceManager.dll" />
-	<Reference Include="../References/UnityEngine.CoreModule.dll" />
-    <Reference Include="../References/UnityEngine.AudioModule.dll" />
-	<Reference Include="../References/UnityEngine.UIModule.dll" />
-	<Reference Include="../References/UnityEngine.UI.dll" />
-    <Reference Include="../References/UnityEngine.TextRenderingModule.dll" />
-    <Reference Include="../References/UnityEngine.InputLegacyModule.dll" />
-    <Reference Include="../References/Newtonsoft.Json.dll" />
-  </ItemGroup>
+    <ItemDefinitionGroup>
+        <PackageReference ExcludeAssets="runtime"/>
+        <Reference Private="false"/>
+    </ItemDefinitionGroup>
 
-  <ItemGroup Label="NuGet references">
-    <PackageReference Include="Lib.Harmony" Version="2.2.2" />
-  </ItemGroup>
-	
-  <Target Name="Copy" AfterTargets="Build" Condition="'$(MD_DIRECTORY)' != ''">
-	<Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(MD_DIRECTORY)/Mods/" Condition="'$(Configuration)' == 'Debug'" />
-    <Message Text="Copied DLL -&gt; $(MD_DIRECTORY)\Mods\$(AssemblyName).dll" Importance="High"/>
-  </Target>
+    <ItemGroup Label="Local references">
+        <Reference Include="../References/MelonLoader.dll"/>
+        <Reference Include="../References/Assembly-CSharp.dll"/>
+        <Reference Include="../References/Il2Cppmscorlib.dll"/>
+        <Reference Include="../References/Il2CppInterop.Runtime.dll"/>
+        <Reference Include="../References/Il2CppPeroTools2.Resources.dll"/>
+        <Reference Include="../References/Il2CppSirenix.Serialization.dll"/>
+        <Reference Include="../References/Unity.Addressables.dll"/>
+        <Reference Include="../References/Unity.ResourceManager.dll"/>
+        <Reference Include="../References/UnityEngine.CoreModule.dll"/>
+        <Reference Include="../References/UnityEngine.AudioModule.dll"/>
+        <Reference Include="../References/UnityEngine.UIModule.dll"/>
+        <Reference Include="../References/UnityEngine.UI.dll"/>
+        <Reference Include="../References/UnityEngine.TextRenderingModule.dll"/>
+        <Reference Include="../References/UnityEngine.InputLegacyModule.dll"/>
+        <Reference Include="../References/Newtonsoft.Json.dll"/>
+    </ItemGroup>
+
+    <ItemGroup Label="NuGet references">
+        <PackageReference Include="Lib.Harmony" Version="2.2.2"/>
+    </ItemGroup>
+
+    <Target Name="Copy" AfterTargets="Build" Condition="'$(MD_DIRECTORY)' != ''">
+        <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(MD_DIRECTORY)/Mods/" Condition="'$(Configuration)' == 'Debug'"/>
+        <Message Text="Copied DLL -&gt; $(MD_DIRECTORY)\Mods\$(AssemblyName).dll" Importance="High"/>
+    </Target>
 
 </Project>
