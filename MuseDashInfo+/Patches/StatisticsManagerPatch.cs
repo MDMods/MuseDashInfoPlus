@@ -9,7 +9,11 @@ public class StatisticsManagerPatch
 {
 	private static void Prefix(StatisticsManager __instance, int result)
 	{
-		if (!Helper.OutputNoteRecordsToDesktop) return;
+		if (result == 2)
+			GameStatsManager.AddMulMiss();
+
+		if (!Helper.OutputNoteRecordsToDesktop)
+			return;
 
 		var note = Singleton<StageBattleComponent>.instance.GetCurMusicData();
 		NoteRecordManager.AddRecord(int.Parse(note.noteData.id), "OnNoteResult", $"result:{result}");

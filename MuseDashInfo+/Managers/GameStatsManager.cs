@@ -1,7 +1,6 @@
 ﻿using Il2CppAssets.Scripts.Database;
 using Il2CppAssets.Scripts.GameCore.HostComponent;
 using Il2CppFormulaBase;
-using Il2CppGameLogic;
 using GameUtils = MDIP.Utils.GameUtils;
 
 namespace MDIP.Managers;
@@ -9,9 +8,9 @@ namespace MDIP.Managers;
 public static class GameStatsManager
 {
 	private const float Precision = 0.0001f;
+	private static BattleRoleAttributeComponent _role;
 	private static StageBattleComponent _stage;
 	private static TaskStageTarget _task;
-	private static BattleRoleAttributeComponent _role;
 
 	private static int _savedHighScore;
 	public static bool SavedHighScoreLocked;
@@ -19,9 +18,6 @@ public static class GameStatsManager
 	private static readonly HashSet<float> SpecialValues = [0.6f, 0.7f, 0.8f, 0.9f, 1f];
 	private static readonly HashSet<int> PlayedNoteIds = [];
 	private static readonly HashSet<int> MissedNoteIds = [];
-
-	private static MusicData MashingNote;
-	private static int MashedNum;
 
 	private static CurrentStats _current;
 	private static TotalStats _total;
@@ -226,43 +222,29 @@ public static class GameStatsManager
 				break;
 			case CountNoteAction.MissMul:
 				if (MissedNoteIds.Add(id))
-				{
-					ResetMashing();
 					_miss.Mul++;
-				}
 
 				break;
 		}
 	}
 
-	public static void ResetMashing()
+	public static void AddMulMiss()
 	{
-		MashingNote = null;
-		MashedNum = 0;
-	}
-
-	public static void CheckMashing()
-	{
-		if (MashingNote == null) return;
-		var timesup = _stage.realTimeTick > (MashingNote.tick + MashingNote.configData.length) * 1000;
-		if (timesup)
+		var note = _stage.GetCurMusicData();
+		if (note == null)
 		{
-			var tooLow = MashedNum < MashingNote.GetMulHitLowThreshold();
-
-			if (tooLow && !MissedNoteIds.Contains(int.Parse(MashingNote.noteData.id)))
-				_miss.Mul++;
-
-			ResetMashing();
+			Melon<MDIPMod>.Logger.Error("Adding unknown missed mash note");
+			return;
 		}
-	}
 
-	public static void Mashing(MusicData note)
-	{
-		if (!MissedNoteIds.Contains(int.Parse(note.noteData.id)))
+		if ((NoteType)note.noteData.type != NoteType.Mul)
 		{
-			MashingNote = note;
-			MashedNum++;
+			Melon<MDIPMod>.Logger.Error("Adding missed other note as mash note");
+			return;
 		}
+
+		var idx = int.Parse(note.noteData.id);
+		CountNote(idx, CountNoteAction.MissMul);
 	}
 
 	public static void Init()
@@ -313,8 +295,6 @@ public static class GameStatsManager
 		_current = default;
 		_total = default;
 		_miss = default;
-
-		ResetMashing();
 
 		SavedHighScore = 0;
 		PlayedNoteIds.Clear();
