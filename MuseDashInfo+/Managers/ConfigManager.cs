@@ -2,11 +2,12 @@
 
 public static class ConfigManager
 {
-	private static readonly Dictionary<string, ConfigItem> _modules = new();
-	private static FileSystemWatcher _watcher = new();
+	private static FileSystemWatcher _watcher;
+	private static Dictionary<string, ConfigItem> Modules { get; set; }
 
 	public static void Init()
 	{
+		Modules = new();
 		_watcher = new()
 		{
 			Filter = "*.yml",
@@ -27,7 +28,7 @@ public static class ConfigManager
 
 	public static void RegisterModule(string name, string configFileName)
 	{
-		if (_modules.ContainsKey(name))
+		if (Modules.ContainsKey(name))
 		{
 			Melon<MDIPMod>.Logger.Error($"Module {name} already exists");
 			return;
@@ -35,7 +36,7 @@ public static class ConfigManager
 
 		var configPath = Configs.GetConfigPath(configFileName);
 		var module = new ConfigItem(name, configPath);
-		_modules[name] = module;
+		Modules.Add(name, module);
 
 		var path = Path.GetDirectoryName(configPath);
 		if (string.IsNullOrWhiteSpace(path))
@@ -46,7 +47,7 @@ public static class ConfigManager
 
 	public static T GetConfig<T>(string moduleName) where T : ConfigBase, new()
 	{
-		if (!_modules.TryGetValue(moduleName, out var module))
+		if (!Modules.TryGetValue(moduleName, out var module))
 			throw new($"Module {moduleName} not found");
 
 		return module.GetConfig<T>();
@@ -54,7 +55,7 @@ public static class ConfigManager
 
 	public static void SaveConfig<T>(string moduleName, T config) where T : ConfigBase
 	{
-		if (!_modules.TryGetValue(moduleName, out var module))
+		if (!Modules.TryGetValue(moduleName, out var module))
 			throw new($"Module {moduleName} not found");
 
 		module.SaveConfig(config);
@@ -68,7 +69,7 @@ public static class ConfigManager
 			try
 			{
 				Thread.Sleep(100);
-				foreach (var module in _modules.Values.Where(module => module.ConfigPath == e.FullPath))
+				foreach (var module in Modules.Values.Where(module => module.ConfigPath == e.FullPath))
 				{
 					Melon<MDIPMod>.Logger.Msg($"Reloading: {e.Name}");
 					module.ReloadConfig();

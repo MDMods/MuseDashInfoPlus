@@ -9,8 +9,8 @@ public class ConfigItem(
 	string configPath
 )
 {
-	private readonly Dictionary<Type, object> _configCache = new();
-	private readonly Dictionary<Type, Action<object>> _updateCallbacks = new();
+	private Dictionary<Type, object> ConfigCache { get; } = new();
+	private Dictionary<Type, Action<object>> UpdateCallbacks { get; } = new();
 
 	public string ConfigPath { get; } = configPath;
 
@@ -18,11 +18,11 @@ public class ConfigItem(
 	{
 		var type = typeof(T);
 
-		if (_configCache.TryGetValue(type, out var cachedConfig))
+		if (ConfigCache.TryGetValue(type, out var cachedConfig))
 			return (T)cachedConfig;
 
 		var config = LoadConfig<T>();
-		_configCache[type] = config;
+		ConfigCache[type] = config;
 		return config;
 	}
 
@@ -45,23 +45,21 @@ public class ConfigItem(
 			yaml = Utils.Configs.AddCommentsToYaml(yaml, comments);
 
 		File.WriteAllText(ConfigPath, yaml);
-		_configCache[typeof(T)] = config;
+		ConfigCache[typeof(T)] = config;
 	}
 
 	public void RegisterUpdateCallback<T>(Action<T> callback) where T : class
-	{
-		_updateCallbacks[typeof(T)] = obj => callback((T)obj);
-	}
+		=> UpdateCallbacks[typeof(T)] = obj => callback((T)obj);
 
 	public void ReloadConfig()
 	{
-		foreach (var type in _configCache.Keys)
+		foreach (var type in ConfigCache.Keys)
 		{
 			var method = GetType().GetMethod(nameof(LoadConfig))?.MakeGenericMethod(type);
 			var newConfig = method?.Invoke(this, null);
-			_configCache[type] = newConfig;
+			ConfigCache[type] = newConfig;
 
-			if (_updateCallbacks.TryGetValue(type, out var callback)) callback(newConfig);
+			if (UpdateCallbacks.TryGetValue(type, out var callback)) callback(newConfig);
 		}
 	}
 

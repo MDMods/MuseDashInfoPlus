@@ -16,14 +16,14 @@ public static class GameStatsManager
 	private static int _savedHighScore;
 
 	private static readonly HashSet<float> SpecialValues = [0.6f, 0.7f, 0.8f, 0.9f, 1f];
-	private static readonly HashSet<int> PlayedNoteIds = [];
-	private static readonly HashSet<int> MissedNoteIds = [];
-
-	private static readonly Dictionary<int, (MusicData, int)> _mashingNotes = new();
 
 	private static CurrentStats _current;
 	private static TotalStats _total;
 	private static MissStats _miss;
+
+	private static Dictionary<int, (MusicData, int)> MashingNotes { get; } = new();
+	private static HashSet<int> PlayedNoteIds { get; } = [];
+	private static HashSet<int> MissedNoteIds { get; } = [];
 	public static bool SavedHighScoreLocked { get; set; }
 
 	public static int SavedHighScore
@@ -235,16 +235,16 @@ public static class GameStatsManager
 	public static void ResetMashing(int id = -1)
 	{
 		if (id < 0)
-			_mashingNotes.Clear();
+			MashingNotes.Clear();
 		else
-			_mashingNotes.Remove(id);
+			MashingNotes.Remove(id);
 	}
 
 	public static void CheckMashing()
 	{
-		if (_mashingNotes.Count < 1) return;
+		if (MashingNotes.Count < 1) return;
 
-		foreach (var kvp in _mashingNotes)
+		foreach (var kvp in MashingNotes)
 		{
 			var (id, (note, mashedNum)) = kvp;
 			if (_stage.realTimeTick <= note.missTick * 1000)
@@ -264,8 +264,8 @@ public static class GameStatsManager
 		if (MissedNoteIds.Contains(id))
 			return;
 
-		_mashingNotes.TryAdd(id, (note, 0));
-		_mashingNotes[id] = (_mashingNotes[id].Item1, _mashingNotes[id].Item2 + 1);
+		MashingNotes.TryAdd(id, (note, 0));
+		MashingNotes[id] = (MashingNotes[id].Item1, MashingNotes[id].Item2 + 1);
 
 		CheckMashing();
 	}
@@ -305,9 +305,6 @@ public static class GameStatsManager
 					case NoteType.Energy: _total.Energy++; break;
 					case NoteType.Music: _total.Music++; break;
 					case NoteType.Mul: _total.Mul++; break;
-
-					default:
-						throw new ArgumentOutOfRangeException();
 				}
 			}
 

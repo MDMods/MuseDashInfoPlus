@@ -14,21 +14,23 @@ public class MDIPMod : MelonMod
 
 		ConfigManager.Init();
 
-		RegisterAndSaveConfig(nameof(MainConfigs), Configs.Main);
-		RegisterAndSaveConfig(nameof(AdvancedConfigs), Configs.Advanced);
-		RegisterAndSaveConfig(nameof(TextFieldLowerLeftConfigs), Configs.TextFieldLowerLeft);
-		RegisterAndSaveConfig(nameof(TextFieldLowerRightConfigs), Configs.TextFieldLowerRight);
-		RegisterAndSaveConfig(nameof(TextFieldScoreBelowConfigs), Configs.TextFieldScoreBelow);
-		RegisterAndSaveConfig(nameof(TextFieldScoreRightConfigs), Configs.TextFieldScoreRight);
-		RegisterAndSaveConfig(nameof(TextFieldUpperLeftConfigs), Configs.TextFieldUpperLeft);
-		RegisterAndSaveConfig(nameof(TextFieldUpperRightConfigs), Configs.TextFieldUpperRight);
+		RegisterAndSaveConfig<MainConfigs>(nameof(MainConfigs));
+		RegisterAndSaveConfig<AdvancedConfigs>(nameof(AdvancedConfigs));
+		RegisterAndSaveConfig<TextFieldLowerLeftConfigs>(nameof(TextFieldLowerLeftConfigs));
+		RegisterAndSaveConfig<TextFieldLowerRightConfigs>(nameof(TextFieldLowerRightConfigs));
+		RegisterAndSaveConfig<TextFieldScoreBelowConfigs>(nameof(TextFieldScoreBelowConfigs));
+		RegisterAndSaveConfig<TextFieldScoreRightConfigs>(nameof(TextFieldScoreRightConfigs));
+		RegisterAndSaveConfig<TextFieldUpperLeftConfigs>(nameof(TextFieldUpperLeftConfigs));
+		RegisterAndSaveConfig<TextFieldUpperRightConfigs>(nameof(TextFieldUpperRightConfigs));
+
+		ConfigManager.ActivateWatcher();
 		return;
 
-		static void RegisterAndSaveConfig<T>(string moduleName, T config) where T : ConfigBase
+		static void RegisterAndSaveConfig<T>(string moduleName) where T : ConfigBase, new()
 		{
 			var fileName = $"{moduleName}.yml";
 			ConfigManager.RegisterModule(moduleName, fileName);
-			ConfigManager.SaveConfig(moduleName, config);
+			ConfigManager.SaveConfig(moduleName, ConfigManager.GetConfig<T>(moduleName));
 		}
 	}
 
@@ -37,16 +39,11 @@ public class MDIPMod : MelonMod
 		switch (sceneName)
 		{
 			case "GameMain":
-				break;
-
 			case "Welcome":
-				ConfigManager.ActivateWatcher();
 				break;
 
 			default:
-				if (Configs.Advanced.OutputNoteRecordsToDesktop)
-					NoteRecordManager.Reset();
-
+				NoteRecordManager.Reset();
 				PnlBattleGameStartPatch.Reset();
 				GameStatsManager.Reset();
 				TextObjManager.Reset();
@@ -68,7 +65,8 @@ public class MDIPMod : MelonMod
 	{
 		base.OnLateUpdate();
 
-		if (_lastUpdateSecond == DateTime.Now.Second || !GameStatsManager.IsInGame) return;
+		if (_lastUpdateSecond == DateTime.Now.Second || !GameStatsManager.IsInGame)
+			return;
 		_lastUpdateSecond = DateTime.Now.Second;
 
 		GameStatsManager.CheckMashing();

@@ -2,15 +2,15 @@
 
 public static class TextDataManager
 {
-	private static readonly Dictionary<string, string> _cachedValues = new();
-	private static readonly Dictionary<string, string> _formattedTexts = new();
+	private static Dictionary<string, string> CachedValues { get; } = new();
+	private static Dictionary<string, string> FormattedTexts { get; } = new();
 
 	private static void UpdateCachedValue(string key, string value)
 	{
-		if (_cachedValues.ContainsKey(key) && _cachedValues[key] == value)
+		if (CachedValues.ContainsKey(key) && CachedValues[key] == value)
 			return;
 
-		_cachedValues[key] = value;
+		CachedValues[key] = value;
 		InvalidateFormattedTexts();
 	}
 
@@ -34,26 +34,26 @@ public static class TextDataManager
 	}
 
 	private static void InvalidateFormattedTexts()
-		=> _formattedTexts.Clear();
+		=> FormattedTexts.Clear();
 
 	public static string GetFormattedText(string originalText)
 	{
 		if (string.IsNullOrWhiteSpace(originalText)) return string.Empty;
 
-		if (_formattedTexts.TryGetValue(originalText, out var formatted))
+		if (FormattedTexts.TryGetValue(originalText, out var formatted))
 			return formatted;
 
 		if (!ContainsAnyPlaceholder(originalText))
 			return originalText;
 
 		var result = originalText;
-		foreach (var pair in _cachedValues.Where(pair => result.Contains(pair.Key)))
+		foreach (var pair in CachedValues.Where(pair => result.Contains(pair.Key)))
 			result = result.Replace(pair.Key, pair.Value);
 
 		var trimChars = new[] { '|', '\\', '-', '/', '~', '_', '=', '+' };
 		result = result.Trim().Trim(trimChars).Trim();
 
-		_formattedTexts[originalText] = result;
+		FormattedTexts[originalText] = result;
 		return result;
 	}
 
