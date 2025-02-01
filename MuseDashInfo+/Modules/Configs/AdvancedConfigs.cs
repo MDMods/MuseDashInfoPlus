@@ -9,7 +9,7 @@ public class AdvancedConfigs : ConfigBase
 	public int DataRefreshIntervalLimit { get; set; } = 123;
 
 	[ConfigCommentZh("显示准确率计算数据")]
-	[ConfigCommentEn("Output accuracy calculation datas")]
+	[ConfigCommentEn("Output accuracy calculation data")]
 	public bool OutputAccuracyCalculationData { get; set; } = false;
 
 	[ConfigCommentZh("输出Note记录到桌面")]

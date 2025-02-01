@@ -1,6 +1,4 @@
-﻿using Il2CppGameLogic;
-
-namespace MDIP.Utils;
+﻿namespace MDIP.Utils;
 
 public static class Extensions
 {
@@ -24,36 +22,32 @@ public static class Extensions
 
 			for (var i = currentString.Length - 1; i >= 0; i--)
 			{
-				if (breakSymbols.Contains(currentString[i]))
-				{
-					currentString = currentString.Substring(0, i).TrimEnd();
-					totalWidth = CalculateWidth(currentString);
-					foundBreakPoint = true;
-					break;
-				}
+				if (!breakSymbols.Contains(currentString[i]))
+					continue;
+
+				currentString = currentString.Substring(0, i).TrimEnd();
+				totalWidth = CalculateWidth(currentString);
+				foundBreakPoint = true;
+				break;
 			}
 
 			if (!foundBreakPoint)
 				break;
 		}
 
-		if (totalWidth > maxWidth)
+		if (totalWidth <= maxWidth)
+			return currentString;
+
+		var width = 0;
+		var charCount = 0;
+
+		foreach (var charWidth in currentString.Select(c => IsFullWidth(c) ? 2 : 1).TakeWhile(charWidth => width + charWidth <= maxWidth))
 		{
-			var width = 0;
-			var charCount = 0;
-
-			foreach (var c in currentString)
-			{
-				var charWidth = IsFullWidth(c) ? 2 : 1;
-				if (width + charWidth > maxWidth)
-					break;
-
-				width += charWidth;
-				charCount++;
-			}
-
-			currentString = currentString[..charCount];
+			width += charWidth;
+			charCount++;
 		}
+
+		currentString = currentString[..charCount];
 
 		return currentString;
 	}
@@ -72,21 +66,5 @@ public static class Extensions
 	public static bool IsRegularNote(this NoteType noteType) => Helper.IsRegularNote((uint)noteType);
 
 	public static Color ToColor(this string color)
-	{
-		if (ColorUtility.TryParseHtmlString(color, out var result))
-			return result;
-		return Color.white;
-	}
-
-	public static int Count(this List<MusicData> noteList, Func<MusicData, bool> predicate)
-	{
-		var count = 0;
-		foreach (var note in noteList)
-		{
-			if (predicate(note))
-				count++;
-		}
-
-		return count;
-	}
+		=> ColorUtility.TryParseHtmlString(color, out var result) ? result : Color.white;
 }

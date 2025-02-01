@@ -3,7 +3,6 @@
 public static class ConfigManager
 {
 	private static readonly Dictionary<string, ConfigItem> _modules = new();
-	private static readonly YamlParser _yamlParser = new();
 	private static FileSystemWatcher _watcher = new();
 
 	public static void Init()
@@ -35,7 +34,7 @@ public static class ConfigManager
 		}
 
 		var configPath = Configs.GetConfigPath(configFileName);
-		var module = new ConfigItem(name, configPath, _yamlParser);
+		var module = new ConfigItem(name, configPath);
 		_modules[name] = module;
 
 		var path = Path.GetDirectoryName(configPath);
@@ -43,14 +42,6 @@ public static class ConfigManager
 			throw new DirectoryNotFoundException($"Configs directory {configFileName} not found");
 
 		_watcher.Path = path;
-	}
-
-	public static ConfigItem GetModule(string moduleName)
-	{
-		if (!_modules.TryGetValue(moduleName, out var module))
-			throw new($"Module {moduleName} not found");
-
-		return module;
 	}
 
 	public static T GetConfig<T>(string moduleName) where T : ConfigBase, new()

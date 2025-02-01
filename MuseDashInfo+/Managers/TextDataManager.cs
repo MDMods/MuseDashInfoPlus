@@ -7,11 +7,11 @@ public static class TextDataManager
 
 	private static void UpdateCachedValue(string key, string value)
 	{
-		if (!_cachedValues.ContainsKey(key) || _cachedValues[key] != value)
-		{
-			_cachedValues[key] = value;
-			InvalidateFormattedTexts();
-		}
+		if (_cachedValues.ContainsKey(key) && _cachedValues[key] == value)
+			return;
+
+		_cachedValues[key] = value;
+		InvalidateFormattedTexts();
 	}
 
 	public static void UpdateConstants()
@@ -34,34 +34,29 @@ public static class TextDataManager
 	}
 
 	private static void InvalidateFormattedTexts()
-	{
-		_formattedTexts.Clear();
-	}
+		=> _formattedTexts.Clear();
 
 	public static string GetFormattedText(string originalText)
 	{
 		if (string.IsNullOrWhiteSpace(originalText)) return string.Empty;
 
-		var cacheKey = originalText;
-		if (_formattedTexts.TryGetValue(cacheKey, out var formatted))
+		if (_formattedTexts.TryGetValue(originalText, out var formatted))
 			return formatted;
 
 		if (!ContainsAnyPlaceholder(originalText))
 			return originalText;
 
 		var result = originalText;
-		foreach (var pair in _cachedValues)
-		{
-			if (result.Contains(pair.Key))
-				result = result.Replace(pair.Key, pair.Value);
-		}
+		foreach (var pair in _cachedValues.Where(pair => result.Contains(pair.Key)))
+			result = result.Replace(pair.Key, pair.Value);
 
 		var trimChars = new[] { '|', '\\', '-', '/', '~', '_', '=', '+' };
 		result = result.Trim().Trim(trimChars).Trim();
 
-		_formattedTexts[cacheKey] = result;
+		_formattedTexts[originalText] = result;
 		return result;
 	}
 
-	private static bool ContainsAnyPlaceholder(string text) => text.Contains('{') && text.Contains('}');
+	private static bool ContainsAnyPlaceholder(string text)
+		=> text.Contains('{') && text.Contains('}');
 }

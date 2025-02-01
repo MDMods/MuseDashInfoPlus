@@ -1,9 +1,6 @@
-﻿using Il2CppAssets.Scripts.PeroTools.Commons;
-using Il2CppFormulaBase;
+﻿namespace MDIP.Managers;
 
-namespace MDIP.Managers;
-
-public class NoteRecordManager
+public static class NoteRecordManager
 {
 	public static Dictionary<int, NoteRecord> Records { get; private set; } = new();
 
@@ -13,7 +10,7 @@ public class NoteRecordManager
 	{
 		if (!Records.ContainsKey(id))
 		{
-			var note = Singleton<StageBattleComponent>.instance.GetMusicDataByIdx(id);
+			var note = GameStatsManager.GetMusicDataByIdx(id);
 			if (note == null || !Helper.IsRegularNote(note.noteData.type)) return;
 			var longType = "-";
 			if (note.isLongPressStart) longType = "Start";
@@ -48,8 +45,7 @@ public class NoteRecordManager
 				record.Id.ToString(),
 				record.Type.ToString(),
 				record.DoubleId.ToString(),
-				record.LongType,
-				record.Result.ToString()
+				record.LongType
 			};
 
 			foreach (var name in patchNames)

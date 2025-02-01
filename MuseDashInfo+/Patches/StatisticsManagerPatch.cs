@@ -1,6 +1,4 @@
 ﻿using Il2CppAssets.Scripts.GameCore.Managers;
-using Il2CppAssets.Scripts.PeroTools.Commons;
-using Il2CppFormulaBase;
 
 namespace MDIP.Patches;
 
@@ -9,9 +7,9 @@ public class StatisticsManagerPatch
 {
 	private static void Prefix(StatisticsManager __instance, int result)
 	{
-		if (!Helper.OutputNoteRecordsToDesktop) return;
+		if (!Configs.Advanced.OutputNoteRecordsToDesktop) return;
 
-		var note = Singleton<StageBattleComponent>.instance.GetCurMusicData();
+		var note = GameStatsManager.GetCurMusicData();
 		NoteRecordManager.AddRecord(int.Parse(note.noteData.id), "OnNoteResult", $"result:{result}");
 	}
 }

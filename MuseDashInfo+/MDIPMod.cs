@@ -5,47 +5,31 @@ namespace MDIP;
 /// </summary>
 public class MDIPMod : MelonMod
 {
-	private static int lastUpdateSecond = -1;
-	public static MDIPMod Instance { get; private set; }
-
+	private static int _lastUpdateSecond = -1;
 	public static bool IsSongDescLoaded { get; private set; }
-
-	public override void OnInitializeMelon() => Instance = this;
 
 	public override void OnLateInitializeMelon()
 	{
-		IsSongDescLoaded = RegisteredMelons.Any(mod => mod.MelonAssembly.Assembly.FullName.TrimStart().StartsWith("SongDesc"));
+		IsSongDescLoaded = RegisteredMelons.Any(mod => mod?.MelonAssembly?.Assembly?.FullName?.TrimStart().StartsWith("SongDesc") ?? false);
 
 		ConfigManager.Init();
 
-		ConfigManager.RegisterModule(ConfigName.MainConfigs, "MainConfigs.yml");
-		var mainConfigModule = ConfigManager.GetModule(ConfigName.MainConfigs);
-		mainConfigModule.RegisterUpdateCallback<MainConfigs>(cfg =>
+		RegisterAndSaveConfig(nameof(MainConfigs), Configs.Main);
+		RegisterAndSaveConfig(nameof(AdvancedConfigs), Configs.Advanced);
+		RegisterAndSaveConfig(nameof(TextFieldLowerLeftConfigs), Configs.TextFieldLowerLeft);
+		RegisterAndSaveConfig(nameof(TextFieldLowerRightConfigs), Configs.TextFieldLowerRight);
+		RegisterAndSaveConfig(nameof(TextFieldScoreBelowConfigs), Configs.TextFieldScoreBelow);
+		RegisterAndSaveConfig(nameof(TextFieldScoreRightConfigs), Configs.TextFieldScoreRight);
+		RegisterAndSaveConfig(nameof(TextFieldUpperLeftConfigs), Configs.TextFieldUpperLeft);
+		RegisterAndSaveConfig(nameof(TextFieldUpperRightConfigs), Configs.TextFieldUpperRight);
+		return;
+
+		static void RegisterAndSaveConfig<T>(string moduleName, T config) where T : ConfigBase
 		{
-			Melon<MDIPMod>.Logger.Warning("Main configs updated!");
-		});
-		ConfigManager.SaveConfig(ConfigName.MainConfigs, Configs.Main);
-
-		ConfigManager.RegisterModule(ConfigName.AdvancedConfigs, "AdvancedConfigs.yml");
-		ConfigManager.SaveConfig(ConfigName.AdvancedConfigs, Configs.Advanced);
-
-		ConfigManager.RegisterModule(ConfigName.TextFieldLowerLeftConfigs, "TextFieldLowerLeftConfigs.yml");
-		ConfigManager.SaveConfig(ConfigName.TextFieldLowerLeftConfigs, Configs.TextFieldLowerLeft);
-
-		ConfigManager.RegisterModule(ConfigName.TextFieldLowerRightConfigs, "TextFieldLowerRightConfigs.yml");
-		ConfigManager.SaveConfig(ConfigName.TextFieldLowerRightConfigs, Configs.TextFieldLowerRight);
-
-		ConfigManager.RegisterModule(ConfigName.TextFieldScoreBelowConfigs, "TextFieldScoreBelowConfigs.yml");
-		ConfigManager.SaveConfig(ConfigName.TextFieldScoreBelowConfigs, Configs.TextFieldScoreBelow);
-
-		ConfigManager.RegisterModule(ConfigName.TextFieldScoreRightConfigs, "TextFieldScoreRightConfigs.yml");
-		ConfigManager.SaveConfig(ConfigName.TextFieldScoreRightConfigs, Configs.TextFieldScoreRight);
-
-		ConfigManager.RegisterModule(ConfigName.TextFieldUpperLeftConfigs, "TextFieldUpperLeftConfigs.yml");
-		ConfigManager.SaveConfig(ConfigName.TextFieldUpperLeftConfigs, Configs.TextFieldUpperLeft);
-
-		ConfigManager.RegisterModule(ConfigName.TextFieldUpperRightConfigs, "TextFieldUpperRightConfigs.yml");
-		ConfigManager.SaveConfig(ConfigName.TextFieldUpperRightConfigs, Configs.TextFieldUpperRight);
+			var fileName = $"{moduleName}.yml";
+			ConfigManager.RegisterModule(moduleName, fileName);
+			ConfigManager.SaveConfig(moduleName, config);
+		}
 	}
 
 	public override void OnSceneWasLoaded(int buildIndex, string sceneName)
@@ -60,8 +44,7 @@ public class MDIPMod : MelonMod
 				break;
 
 			default:
-
-				if (Helper.OutputNoteRecordsToDesktop)
+				if (Configs.Advanced.OutputNoteRecordsToDesktop)
 					NoteRecordManager.Reset();
 
 				PnlBattleGameStartPatch.Reset();
@@ -69,7 +52,6 @@ public class MDIPMod : MelonMod
 				TextObjManager.Reset();
 				GameUtils.Reset();
 				FontUtils.UnloadFonts();
-
 				break;
 		}
 	}
@@ -86,8 +68,8 @@ public class MDIPMod : MelonMod
 	{
 		base.OnLateUpdate();
 
-		if (lastUpdateSecond == DateTime.Now.Second || !GameStatsManager.IsInGame) return;
-		lastUpdateSecond = DateTime.Now.Second;
+		if (_lastUpdateSecond == DateTime.Now.Second || !GameStatsManager.IsInGame) return;
+		_lastUpdateSecond = DateTime.Now.Second;
 
 		GameStatsManager.CheckMashing();
 		TextObjManager.UpdateAllText();

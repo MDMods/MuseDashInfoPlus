@@ -4,23 +4,15 @@ using Version = System.Version;
 
 namespace MDIP.Modules;
 
-public class ConfigItem
+public class ConfigItem(
+	string name,
+	string configPath
+)
 {
-	private readonly Dictionary<Type, object> _configCache;
-	private readonly string _name;
-	private readonly Dictionary<Type, Action<object>> _updateCallbacks;
-	private readonly YamlParser _yamlParser;
+	private readonly Dictionary<Type, object> _configCache = new();
+	private readonly Dictionary<Type, Action<object>> _updateCallbacks = new();
 
-	public string ConfigPath { get; }
-
-	public ConfigItem(string name, string configPath, YamlParser yamlParser)
-	{
-		_name = name;
-		ConfigPath = configPath;
-		_yamlParser = yamlParser;
-		_configCache = new();
-		_updateCallbacks = new();
-	}
+	public string ConfigPath { get; } = configPath;
 
 	public T GetConfig<T>() where T : ConfigBase, new()
 	{
@@ -38,9 +30,9 @@ public class ConfigItem
 	{
 		config.LastModified = DateTime.Now;
 		var comments = GetConfigComments<T>();
-		var yaml = _yamlParser.Serialize(config);
+		var yaml = YamlParser.Serialize(config);
 
-		var lines = yaml.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+		var lines = yaml.Split(Environment.NewLine);
 		yaml = string.Empty;
 		foreach (var line in lines)
 		{
@@ -49,7 +41,7 @@ public class ConfigItem
 				yaml += Environment.NewLine;
 		}
 
-		if (comments != null && comments.Count > 0)
+		if (comments is { Count: > 0 })
 			yaml = Utils.Configs.AddCommentsToYaml(yaml, comments);
 
 		File.WriteAllText(ConfigPath, yaml);
@@ -65,8 +57,8 @@ public class ConfigItem
 	{
 		foreach (var type in _configCache.Keys)
 		{
-			var method = GetType().GetMethod(nameof(LoadConfig)).MakeGenericMethod(type);
-			var newConfig = method.Invoke(this, null);
+			var method = GetType().GetMethod(nameof(LoadConfig))?.MakeGenericMethod(type);
+			var newConfig = method?.Invoke(this, null);
 			_configCache[type] = newConfig;
 
 			if (_updateCallbacks.TryGetValue(type, out var callback)) callback(newConfig);
@@ -86,72 +78,74 @@ public class ConfigItem
 	public T LoadConfig<T>() where T : ConfigBase, new()
 	{
 		if (!File.Exists(ConfigPath))
-		{
-			var defaultConfig = new T();
-			SaveConfig(defaultConfig);
-			return defaultConfig;
-		}
+			return CreateAndSaveDefault<T>();
 
 		try
 		{
-			var yaml = File.ReadAllText(ConfigPath);
-			var oldConfig = _yamlParser.Deserialize<T>(yaml);
+			var oldConfig = YamlParser.Deserialize<T>(File.ReadAllText(ConfigPath));
 			var newConfig = new T();
 
-			if (Version.Parse(oldConfig.Version) < Version.Parse(newConfig.Version))
-			{
-				var backupPath = GetBackupPath(oldConfig.Version);
-				File.Copy(ConfigPath, backupPath, true);
+			if (Version.Parse(oldConfig.Version) >= Version.Parse(newConfig.Version))
+				return oldConfig;
 
-				var migratedConfig = VersionControl.MigrateConfig(oldConfig, newConfig);
-				SaveConfig(migratedConfig);
-				return migratedConfig;
-			}
-
-			return oldConfig;
+			File.Copy(ConfigPath, GetBackupPath(oldConfig.Version), true);
+			var migratedConfig = VersionControl.MigrateConfig(oldConfig, newConfig);
+			SaveConfig(migratedConfig);
+			return migratedConfig;
 		}
 		catch (Exception ex)
 		{
-			Melon<MDIPMod>.Logger.BigError($"Failed to load config {_name}: {ex}");
-			var defaultConfig = new T();
-			SaveConfig(defaultConfig);
-			return defaultConfig;
+			Melon<MDIPMod>.Logger.BigError($"Failed to load config {name}: {ex}");
+			return CreateAndSaveDefault<T>();
 		}
+	}
+
+	private T CreateAndSaveDefault<T>() where T : ConfigBase, new()
+	{
+		var defaultConfig = new T();
+		SaveConfig(defaultConfig);
+		return defaultConfig;
 	}
 
 	private Dictionary<string, (string zh, string en)> GetConfigComments<T>() where T : ConfigBase
 	{
-		var comments = new Dictionary<string, (string zh, string en)>();
-		var type = typeof(T);
+		var comments = typeof(T).GetProperties()
+			.Select(prop => (
+				Property: prop,
+				Comments: GetComments(prop)
+			))
+			.Where(x => x.Comments is { zh: not null, en: not null })
+			.ToDictionary(
+				x => ToCamelCase(x.Property.Name) + ":",
+				x => (x.Comments.zh!.Comment, x.Comments.en!.Comment)
+			);
 
-		foreach (var property in type.GetProperties())
-		{
-			var commentZh = property.GetCustomAttribute<ConfigCommentZhAttribute>();
-			var commentEn = property.GetCustomAttribute<ConfigCommentEnAttribute>();
-
-			if ((commentZh == null || commentEn == null) && property.DeclaringType != null)
-			{
-				var interfaces = property.DeclaringType.GetInterfaces();
-				foreach (var iface in interfaces)
-				{
-					var ifaceProp = iface.GetProperty(property.Name);
-					if (ifaceProp != null)
-					{
-						commentZh ??= ifaceProp.GetCustomAttribute<ConfigCommentZhAttribute>();
-						commentEn ??= ifaceProp.GetCustomAttribute<ConfigCommentEnAttribute>();
-					}
-				}
-			}
-
-			if (commentZh != null && commentEn != null)
-			{
-				comments[$"{char.ToLowerInvariant(property.Name[0])}{property.Name[1..]}:"] =
-					(commentZh.Comment, commentEn.Comment);
-			}
-		}
-
-		comments["version:"] = ("警告：不要改动下方的内容，否则配置或模组可能失效！", "Warning: Do not modify the content below, otherwise the configs or mod may become invalid!");
+		comments["version:"] = ("警告：不要改动下方的内容，否则配置或模组可能失效！",
+			"Warning: Do not modify the content below, otherwise the configs or mod may become invalid!");
 
 		return comments;
 	}
+
+	private static (ConfigCommentZhAttribute zh, ConfigCommentEnAttribute en) GetComments(PropertyInfo property)
+	{
+		var zh = property.GetCustomAttribute<ConfigCommentZhAttribute>();
+		var en = property.GetCustomAttribute<ConfigCommentEnAttribute>();
+
+		if (zh != null && en != null || property.DeclaringType == null)
+			return (zh, en);
+
+		foreach (var iface in property.DeclaringType.GetInterfaces())
+		{
+			var ifaceProp = iface.GetProperty(property.Name);
+			if (ifaceProp == null) continue;
+
+			zh ??= ifaceProp.GetCustomAttribute<ConfigCommentZhAttribute>();
+			en ??= ifaceProp.GetCustomAttribute<ConfigCommentEnAttribute>();
+		}
+
+		return (zh, en);
+	}
+
+	private static string ToCamelCase(string str) =>
+		char.ToLowerInvariant(str[0]) + str[1..];
 }

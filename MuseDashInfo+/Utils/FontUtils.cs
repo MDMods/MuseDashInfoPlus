@@ -41,11 +41,11 @@ public static class FontUtils
 			return;
 		}
 
-		if (_fonts.TryGetValue(type, out var font))
-		{
-			Addressables.Release(font);
-			_fonts.Remove(type);
-		}
+		if (!_fonts.TryGetValue(type, out var font))
+			return;
+
+		Addressables.Release(font);
+		_fonts.Remove(type);
 	}
 
 	public static Font GetFont(FontType type)

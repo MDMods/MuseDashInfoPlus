@@ -24,8 +24,7 @@ public static class VersionControl
 
 		foreach (var property in properties)
 		{
-			if (property.Name == nameof(ConfigBase.Version) ||
-			    property.Name == nameof(ConfigBase.LastModified))
+			if (property.Name is nameof(ConfigBase.Version) or nameof(ConfigBase.LastModified))
 				continue;
 
 			var oldValue = property.GetValue(oldConfig);
@@ -39,8 +38,8 @@ public static class VersionControl
 				{
 					var migrateMethod = typeof(VersionControl)
 						.GetMethod(nameof(MigrateConfig))
-						.MakeGenericMethod(property.PropertyType);
-					var migratedValue = migrateMethod.Invoke(null, new[] { oldValue, newValue });
+						?.MakeGenericMethod(property.PropertyType);
+					var migratedValue = migrateMethod?.Invoke(null, [oldValue, newValue]);
 					property.SetValue(migratedConfig, migratedValue);
 				}
 				else if (typeof(IEnumerable<object>).IsAssignableFrom(property.PropertyType))
@@ -64,11 +63,11 @@ public static class VersionControl
 		var properties = source.GetType().GetProperties();
 		foreach (var prop in properties)
 		{
-			if (prop.CanRead && prop.CanWrite)
-			{
-				var value = prop.GetValue(source);
-				prop.SetValue(target, value);
-			}
+			if (!prop.CanRead || !prop.CanWrite)
+				continue;
+
+			var value = prop.GetValue(source);
+			prop.SetValue(target, value);
 		}
 	}
 }

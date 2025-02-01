@@ -1,10 +1,11 @@
 ﻿using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 namespace MDIP.Managers;
 
 public static class TextObjManager
 {
-	private static long lastUpdateTick;
+	private static long _lastUpdateTick;
 	public static GameObject TextLowerLeftObj { get; set; }
 	public static GameObject TextLowerRightObj { get; set; }
 	public static GameObject TextScoreBelowObj { get; set; }
@@ -15,8 +16,8 @@ public static class TextObjManager
 	public static void UpdateAllText()
 	{
 		var now = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-		if (now - lastUpdateTick < Configs.Advanced.DataRefreshIntervalLimit) return;
-		lastUpdateTick = now;
+		if (now - _lastUpdateTick < Configs.Advanced.DataRefreshIntervalLimit) return;
+		_lastUpdateTick = now;
 
 		GameStatsManager.UpdateCurrentStats();
 		TextDataManager.UpdateValues();
@@ -50,17 +51,17 @@ public static class TextObjManager
 
 	public static void Reset()
 	{
-		GameObject.Destroy(TextLowerLeftObj);
+		Object.Destroy(TextLowerLeftObj);
 		TextLowerLeftObj = null;
-		GameObject.Destroy(TextLowerRightObj);
+		Object.Destroy(TextLowerRightObj);
 		TextLowerRightObj = null;
-		GameObject.Destroy(TextScoreBelowObj);
+		Object.Destroy(TextScoreBelowObj);
 		TextScoreBelowObj = null;
-		GameObject.Destroy(TextScoreRightObj);
+		Object.Destroy(TextScoreRightObj);
 		TextScoreRightObj = null;
-		GameObject.Destroy(TextUpperLeftObj);
+		Object.Destroy(TextUpperLeftObj);
 		TextUpperLeftObj = null;
-		GameObject.Destroy(TextUpperRightObj);
+		Object.Destroy(TextUpperRightObj);
 		TextUpperRightObj = null;
 	}
 }

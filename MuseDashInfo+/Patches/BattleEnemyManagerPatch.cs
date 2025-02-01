@@ -1,18 +1,16 @@
 ﻿using Il2CppAssets.Scripts.GameCore.HostComponent;
-using Il2CppAssets.Scripts.PeroTools.Commons;
-using Il2CppFormulaBase;
 
 namespace MDIP.Patches;
 
 [HarmonyPatch(typeof(BattleEnemyManager), nameof(BattleEnemyManager.SetPlayResult))]
-public class BattleEnemyManagerSetPlayResultPatch
+internal class BattleEnemyManagerSetPlayResultPatch
 {
 	private static void Postfix(int idx, byte result, bool isMulStart = false, bool isMulEnd = false, bool isLeft = false)
 	{
-		var note = Singleton<StageBattleComponent>.instance.GetMusicDataByIdx(idx);
+		var note = GameStatsManager.GetMusicDataByIdx(idx);
 		var type = (NoteType)note.noteData.type;
 
-		if (Helper.OutputNoteRecordsToDesktop)
+		if (Configs.Advanced.OutputNoteRecordsToDesktop)
 			NoteRecordManager.AddRecord(idx, "SetPlayResult", $"result:{result}");
 
 		switch (result)

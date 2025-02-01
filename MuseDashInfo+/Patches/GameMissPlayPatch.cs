@@ -1,23 +1,21 @@
 ﻿using Il2CppAssets.Scripts.GameCore.HostComponent;
-using Il2CppAssets.Scripts.PeroTools.Commons;
-using Il2CppFormulaBase;
 using Il2CppGameLogic;
 
 namespace MDIP.Patches;
 
 [HarmonyPatch(typeof(GameMissPlay), nameof(GameMissPlay.MissCube))]
-public class GameMissPlayMissCubePatch
+internal class GameMissPlayMissCubePatch
 {
 	private static void Postfix(int idx, decimal currentTick)
 	{
 		try
 		{
-			int result = Singleton<BattleEnemyManager>.instance.GetPlayResult(idx);
-			var note = Singleton<StageBattleComponent>.instance.GetMusicDataByIdx(idx);
+			int result = BattleEnemyManager.instance.GetPlayResult(idx);
+			var note = GameStatsManager.GetMusicDataByIdx(idx);
 			var type = (NoteType)note.noteData.type;
 			var isDouble = note.isDouble;
 
-			if (Helper.OutputNoteRecordsToDesktop)
+			if (Configs.Advanced.OutputNoteRecordsToDesktop)
 				NoteRecordManager.AddRecord(idx, "MissCube", $"result:{result}");
 
 			if (result is 0 or 1)
@@ -45,17 +43,20 @@ public class GameMissPlayMissCubePatch
 						GameStatsManager.CountNote(idx, CountNoteAction.MissMul);
 						break;
 
+					case NoteType.Monster:
+					case NoteType.Long:
+					case NoteType.Boss:
 					default:
 						GameStatsManager.CountNote(idx, CountNoteAction.MissMonster, isDouble ? note.doubleIdx : -1);
 						break;
 				}
 			}
 
-			if (type.IsRegularNote() && type != NoteType.Block && !note.isLongPressing)
-			{
-				GameStatsManager.CheckMashing();
-				TextObjManager.UpdateAllText();
-			}
+			if (!type.IsRegularNote() || type == NoteType.Block || note.isLongPressing)
+				return;
+
+			GameStatsManager.CheckMashing();
+			TextObjManager.UpdateAllText();
 		}
 		catch (Exception e)
 		{

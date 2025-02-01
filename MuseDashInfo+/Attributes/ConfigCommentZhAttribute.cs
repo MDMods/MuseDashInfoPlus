@@ -1,9 +1,9 @@
 ﻿namespace MDIP.Attributes;
 
 [AttributeUsage(AttributeTargets.Property)]
-public class ConfigCommentZhAttribute : Attribute
+public class ConfigCommentZhAttribute(
+	string comment
+) : Attribute
 {
-	public string Comment { get; }
-
-	public ConfigCommentZhAttribute(string comment) => Comment = comment;
+	public string Comment { get; } = comment;
 }

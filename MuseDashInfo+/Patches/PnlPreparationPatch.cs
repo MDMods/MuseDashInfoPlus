@@ -7,13 +7,13 @@ public class PnlPreparationPatch
 {
 	private static void SetHighestScore(string score)
 	{
-		if (!string.IsNullOrEmpty(score))
-		{
-			if (score == "-")
-				GameStatsManager.SavedHighScore = 0;
-			else if (int.TryParse(score, out var x) && x >= 1)
-				GameStatsManager.SavedHighScore = int.Parse(score);
-		}
+		if (string.IsNullOrEmpty(score))
+			return;
+
+		if (score == "-")
+			GameStatsManager.SavedHighScore = 0;
+		else if (int.TryParse(score, out var x) && x >= 1)
+			GameStatsManager.SavedHighScore = int.Parse(score);
 	}
 
 	[HarmonyPatch(nameof(PnlPreparation.OnDiffTglChanged))]

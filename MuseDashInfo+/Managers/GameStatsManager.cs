@@ -14,7 +14,6 @@ public static class GameStatsManager
 	private static TaskStageTarget _task;
 
 	private static int _savedHighScore;
-	public static bool SavedHighScoreLocked;
 
 	private static readonly HashSet<float> SpecialValues = [0.6f, 0.7f, 0.8f, 0.9f, 1f];
 	private static readonly HashSet<int> PlayedNoteIds = [];
@@ -25,6 +24,7 @@ public static class GameStatsManager
 	private static CurrentStats _current;
 	private static TotalStats _total;
 	private static MissStats _miss;
+	public static bool SavedHighScoreLocked { get; set; }
 
 	public static int SavedHighScore
 	{
@@ -76,18 +76,18 @@ public static class GameStatsManager
 			_task.m_Score > _savedHighScore
 		);
 
-		if (Helper.OutputAccuracyCalculationDatas)
-		{
-			Melon<MDIPMod>.Logger.Warning("=========== Accuracy Stats ===========");
-			Melon<MDIPMod>.Logger.Msg($"Total:{AccuracyTotal} | Counted:{AccuracyCounted} | Rest:{AccuracyRest}");
-			Melon<MDIPMod>.Logger.Msg($"Total => Music:{Total.Music} | Energy:{Total.Energy} | Block:{Total.Block} | Hittable:{Total.Hittable}");
-			Melon<MDIPMod>.Logger.Msg($"Counted => Music:{Current.Music} | Energy:{Current.Energy} | Block:{Current.Block} Perfect:{Current.Perfect} | Great:{Current.Great} /2f | | RedPoint:{Current.RedPoint}");
-			Melon<MDIPMod>.Logger.Msg($"Miss => Music:{Miss.Music} | Energy:{Miss.Energy} | Block:{Miss.Block} | Hittable:{MissCountHittable} | LongPair:{Miss.LongPair}");
-			Melon<MDIPMod>.Logger.Msg($"{AccuracyTotal} - {Current.Perfect + Current.Great + Current.Block + Current.Music + Current.Energy + Current.RedPoint} - {Miss.Music + Miss.Energy + MissCountHittable + Miss.LongPair + Miss.Block} = {AccuracyRest}");
-			Melon<MDIPMod>.Logger.Warning("======================================");
-			Melon<MDIPMod>.Logger.Msg($"Calc Acc: {GetCalculatedAccuracy()} | True Acc:{GetTrueAccuracy()}");
-			Melon<MDIPMod>.Logger.Warning("======================================");
-		}
+		if (!Configs.Advanced.OutputAccuracyCalculationData)
+			return;
+
+		Melon<MDIPMod>.Logger.Warning("=========== Accuracy Stats ===========");
+		Melon<MDIPMod>.Logger.Msg($"Total:{AccuracyTotal} | Counted:{AccuracyCounted} | Rest:{AccuracyRest}");
+		Melon<MDIPMod>.Logger.Msg($"Total => Music:{Total.Music} | Energy:{Total.Energy} | Block:{Total.Block} | Hittable:{Total.Hittable}");
+		Melon<MDIPMod>.Logger.Msg($"Counted => Music:{Current.Music} | Energy:{Current.Energy} | Block:{Current.Block} Perfect:{Current.Perfect} | Great:{Current.Great} /2f | | RedPoint:{Current.RedPoint}");
+		Melon<MDIPMod>.Logger.Msg($"Miss => Music:{Miss.Music} | Energy:{Miss.Energy} | Block:{Miss.Block} | Hittable:{MissCountHittable} | LongPair:{Miss.LongPair}");
+		Melon<MDIPMod>.Logger.Msg($"{AccuracyTotal} - {Current.Perfect + Current.Great + Current.Block + Current.Music + Current.Energy + Current.RedPoint} - {Miss.Music + Miss.Energy + MissCountHittable + Miss.LongPair + Miss.Block} = {AccuracyRest}");
+		Melon<MDIPMod>.Logger.Warning("======================================");
+		Melon<MDIPMod>.Logger.Msg($"Calc Acc: {GetCalculatedAccuracy()} | True Acc:{GetTrueAccuracy()}");
+		Melon<MDIPMod>.Logger.Warning("======================================");
 	}
 
 	public static float GetTrueAccuracy() => _task.GetAccuracy() * 100f;
@@ -105,8 +105,7 @@ public static class GameStatsManager
 	public static string FormatOverview()
 	{
 		if (IsTruePerfect) return Constants.TEXT_TRUE_PERFECT.Colored(Constants.COLOR_RANK_TP);
-		if (IsAllPerfect) return Constants.TEXT_ALL_PERFECT.Colored(Constants.COLOR_RANK_AP);
-		return FormatAccuracy();
+		return IsAllPerfect ? Constants.TEXT_ALL_PERFECT.Colored(Constants.COLOR_RANK_AP) : FormatAccuracy();
 	}
 
 	public static string FormatAccuracy()
@@ -144,16 +143,8 @@ public static class GameStatsManager
 
 		if (IsAllPerfect)
 		{
-			if (IsTruePerfect)
+			if (IsTruePerfect || !Configs.Main.ShowEarlyLateCounts)
 				return string.Empty;
-
-			if (Configs.Main.ShowEarlyLateCounts)
-			{
-				if (_current.Early > 0)
-					parts.Add($"{_current.Early}E".Colored(Configs.Main.EarlyCountsColor));
-				if (_current.Late > 0)
-					parts.Add($"{_current.Late}L".Colored(Configs.Main.LateCountsColor));
-			}
 		}
 		else
 		{
@@ -164,14 +155,14 @@ public static class GameStatsManager
 			if (!GameUtils.IsSpellMode && MissCountCollectable > 0)
 				parts.Add($"{MissCountCollectable}H".Colored(Configs.Main.CollectableMissCountsColor));
 
-			if (Configs.Main.EarlyLateCountsDisplayMode == 2)
-			{
-				if (_current.Early > 0)
-					parts.Add($"{_current.Early}E".Colored(Configs.Main.EarlyCountsColor));
-				if (_current.Late > 0)
-					parts.Add($"{_current.Late}L".Colored(Configs.Main.LateCountsColor));
-			}
+			if (Configs.Main.EarlyLateCountsDisplayMode != 2)
+				return string.Join(" ", parts);
 		}
+
+		if (_current.Early > 0)
+			parts.Add($"{_current.Early}E".Colored(Configs.Main.EarlyCountsColor));
+		if (_current.Late > 0)
+			parts.Add($"{_current.Late}L".Colored(Configs.Main.LateCountsColor));
 
 		return string.Join(" ", parts);
 	}
@@ -235,6 +226,9 @@ public static class GameStatsManager
 					_miss.Mul++;
 				}
 				break;
+
+			default:
+				throw new ArgumentOutOfRangeException(nameof(action), action, null);
 		}
 	}
 
@@ -276,6 +270,12 @@ public static class GameStatsManager
 		CheckMashing();
 	}
 
+	public static MusicData GetMusicDataByIdx(int id)
+		=> _stage.GetMusicDataByIdx(id);
+
+	public static MusicData GetCurMusicData()
+		=> _stage.GetCurMusicData();
+
 	public static void Init()
 	{
 		try
@@ -305,6 +305,9 @@ public static class GameStatsManager
 					case NoteType.Energy: _total.Energy++; break;
 					case NoteType.Music: _total.Music++; break;
 					case NoteType.Mul: _total.Mul++; break;
+
+					default:
+						throw new ArgumentOutOfRangeException();
 				}
 			}
 

@@ -5,15 +5,15 @@ namespace MDIP.Utils;
 
 public static class Configs
 {
-	public static MainConfigs Main => ConfigManager.GetConfig<MainConfigs>(ConfigName.MainConfigs);
-	public static AdvancedConfigs Advanced => ConfigManager.GetConfig<AdvancedConfigs>(ConfigName.AdvancedConfigs);
+	public static MainConfigs Main => ConfigManager.GetConfig<MainConfigs>(nameof(MainConfigs));
+	public static AdvancedConfigs Advanced => ConfigManager.GetConfig<AdvancedConfigs>(nameof(AdvancedConfigs));
 
-	public static TextFieldLowerLeftConfigs TextFieldLowerLeft => ConfigManager.GetConfig<TextFieldLowerLeftConfigs>(ConfigName.TextFieldLowerLeftConfigs);
-	public static TextFieldLowerRightConfigs TextFieldLowerRight => ConfigManager.GetConfig<TextFieldLowerRightConfigs>(ConfigName.TextFieldLowerRightConfigs);
-	public static TextFieldScoreBelowConfigs TextFieldScoreBelow => ConfigManager.GetConfig<TextFieldScoreBelowConfigs>(ConfigName.TextFieldScoreBelowConfigs);
-	public static TextFieldScoreRightConfigs TextFieldScoreRight => ConfigManager.GetConfig<TextFieldScoreRightConfigs>(ConfigName.TextFieldScoreRightConfigs);
-	public static TextFieldUpperLeftConfigs TextFieldUpperLeft => ConfigManager.GetConfig<TextFieldUpperLeftConfigs>(ConfigName.TextFieldUpperLeftConfigs);
-	public static TextFieldUpperRightConfigs TextFieldUpperRight => ConfigManager.GetConfig<TextFieldUpperRightConfigs>(ConfigName.TextFieldUpperRightConfigs);
+	public static TextFieldLowerLeftConfigs TextFieldLowerLeft => ConfigManager.GetConfig<TextFieldLowerLeftConfigs>(nameof(TextFieldLowerLeftConfigs));
+	public static TextFieldLowerRightConfigs TextFieldLowerRight => ConfigManager.GetConfig<TextFieldLowerRightConfigs>(nameof(TextFieldLowerRightConfigs));
+	public static TextFieldScoreBelowConfigs TextFieldScoreBelow => ConfigManager.GetConfig<TextFieldScoreBelowConfigs>(nameof(TextFieldScoreBelowConfigs));
+	public static TextFieldScoreRightConfigs TextFieldScoreRight => ConfigManager.GetConfig<TextFieldScoreRightConfigs>(nameof(TextFieldScoreRightConfigs));
+	public static TextFieldUpperLeftConfigs TextFieldUpperLeft => ConfigManager.GetConfig<TextFieldUpperLeftConfigs>(nameof(TextFieldUpperLeftConfigs));
+	public static TextFieldUpperRightConfigs TextFieldUpperRight => ConfigManager.GetConfig<TextFieldUpperRightConfigs>(nameof(TextFieldUpperRightConfigs));
 
 	public static string GetConfigPath(string fileName)
 	{
@@ -40,18 +40,15 @@ public static class Configs
 	public static string AddCommentsToYaml(string yaml, Dictionary<string, (string zh, string en)> comments)
 	{
 		var result = new StringBuilder();
-		var lines = yaml.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+		var lines = yaml.Split(Environment.NewLine);
 
 		foreach (var line in lines)
 		{
 			var trimmedLine = line.Trim();
-			foreach (var comment in comments)
+			foreach (var comment in comments.Where(comment => trimmedLine.StartsWith(comment.Key, StringComparison.OrdinalIgnoreCase)))
 			{
-				if (trimmedLine.StartsWith(comment.Key, StringComparison.OrdinalIgnoreCase))
-				{
-					result.AppendLine(GenerateComments(comment.Value.zh, comment.Value.en));
-					break;
-				}
+				result.AppendLine(GenerateComments(comment.Value.zh, comment.Value.en));
+				break;
 			}
 
 			result.AppendLine(line);

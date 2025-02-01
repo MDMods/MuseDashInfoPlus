@@ -8,58 +8,58 @@ namespace MDIP.Patches;
 [HarmonyPatch(typeof(PnlBattle), nameof(PnlBattle.GameStart))]
 public class PnlBattleGameStartPatch
 {
-	private const float zoomSpeed = 2f;
-	private const float SIGNIFICANT_Y_CHANGE = 10f;
-	private static GameObject TextObjectTemplate;
-	private static Transform CurPnlBattle;
-	private static Transform ScoreTransform;
-	private static float prevY = Constants.SCORE_ZOOM_OUT_Y;
-	private static bool isZooming;
-	private static bool isZoomingIn;
-	private static float targetScale = 3f;
-	private static float currentScale = 3f;
-	private static float zoomProgress;
+	private const float ZoomSpeed = 2f;
+	private const float SignificantYChange = 10f;
+	private static GameObject _textObjectTemplate;
+	private static Transform _curPnlBattle;
+	private static Transform _scoreTransform;
+	private static float _prevY = Constants.SCORE_ZOOM_OUT_Y;
+	private static bool _isZooming;
+	private static bool _isZoomingIn;
+	private static float _targetScale = 3f;
+	private static float _currentScale = 3f;
+	private static float _zoomProgress;
 
-	private static float currentY => ScoreTransform?.localPosition.y ?? Constants.SCORE_ZOOM_OUT_Y;
+	private static float CurrentY => _scoreTransform?.localPosition.y ?? Constants.SCORE_ZOOM_OUT_Y;
 
 	public static void CheckAndZoom()
 	{
-		if (CurPnlBattle == null || ScoreTransform == null) return;
+		if (_curPnlBattle == null || _scoreTransform == null) return;
 
-		if (Mathf.Abs(currentScale - CurPnlBattle.localScale.y) > 0.01f)
+		if (Mathf.Abs(_currentScale - _curPnlBattle.localScale.y) > 0.01f)
 		{
-			currentScale = CurPnlBattle.localScale.y;
-			targetScale = currentScale;
+			_currentScale = _curPnlBattle.localScale.y;
+			_targetScale = _currentScale;
 		}
 
-		var yChange = currentY - prevY;
-		if (!isZooming && Mathf.Abs(yChange) > SIGNIFICANT_Y_CHANGE)
+		var yChange = CurrentY - _prevY;
+		if (!_isZooming && Mathf.Abs(yChange) > SignificantYChange)
 		{
-			isZoomingIn = yChange < 0;
-			isZooming = true;
-			zoomProgress = 0f;
-			targetScale = isZoomingIn ? 1f : 3f;
+			_isZoomingIn = yChange < 0;
+			_isZooming = true;
+			_zoomProgress = 0f;
+			_targetScale = _isZoomingIn ? 1f : 3f;
 		}
 
-		if (isZooming)
+		if (_isZooming)
 		{
-			zoomProgress = Mathf.Min(zoomProgress + Time.fixedDeltaTime * zoomSpeed, 1f);
+			_zoomProgress = Mathf.Min(_zoomProgress + Time.fixedDeltaTime * ZoomSpeed, 1f);
 
-			var easedProgress = isZoomingIn ? EaseOutCubic(zoomProgress) : EaseInCubic(zoomProgress);
-			currentScale = Mathf.Lerp(isZoomingIn ? 3f : 1f, targetScale, easedProgress);
+			var easedProgress = _isZoomingIn ? EaseOutCubic(_zoomProgress) : EaseInCubic(_zoomProgress);
+			_currentScale = Mathf.Lerp(_isZoomingIn ? 3f : 1f, _targetScale, easedProgress);
 
-			CurPnlBattle.localScale = new(1f, currentScale, 1f);
+			_curPnlBattle.localScale = new(1f, _currentScale, 1f);
 
-			if (zoomProgress >= 1f)
+			if (_zoomProgress >= 1f)
 			{
-				isZooming = false;
-				currentScale = targetScale;
+				_isZooming = false;
+				_currentScale = _targetScale;
 			}
 		}
 		else
-			CurPnlBattle.localScale = new(1f, currentScale, 1f);
+			_curPnlBattle.localScale = new(1f, _currentScale, 1f);
 
-		prevY = currentY;
+		_prevY = CurrentY;
 	}
 
 	private static float EaseInCubic(float x) => x * x * x;
@@ -67,29 +67,32 @@ public class PnlBattleGameStartPatch
 
 	public static void Reset()
 	{
-		TextObjectTemplate = null;
-		CurPnlBattle = null;
-		ScoreTransform = null;
+		_textObjectTemplate = null;
+		_curPnlBattle = null;
+		_scoreTransform = null;
 
-		prevY = Constants.SCORE_ZOOM_OUT_Y;
-		isZooming = false;
-		isZoomingIn = false;
-		targetScale = 3f;
-		currentScale = 3f;
-		zoomProgress = 0f;
+		_prevY = Constants.SCORE_ZOOM_OUT_Y;
+		_isZooming = false;
+		_isZoomingIn = false;
+		_targetScale = 3f;
+		_currentScale = 3f;
+		_zoomProgress = 0f;
 	}
 
 	private static void Postfix(PnlBattle __instance)
 	{
-		if (TextObjectTemplate != null) return;
+		if (_textObjectTemplate != null) return;
 
 		try
 		{
 			var pnlBattleOthers = __instance.transform.Find("PnlBattleUI/PnlBattleOthers")?.gameObject;
-			var pnlBattleSpell = __instance.transform.Find("PnlBattleUI/PnlBattleSpell").gameObject;
+			var pnlBattleSpell = __instance.transform.Find("PnlBattleUI/PnlBattleSpell")?.gameObject;
 			var pnlBattleWisadel = __instance.transform.Find("PnlBattleUI/PnlBattleWisadel")?.gameObject;
-			var curPnlBattle = pnlBattleOthers;
-			if (pnlBattleOthers?.active ?? false)
+			if (pnlBattleOthers == null)
+				throw new NullReferenceException("PnlBattleOthers is null");
+
+			GameObject curPnlBattle;
+			if (pnlBattleOthers.active)
 			{
 				curPnlBattle = pnlBattleOthers;
 				GameUtils.IsOthersMode = true;
@@ -109,37 +112,37 @@ public class PnlBattleGameStartPatch
 
 			// Zoom out all UI
 			curPnlBattle.transform.localScale = new(1f, 3f, 1f);
-			CurPnlBattle = curPnlBattle.transform;
-			ScoreTransform = curPnlBattle.transform.Find("Score");
+			_curPnlBattle = curPnlBattle.transform;
+			_scoreTransform = curPnlBattle.transform.Find("Score");
 
-			TextObjectTemplate = Object.Instantiate(pnlBattleOthers.transform.Find("Score/Djmax/TxtScore_djmax").gameObject);
-			Object.Destroy(TextObjectTemplate.transform.Find("ImgIconApDjmax").gameObject);
-			Object.Destroy(TextObjectTemplate.GetComponent<ContentSizeFitter>());
-			TextObjectTemplate.transform.localPosition = new(9999, 9999, -9999);
+			_textObjectTemplate = Object.Instantiate(pnlBattleOthers.transform.Find("Score/Djmax/TxtScore_djmax").gameObject);
+			Object.Destroy(_textObjectTemplate.transform.Find("ImgIconApDjmax").gameObject);
+			Object.Destroy(_textObjectTemplate.GetComponent<ContentSizeFitter>());
+			_textObjectTemplate.transform.localPosition = new(9999, 9999, -9999);
 
-			var imgIconApPath = string.Empty;
-			var scoreStyleType = ScoreStyleType.Unknown;
-			if (curPnlBattle.transform.Find("Score/GC")?.gameObject?.active ?? false)
+			string imgIconApPath;
+			ScoreStyleType scoreStyleType;
+			if (curPnlBattle.transform.Find("Score/GC")?.gameObject.active ?? false)
 			{
 				scoreStyleType = ScoreStyleType.GC;
 				imgIconApPath = "Score/GC/TxtScoreGC/ImgIconApGc";
 			}
-			else if (curPnlBattle.transform.Find("Score/Djmax")?.gameObject?.active ?? false)
+			else if (curPnlBattle.transform.Find("Score/Djmax")?.gameObject.active ?? false)
 			{
 				scoreStyleType = ScoreStyleType.Djmax;
 				imgIconApPath = "Score/Djmax/TxtScore_djmax/ImgIconApDjmax";
 			}
-			else if (curPnlBattle.transform.Find("Score/ArkNight")?.gameObject?.active ?? false)
+			else if (curPnlBattle.transform.Find("Score/ArkNight")?.gameObject.active ?? false)
 			{
 				scoreStyleType = ScoreStyleType.ArkNight;
 				imgIconApPath = "Score/ArkNight/Area/TxtScoreArkNight/ImgIconApArkNight";
 			}
-			else if (curPnlBattle.transform.Find("Score/Other/ScoreTittle/ImgEnglish")?.gameObject?.active ?? false)
+			else if (curPnlBattle.transform.Find("Score/Other/ScoreTittle/ImgEnglish")?.gameObject.active ?? false)
 			{
 				scoreStyleType = ScoreStyleType.OtherEN;
 				imgIconApPath = "Score/Other/TxtScore/ImgIconAp";
 			}
-			else if (curPnlBattle.transform.Find("Score/Other/ScoreTittle/ImgChinese")?.gameObject?.active ?? false)
+			else if (curPnlBattle.transform.Find("Score/Other/ScoreTittle/ImgChinese")?.gameObject.active ?? false)
 			{
 				scoreStyleType = ScoreStyleType.OtherCN;
 				imgIconApPath = "Score/Other/TxtScore/ImgIconAp";
@@ -272,7 +275,7 @@ public class PnlBattleGameStartPatch
 		FontStyle fontStyle = FontStyle.Normal)
 	{
 		var obj = parent.Find(objectName)?.gameObject ??
-		          Object.Instantiate(TextObjectTemplate, parent);
+		          Object.Instantiate(_textObjectTemplate, parent);
 		obj.name = objectName;
 
 		Object.Destroy(obj.transform.Find("ImgIconApDjmax")?.gameObject);
@@ -290,18 +293,13 @@ public class PnlBattleGameStartPatch
 		}
 
 		var text = obj.GetComponent<Text>();
-		switch (config.Font)
+		text.font = config.Font switch
 		{
-			case "Snaps Taste":
-				text.font = FontUtils.GetFont(FontType.SnapsTaste);
-				break;
-			case "Lato":
-				text.font = FontUtils.GetFont(FontType.LatoRegular);
-				break;
-			case "Normal":
-				text.font = FontUtils.GetFont(FontType.Normal);
-				break;
-		}
+			"Snaps Taste" => FontUtils.GetFont(FontType.SnapsTaste),
+			"Lato" => FontUtils.GetFont(FontType.LatoRegular),
+			"Normal" => FontUtils.GetFont(FontType.Normal),
+			_ => text.font
+		};
 
 		text.alignment = alignment;
 		text.fontStyle = fontStyle;

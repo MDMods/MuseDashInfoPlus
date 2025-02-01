@@ -9,10 +9,10 @@ public class PnlVictorySetDetailInfoPatch
 {
 	private static void Postfix(PnlVictory __instance)
 	{
-		if (Helper.OutputNoteRecordsToDesktop)
+		if (Configs.Advanced.OutputNoteRecordsToDesktop)
 			NoteRecordManager.ExportToExcel();
 
-		if (AccuracyRest != 0 || Math.Round(GetTrueAccuracy(), 2) != Math.Round(GetCalculatedAccuracy(), 2))
+		if (AccuracyRest != 0 || Math.Abs(Math.Round(GetTrueAccuracy(), 2) - Math.Round(GetCalculatedAccuracy(), 2)) > 0.0001f)
 		{
 			Melon<MDIPMod>.Logger.Error("===== Accuracy Calculation Error =====");
 			Melon<MDIPMod>.Logger.Msg($"Total:{AccuracyTotal} | Counted:{AccuracyCounted} | Rest:{AccuracyRest}");
