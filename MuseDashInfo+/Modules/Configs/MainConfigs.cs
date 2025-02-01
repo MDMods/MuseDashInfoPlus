@@ -106,5 +106,5 @@ public class MainConfigs : ConfigBase
 
 	[ConfigCommentZh("以模组计算的 Miss 数替代结算页面的 Miss 数")]
 	[ConfigCommentEn("Show mod-calculated misses instead of game's default count on results screen")]
-	public bool ReplaceResultsScreenMissCount { get; set; } = true;
+	public bool ReplaceResultsScreenMissCount { get; set; } = false;
 }
