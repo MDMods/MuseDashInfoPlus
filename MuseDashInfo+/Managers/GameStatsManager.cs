@@ -320,43 +320,4 @@ public static class GameStatsManager
 		PlayedNoteIds.Clear();
 		MissedNoteIds.Clear();
 	}
-
-	public record struct CurrentStats(
-		int Perfect,
-		int Great,
-		int Early,
-		int Late,
-		int Music,
-		int Energy,
-		int Block,
-		int RedPoint,
-		int Score,
-		bool IsHighScore = false
-	);
-
-	public record struct TotalStats(
-		int Notes,
-		int Hittable,
-		int Monster,
-		int Block,
-		int Long,
-		int Ghost,
-		int Boss,
-		int Energy,
-		int Music,
-		int Mul,
-		int RedPoint
-	);
-
-	public record struct MissStats(
-		int Monster,
-		int Block,
-		int Long,
-		int LongPair,
-		int Ghost,
-		int Energy,
-		int Music,
-		int Mul,
-		int RedPoint
-	);
 }
