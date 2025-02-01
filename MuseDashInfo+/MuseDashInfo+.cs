@@ -34,34 +34,34 @@ public class MDIPMod : MelonMod
 	{
 		IsSongDescLoaded = RegisteredMelons.Any(mod => mod.MelonAssembly.Assembly.FullName.TrimStart().StartsWith("SongDesc"));
 
-		ConfigManager.Instance.RegisterModule(ConfigName.MainConfigs, "MainConfigs.yml");
-		var mainConfigModule = ConfigManager.Instance.GetModule(ConfigName.MainConfigs);
+		ConfigManager.RegisterModule(ConfigName.MainConfigs, "MainConfigs.yml");
+		var mainConfigModule = ConfigManager.GetModule(ConfigName.MainConfigs);
 		mainConfigModule.RegisterUpdateCallback<MainConfigs>(cfg =>
 		{
 			Melon<MDIPMod>.Logger.Warning("Main configs updated!");
 		});
-		ConfigManager.Instance.SaveConfig(ConfigName.MainConfigs, Configs.Main);
+		ConfigManager.SaveConfig(ConfigName.MainConfigs, Configs.Main);
 
-		ConfigManager.Instance.RegisterModule(ConfigName.AdvancedConfigs, "AdvancedConfigs.yml");
-		ConfigManager.Instance.SaveConfig(ConfigName.AdvancedConfigs, Configs.Advanced);
+		ConfigManager.RegisterModule(ConfigName.AdvancedConfigs, "AdvancedConfigs.yml");
+		ConfigManager.SaveConfig(ConfigName.AdvancedConfigs, Configs.Advanced);
 
-		ConfigManager.Instance.RegisterModule(ConfigName.TextFieldLowerLeftConfigs, "TextFieldLowerLeftConfigs.yml");
-		ConfigManager.Instance.SaveConfig(ConfigName.TextFieldLowerLeftConfigs, Configs.TextFieldLowerLeft);
+		ConfigManager.RegisterModule(ConfigName.TextFieldLowerLeftConfigs, "TextFieldLowerLeftConfigs.yml");
+		ConfigManager.SaveConfig(ConfigName.TextFieldLowerLeftConfigs, Configs.TextFieldLowerLeft);
 
-		ConfigManager.Instance.RegisterModule(ConfigName.TextFieldLowerRightConfigs, "TextFieldLowerRightConfigs.yml");
-		ConfigManager.Instance.SaveConfig(ConfigName.TextFieldLowerRightConfigs, Configs.TextFieldLowerRight);
+		ConfigManager.RegisterModule(ConfigName.TextFieldLowerRightConfigs, "TextFieldLowerRightConfigs.yml");
+		ConfigManager.SaveConfig(ConfigName.TextFieldLowerRightConfigs, Configs.TextFieldLowerRight);
 
-		ConfigManager.Instance.RegisterModule(ConfigName.TextFieldScoreBelowConfigs, "TextFieldScoreBelowConfigs.yml");
-		ConfigManager.Instance.SaveConfig(ConfigName.TextFieldScoreBelowConfigs, Configs.TextFieldScoreBelow);
+		ConfigManager.RegisterModule(ConfigName.TextFieldScoreBelowConfigs, "TextFieldScoreBelowConfigs.yml");
+		ConfigManager.SaveConfig(ConfigName.TextFieldScoreBelowConfigs, Configs.TextFieldScoreBelow);
 
-		ConfigManager.Instance.RegisterModule(ConfigName.TextFieldScoreRightConfigs, "TextFieldScoreRightConfigs.yml");
-		ConfigManager.Instance.SaveConfig(ConfigName.TextFieldScoreRightConfigs, Configs.TextFieldScoreRight);
+		ConfigManager.RegisterModule(ConfigName.TextFieldScoreRightConfigs, "TextFieldScoreRightConfigs.yml");
+		ConfigManager.SaveConfig(ConfigName.TextFieldScoreRightConfigs, Configs.TextFieldScoreRight);
 
-		ConfigManager.Instance.RegisterModule(ConfigName.TextFieldUpperLeftConfigs, "TextFieldUpperLeftConfigs.yml");
-		ConfigManager.Instance.SaveConfig(ConfigName.TextFieldUpperLeftConfigs, Configs.TextFieldUpperLeft);
+		ConfigManager.RegisterModule(ConfigName.TextFieldUpperLeftConfigs, "TextFieldUpperLeftConfigs.yml");
+		ConfigManager.SaveConfig(ConfigName.TextFieldUpperLeftConfigs, Configs.TextFieldUpperLeft);
 
-		ConfigManager.Instance.RegisterModule(ConfigName.TextFieldUpperRightConfigs, "TextFieldUpperRightConfigs.yml");
-		ConfigManager.Instance.SaveConfig(ConfigName.TextFieldUpperRightConfigs, Configs.TextFieldUpperRight);
+		ConfigManager.RegisterModule(ConfigName.TextFieldUpperRightConfigs, "TextFieldUpperRightConfigs.yml");
+		ConfigManager.SaveConfig(ConfigName.TextFieldUpperRightConfigs, Configs.TextFieldUpperRight);
 	}
 
 	public override void OnSceneWasLoaded(int buildIndex, string sceneName)
@@ -73,7 +73,7 @@ public class MDIPMod : MelonMod
 
 			case "Welcome":
 			case "UISystem_PC":
-				ConfigManager.Instance.ActivateWatcher();
+				ConfigManager.ActivateWatcher();
 				break;
 
 			default:

@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using MDIP.Modules;
 using MDIP.Modules.Configs;
@@ -9,37 +9,14 @@ using MelonLoader;
 
 namespace MDIP.Managers;
 
-public class ConfigManager : IDisposable
+public static class ConfigManager
 {
-	private static readonly object _lock = new();
-	private static ConfigManager _instance;
+	private static readonly Dictionary<string, ConfigItem> _modules = new();
+	private static readonly YamlParser _yamlParser = new();
+	private static FileSystemWatcher _watcher = new();
 
-	private readonly Dictionary<string, ConfigItem> _modules;
-	private readonly FileSystemWatcher _watcher;
-	private readonly YamlParser _yamlParser;
-	private bool _disposed;
-
-	public static ConfigManager Instance
+	public static void Init()
 	{
-		get
-		{
-			if (_instance == null)
-			{
-				lock (_lock)
-				{
-					_instance ??= new();
-				}
-			}
-
-			return _instance;
-		}
-	}
-
-	private ConfigManager()
-	{
-		_modules = new();
-		_yamlParser = new();
-
 		_watcher = new()
 		{
 			Filter = "*.yml",
@@ -56,24 +33,9 @@ public class ConfigManager : IDisposable
 		_watcher.Changed += OnConfigFileChanged;
 	}
 
-	public void Dispose()
-	{
-		Dispose(true);
-		GC.SuppressFinalize(this);
-	}
+	public static void ActivateWatcher() => _watcher.EnableRaisingEvents = true;
 
-	protected virtual void Dispose(bool disposing)
-	{
-		if (_disposed) return;
-
-		if (disposing) _watcher?.Dispose();
-
-		_disposed = true;
-	}
-
-	public void ActivateWatcher() => _watcher.EnableRaisingEvents = true;
-
-	public void RegisterModule(string name, string configFileName)
+	public static void RegisterModule(string name, string configFileName)
 	{
 		if (_modules.ContainsKey(name))
 		{
@@ -85,10 +47,14 @@ public class ConfigManager : IDisposable
 		var module = new ConfigItem(name, configPath, _yamlParser);
 		_modules[name] = module;
 
-		_watcher.Path = Path.GetDirectoryName(configPath);
+		var path = Path.GetDirectoryName(configPath);
+		if (string.IsNullOrWhiteSpace(path))
+			throw new DirectoryNotFoundException($"Configs directory {configFileName} not found");
+
+		_watcher.Path = path;
 	}
 
-	public ConfigItem GetModule(string moduleName)
+	public static ConfigItem GetModule(string moduleName)
 	{
 		if (!_modules.TryGetValue(moduleName, out var module))
 			throw new($"Module {moduleName} not found");
@@ -96,7 +62,7 @@ public class ConfigManager : IDisposable
 		return module;
 	}
 
-	public T GetConfig<T>(string moduleName) where T : ConfigBase, new()
+	public static T GetConfig<T>(string moduleName) where T : ConfigBase, new()
 	{
 		if (!_modules.TryGetValue(moduleName, out var module))
 			throw new($"Module {moduleName} not found");
@@ -104,7 +70,7 @@ public class ConfigManager : IDisposable
 		return module.GetConfig<T>();
 	}
 
-	public void SaveConfig<T>(string moduleName, T config) where T : ConfigBase
+	public static void SaveConfig<T>(string moduleName, T config) where T : ConfigBase
 	{
 		if (!_modules.TryGetValue(moduleName, out var module))
 			throw new($"Module {moduleName} not found");
@@ -112,7 +78,7 @@ public class ConfigManager : IDisposable
 		module.SaveConfig(config);
 	}
 
-	private void OnConfigFileChanged(object sender, FileSystemEventArgs e)
+	private static void OnConfigFileChanged(object sender, FileSystemEventArgs e)
 	{
 		Melon<MDIPMod>.Logger.Msg($"Config file changed: {e.Name}");
 		for (var i = 0; i < 3; i++)
@@ -120,14 +86,11 @@ public class ConfigManager : IDisposable
 			try
 			{
 				Thread.Sleep(100);
-				foreach (var module in _modules.Values)
+				foreach (var module in _modules.Values.Where(module => module.ConfigPath == e.FullPath))
 				{
-					if (module.ConfigPath == e.FullPath)
-					{
-						Melon<MDIPMod>.Logger.Msg($"Reloading: {e.Name}");
-						module.ReloadConfig();
-						break;
-					}
+					Melon<MDIPMod>.Logger.Msg($"Reloading: {e.Name}");
+					module.ReloadConfig();
+					break;
 				}
 
 				return;
