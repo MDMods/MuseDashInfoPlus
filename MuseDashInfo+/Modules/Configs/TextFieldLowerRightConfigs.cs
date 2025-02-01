@@ -5,7 +5,7 @@ namespace MDIP.Modules.Configs;
 public class TextFieldLowerRightConfigs : ConfigBase, ITextConfig
 {
 	public bool Enabled { get; set; } = false;
-	public string Text { get; set; } = "";
+	public string Text { get; set; } = "Sky Speed: {skySpeed}x\\nGround Speed: {groundSpeed}x";
 	public float OffsetX { get; set; } = 0;
 	public float OffsetY { get; set; } = 0;
 	public string Font { get; set; } = "Lato";

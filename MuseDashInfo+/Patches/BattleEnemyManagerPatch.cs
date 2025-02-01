@@ -23,6 +23,8 @@ internal class BattleEnemyManagerSetPlayResultPatch
 				break;
 		}
 
+		if (type.IsRegularNote())
+			GameStatsManager.UpdateCurrentSpeed(note.isAir, note.noteData.speed);
 		GameStatsManager.UpdateCurrentStats();
 
 		if (type == NoteType.Mul && result is 3 or 4)

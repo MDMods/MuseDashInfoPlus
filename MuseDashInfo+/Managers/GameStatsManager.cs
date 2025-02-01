@@ -26,6 +26,8 @@ public static class GameStatsManager
 	private static HashSet<int> PlayedNoteIds { get; } = [];
 	private static HashSet<int> MissedNoteIds { get; } = [];
 	public static bool SavedHighScoreLocked { get; set; }
+	public static int CurrentSkySpeed { get; set; }
+	public static int CurrentGroundSpeed { get; set; }
 
 	public static int SavedHighScore
 	{
@@ -64,6 +66,7 @@ public static class GameStatsManager
 	public static void UpdateCurrentStats()
 	{
 		if (_task == null) return;
+
 		_current = new(
 			_task.m_PerfectResult,
 			_task.m_GreatResult,
@@ -89,6 +92,12 @@ public static class GameStatsManager
 		Melon<MDIPMod>.Logger.Warning("======================================");
 		Melon<MDIPMod>.Logger.Msg($"Calc Acc: {GetCalculatedAccuracy()} | True Acc:{GetTrueAccuracy()}");
 		Melon<MDIPMod>.Logger.Warning("======================================");
+	}
+
+	public static void UpdateCurrentSpeed(bool isAir, int speed)
+	{
+		if (isAir) CurrentSkySpeed = speed;
+		else CurrentGroundSpeed = speed;
 	}
 
 	public static float GetTrueAccuracy() => _task.GetAccuracy() * 100f;
@@ -300,10 +309,25 @@ public static class GameStatsManager
 			foreach (var note in _stage.GetMusicData())
 			{
 				var type = (NoteType)note.noteData.type;
+
 				if (!note.isLongPressing)
 				{
 					if (note.noteData.addCombo) _total.Hittable++;
-					if (type.IsRegularNote()) _total.Notes++;
+					if (type.IsRegularNote())
+					{
+						_total.Notes++;
+
+						if (note.isAir)
+						{
+							if (CurrentSkySpeed == -1)
+								CurrentSkySpeed = note.noteData.speed;
+						}
+						else
+						{
+							if (CurrentGroundSpeed == -1)
+								CurrentGroundSpeed = note.noteData.speed;
+						}
+					}
 				}
 
 				switch (type)
@@ -339,6 +363,8 @@ public static class GameStatsManager
 		ResetMashing();
 
 		SavedHighScore = 0;
+		CurrentSkySpeed = -1;
+		CurrentGroundSpeed = -1;
 		PlayedNoteIds.Clear();
 		MissedNoteIds.Clear();
 	}

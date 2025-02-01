@@ -31,6 +31,8 @@ public static class TextDataManager
 		UpdateCachedValue("{stats}", GameStatsManager.FormatStats());
 		UpdateCachedValue("{gap}", GameStatsManager.FormatScoreGap());
 		UpdateCachedValue("{hit}", ((int)GameStatsManager.AccuracyCounted).ToString());
+		UpdateCachedValue("{skySpeed}", GameStatsManager.CurrentSkySpeed.ToString());
+		UpdateCachedValue("{groundSpeed}", GameStatsManager.CurrentGroundSpeed.ToString());
 	}
 
 	private static void InvalidateFormattedTexts()

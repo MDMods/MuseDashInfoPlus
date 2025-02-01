@@ -55,6 +55,7 @@ internal class GameMissPlayMissCubePatch
 			if (!type.IsRegularNote() || type == NoteType.Block || note.isLongPressing)
 				return;
 
+			GameStatsManager.UpdateCurrentSpeed(note.isAir, note.noteData.speed);
 			GameStatsManager.UpdateCurrentStats();
 			GameStatsManager.CheckMashing();
 			TextObjManager.UpdateAllText();
