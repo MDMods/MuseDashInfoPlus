@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using MDIP.Managers;
 using MDIP.Modules;
@@ -8,15 +8,6 @@ using MDIP.Utils;
 using MelonLoader;
 
 namespace MDIP;
-
-internal static class ModBuildInfo
-{
-	public const string NAME = "Info+";
-	public const string DESCRIPTION = "Displays additional in-game infos";
-	public const string AUTHOR = "KARPED1EM";
-	public const string VERSION = "2.1.0";
-	public const string REPO_LINK = "https://github.com/MDMods/MuseDashInfoPlus";
-}
 
 /// <summary>
 ///  MDIP (MuseDashInfoPlus) main mod class
