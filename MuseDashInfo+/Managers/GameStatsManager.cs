@@ -1,6 +1,5 @@
 ﻿using Il2CppAssets.Scripts.Database;
 using Il2CppAssets.Scripts.GameCore.HostComponent;
-using Il2CppAssets.Scripts.PeroTools.Commons;
 using Il2CppFormulaBase;
 using Il2CppGameLogic;
 using GameUtils = MDIP.Utils.GameUtils;
@@ -12,6 +11,7 @@ public static class GameStatsManager
 	private const float Precision = 0.0001f;
 	private static StageBattleComponent _stage;
 	private static TaskStageTarget _task;
+	private static BattleRoleAttributeComponent _role;
 
 	private static int _savedHighScore;
 	public static bool SavedHighScoreLocked;
@@ -67,8 +67,8 @@ public static class GameStatsManager
 		_current = new(
 			_task.m_PerfectResult,
 			_task.m_GreatResult,
-			_current.Early,
-			_current.Late,
+			_role.early,
+			_role.late,
 			_task.m_MusicCount,
 			_task.m_EnergyCount,
 			_current.Block,
@@ -177,9 +177,6 @@ public static class GameStatsManager
 		return string.Join(" ", parts);
 	}
 
-	public static void AddEarly() => _current.Early++;
-	public static void AddLate() => _current.Late++;
-
 	public static void CountNote(int id, CountNoteAction action, int doubleId = -1, bool isLongStart = false)
 	{
 		switch (action)
@@ -272,8 +269,10 @@ public static class GameStatsManager
 	{
 		try
 		{
-			_stage = Singleton<StageBattleComponent>.instance;
-			_task = Singleton<TaskStageTarget>.instance;
+			_stage = StageBattleComponent.instance;
+			_task = TaskStageTarget.instance;
+			_role = BattleRoleAttributeComponent.instance;
+
 			_savedHighScore = Math.Max(BattleHelper.GetCurrentMusicHighScore(), SavedHighScore);
 
 			foreach (var note in _stage.GetMusicData())
