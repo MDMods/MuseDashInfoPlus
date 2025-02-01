@@ -247,7 +247,7 @@ public static class GameStatsManager
 		foreach (var kvp in MashingNotes)
 		{
 			var (id, (note, mashedNum)) = kvp;
-			if (_stage.realTimeTick <= note.missTick * 1000)
+			if (_stage.realTimeTick <= (note.tick + note.configData.length) * 1000)
 				continue;
 
 			var tooLow = mashedNum < note.GetMulHitMidThreshold();
