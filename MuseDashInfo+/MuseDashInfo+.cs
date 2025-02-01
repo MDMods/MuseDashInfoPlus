@@ -69,6 +69,7 @@ public class MDIPMod : MelonMod
 			return;
 		_lastUpdateSecond = DateTime.Now.Second;
 
+		GameStatsManager.UpdateCurrentStats();
 		GameStatsManager.CheckMashing();
 		TextObjManager.UpdateAllText();
 	}

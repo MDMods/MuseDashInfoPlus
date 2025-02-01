@@ -19,7 +19,6 @@ public static class TextObjManager
 		if (now - _lastUpdateTick < Configs.Advanced.DataRefreshIntervalLimit) return;
 		_lastUpdateTick = now;
 
-		GameStatsManager.UpdateCurrentStats();
 		TextDataManager.UpdateValues();
 
 		if (TextLowerLeftObj != null && Configs.TextFieldLowerLeft.Enabled)

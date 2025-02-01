@@ -22,6 +22,7 @@ public static class GameStatsManager
 	private static MissStats _miss;
 
 	private static Dictionary<int, (MusicData, int)> MashingNotes { get; } = new();
+	private static Dictionary<int, int> MasherGreatRecords { get; } = new();
 	private static HashSet<int> PlayedNoteIds { get; } = [];
 	private static HashSet<int> MissedNoteIds { get; } = [];
 	public static bool SavedHighScoreLocked { get; set; }
@@ -235,23 +236,32 @@ public static class GameStatsManager
 	public static void ResetMashing(int id = -1)
 	{
 		if (id < 0)
+		{
 			MashingNotes.Clear();
+			MasherGreatRecords.Clear();
+		}
 		else
 			MashingNotes.Remove(id);
 	}
 
-	public static void CheckMashing()
+	public static void CheckMashing(bool force = false)
 	{
-		if (MashingNotes.Count < 1) return;
-
 		foreach (var kvp in MashingNotes)
 		{
 			var (id, (note, mashedNum)) = kvp;
-			if (_stage.realTimeTick <= (note.tick + note.configData.length) * 1000)
+
+			if (MasherGreatRecords[id] != _current.Great)
+			{
+				PlayedNoteIds.Add(id);
+				ResetMashing(id);
+				return;
+			}
+
+			if (!force && _stage.realTimeTick <= (note.tick + note.configData.length) * 1000)
 				continue;
 
 			var tooLow = mashedNum < note.GetMulHitMidThreshold();
-			if (tooLow && !MissedNoteIds.Contains(id))
+			if (tooLow && !MissedNoteIds.Contains(id) && !PlayedNoteIds.Contains(id))
 				_miss.Mul++;
 
 			ResetMashing(id);
@@ -261,9 +271,10 @@ public static class GameStatsManager
 	public static void Mashing(MusicData note)
 	{
 		var id = int.Parse(note.noteData.id);
-		if (MissedNoteIds.Contains(id))
+		if (MissedNoteIds.Contains(id) || PlayedNoteIds.Contains(id))
 			return;
 
+		MasherGreatRecords.TryAdd(id, _current.Great);
 		MashingNotes.TryAdd(id, (note, 0));
 		MashingNotes[id] = (MashingNotes[id].Item1, MashingNotes[id].Item2 + 1);
 

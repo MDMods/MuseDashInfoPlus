@@ -23,11 +23,13 @@ internal class BattleEnemyManagerSetPlayResultPatch
 				break;
 		}
 
+		GameStatsManager.UpdateCurrentStats();
+
 		if (type == NoteType.Mul && result is 3 or 4)
 			GameStatsManager.Mashing(note);
 		else if (type.IsRegularNote() && !note.isLongPressing && type != NoteType.Mul)
 		{
-			GameStatsManager.CheckMashing();
+			GameStatsManager.CheckMashing(true);
 			TextObjManager.UpdateAllText();
 		}
 	}

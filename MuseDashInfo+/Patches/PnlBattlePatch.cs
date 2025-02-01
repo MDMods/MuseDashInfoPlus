@@ -257,6 +257,7 @@ public class PnlBattleGameStartPatch
 
 			GameStatsManager.Init();
 			TextDataManager.UpdateConstants();
+			GameStatsManager.UpdateCurrentStats();
 			TextObjManager.UpdateAllText();
 		}
 		catch (Exception e)
