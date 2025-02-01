@@ -65,9 +65,9 @@ public static class Extensions
 	private static int CalculateWidth(this string input) => input.Sum(c => IsFullWidth(c) ? 2 : 1);
 
 	private static bool IsFullWidth(this char c)
-		=> (c >= 0x4E00 && c <= 0x9FFF) || // CJK统一汉字
-		   (c >= 0x3000 && c <= 0x303F) || // CJK标点符号
-		   (c >= 0xFF00 && c <= 0xFFEF); // 全角ASCII、全角标点
+		=> c >= 0x4E00 && c <= 0x9FFF || // CJK统一汉字
+		   c >= 0x3000 && c <= 0x303F || // CJK标点符号
+		   c >= 0xFF00 && c <= 0xFFEF; // 全角ASCII、全角标点
 
 	public static bool IsRegularNote(this NoteType noteType) => Helper.IsRegularNote((uint)noteType);
 

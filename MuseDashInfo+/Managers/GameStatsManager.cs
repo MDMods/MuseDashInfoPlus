@@ -9,9 +9,9 @@ namespace MDIP.Managers;
 public static class GameStatsManager
 {
 	private const float Precision = 0.0001f;
+	private static BattleRoleAttributeComponent _role;
 	private static StageBattleComponent _stage;
 	private static TaskStageTarget _task;
-	private static BattleRoleAttributeComponent _role;
 
 	private static int _savedHighScore;
 	public static bool SavedHighScoreLocked;
@@ -185,6 +185,7 @@ public static class GameStatsManager
 				if (PlayedNoteIds.Add(id))
 					_current.Block++;
 				break;
+
 			case CountNoteAction.MissMonster:
 				if (doubleId == -1)
 				{
@@ -196,41 +197,44 @@ public static class GameStatsManager
 					if (MissedNoteIds.Add(id) && MissedNoteIds.Add(doubleId))
 						_miss.Monster += 2;
 				}
-
 				break;
+
 			case CountNoteAction.MissBlock:
 				if (MissedNoteIds.Add(id))
 					_miss.Block++;
 				if (!PlayedNoteIds.Add(id))
 					_current.Block--;
 				break;
+
 			case CountNoteAction.MissLong:
 				if (MissedNoteIds.Add(id))
 				{
 					_miss.Long++;
 					if (isLongStart) _miss.LongPair++;
 				}
-
 				break;
+
 			case CountNoteAction.MissGhost:
 				if (MissedNoteIds.Add(id))
 					_miss.Ghost++;
 				break;
+
 			case CountNoteAction.MissEnergy:
 				if (MissedNoteIds.Add(id))
 					_miss.Energy++;
 				break;
+
 			case CountNoteAction.MissMusic:
 				if (MissedNoteIds.Add(id))
 					_miss.Music++;
 				break;
+
 			case CountNoteAction.MissMul:
 				if (MissedNoteIds.Add(id))
 				{
 					ResetMashing();
 					_miss.Mul++;
 				}
-
 				break;
 		}
 	}
