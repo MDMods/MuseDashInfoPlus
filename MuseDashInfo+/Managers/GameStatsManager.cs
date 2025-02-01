@@ -9,16 +9,16 @@ namespace MDIP.Managers;
 
 public static class GameStatsManager
 {
-	private const float PRECISION = 0.0001f;
+	private const float Precision = 0.0001f;
 	private static StageBattleComponent _stage;
 	private static TaskStageTarget _task;
 
 	private static int _savedHighScore;
 	public static bool SavedHighScoreLocked;
 
-	private static readonly HashSet<float> SpecialValues = new() { 0.6f, 0.7f, 0.8f, 0.9f, 1f };
-	private static readonly HashSet<int> PlayedNoteIds = new();
-	private static readonly HashSet<int> MissedNoteIds = new();
+	private static readonly HashSet<float> SpecialValues = [0.6f, 0.7f, 0.8f, 0.9f, 1f];
+	private static readonly HashSet<int> PlayedNoteIds = [];
+	private static readonly HashSet<int> MissedNoteIds = [];
 
 	private static MusicData MashingNote;
 	private static int MashedNum;
@@ -42,11 +42,11 @@ public static class GameStatsManager
 	public static MissStats Miss => _miss;
 
 	// Calculated properties
-	public static int MissCountHitable => _miss.Monster + _miss.Long + _miss.Ghost + _miss.Mul;
+	public static int MissCountHittable => _miss.Monster + _miss.Long + _miss.Ghost + _miss.Mul;
 	public static int MissCountCollectable => _miss.Energy + _miss.Music + _miss.RedPoint;
-	public static int MissCount => MissCountHitable + MissCountCollectable + _miss.Block;
+	public static int MissCount => MissCountHittable + MissCountCollectable + _miss.Block;
 
-	public static float AccuracyTotal => _total.Music + _total.Energy + _total.Hitable + _total.Block;
+	public static float AccuracyTotal => _total.Music + _total.Energy + _total.Hittable + _total.Block;
 
 	public static float AccuracyCounted => _current.Perfect + _current.Great / 2f +
 	                                       _current.Block + _current.Music + _current.Energy + _current.RedPoint;
@@ -59,7 +59,7 @@ public static class GameStatsManager
 
 	public static float GetAccuracyRest() => AccuracyTotal - _current.Perfect - _current.Great -
 	                                         _current.Block - _current.Music - _current.Energy - _current.RedPoint -
-	                                         _miss.Music - _miss.Energy - MissCountHitable - _miss.LongPair - _miss.Block;
+	                                         _miss.Music - _miss.Energy - MissCountHittable - _miss.LongPair - _miss.Block;
 
 	public static void UpdateCurrentStats()
 	{
@@ -81,10 +81,10 @@ public static class GameStatsManager
 		{
 			Melon<MDIPMod>.Logger.Warning("=========== Accuracy Stats ===========");
 			Melon<MDIPMod>.Logger.Msg($"Total:{AccuracyTotal} | Counted:{AccuracyCounted} | Rest:{AccuracyRest}");
-			Melon<MDIPMod>.Logger.Msg($"Total => Music:{Total.Music} | Energy:{Total.Energy} | Block:{Total.Block} | Hitable:{Total.Hitable}");
+			Melon<MDIPMod>.Logger.Msg($"Total => Music:{Total.Music} | Energy:{Total.Energy} | Block:{Total.Block} | Hittable:{Total.Hittable}");
 			Melon<MDIPMod>.Logger.Msg($"Counted => Music:{Current.Music} | Energy:{Current.Energy} | Block:{Current.Block} Perfect:{Current.Perfect} | Great:{Current.Great} /2f | | RedPoint:{Current.RedPoint}");
-			Melon<MDIPMod>.Logger.Msg($"Miss => Music:{Miss.Music} | Energy:{Miss.Energy} | Block:{Miss.Block} | Hitable:{MissCountHitable} | LongPair:{Miss.LongPair}");
-			Melon<MDIPMod>.Logger.Msg($"{AccuracyTotal} - {Current.Perfect + Current.Great + Current.Block + Current.Music + Current.Energy + Current.RedPoint} - {Miss.Music + Miss.Energy + MissCountHitable + Miss.LongPair + Miss.Block} = {AccuracyRest}");
+			Melon<MDIPMod>.Logger.Msg($"Miss => Music:{Miss.Music} | Energy:{Miss.Energy} | Block:{Miss.Block} | Hittable:{MissCountHittable} | LongPair:{Miss.LongPair}");
+			Melon<MDIPMod>.Logger.Msg($"{AccuracyTotal} - {Current.Perfect + Current.Great + Current.Block + Current.Music + Current.Energy + Current.RedPoint} - {Miss.Music + Miss.Energy + MissCountHittable + Miss.LongPair + Miss.Block} = {AccuracyRest}");
 			Melon<MDIPMod>.Logger.Warning("======================================");
 			Melon<MDIPMod>.Logger.Msg($"Calc Acc: {GetCalculatedAccuracy()} | True Acc:{GetTrueAccuracy()}");
 			Melon<MDIPMod>.Logger.Warning("======================================");
@@ -97,9 +97,9 @@ public static class GameStatsManager
 	{
 		var acc = Configs.Main.AccuracyDisplayMode == 2 ? AccuracyCounted / (AccuracyTotal - AccuracyRest) : (AccuracyCounted + AccuracyRest) / AccuracyTotal;
 
-		var rounded = MathF.Round(acc / PRECISION) * PRECISION;
+		var rounded = MathF.Round(acc / Precision) * Precision;
 		return (acc < rounded && SpecialValues.Contains(rounded) ?
-			rounded - PRECISION :
+			rounded - Precision :
 			rounded) * 100f;
 	}
 
@@ -160,8 +160,8 @@ public static class GameStatsManager
 		{
 			if (_current.Great > 0)
 				parts.Add($"{_current.Great}G".Colored(Configs.Main.GreatCountsColor));
-			if (MissCountHitable + _miss.Block > 0)
-				parts.Add($"{MissCountHitable + _miss.Block}M".Colored(Configs.Main.NormalMissCountsColor));
+			if (MissCountHittable + _miss.Block > 0)
+				parts.Add($"{MissCountHittable + _miss.Block}M".Colored(Configs.Main.NormalMissCountsColor));
 			if (!GameUtils.IsSpellMode && MissCountCollectable > 0)
 				parts.Add($"{MissCountCollectable}H".Colored(Configs.Main.CollectableMissCountsColor));
 
@@ -281,7 +281,7 @@ public static class GameStatsManager
 				var type = (NoteType)note.noteData.type;
 				if (!note.isLongPressing)
 				{
-					if (note.noteData.addCombo) _total.Hitable++;
+					if (note.noteData.addCombo) _total.Hittable++;
 					if (type.IsRegularNote()) _total.Notes++;
 				}
 
@@ -337,7 +337,7 @@ public static class GameStatsManager
 
 	public record struct TotalStats(
 		int Notes,
-		int Hitable,
+		int Hittable,
 		int Monster,
 		int Block,
 		int Long,
