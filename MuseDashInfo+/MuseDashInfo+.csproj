@@ -6,7 +6,7 @@
         <AssemblyName>Info+</AssemblyName>
         <LangVersion>latest</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>false</Nullable>
+        <Nullable>disable</Nullable>
         <GameFolder Condition="Exists('$(MD_DIRECTORY)')">$(MD_DIRECTORY)</GameFolder>
         <MelonLoader>$(GameFolder)\MelonLoader\</MelonLoader>
         <MelonNET6>$(MelonLoader)\net6\</MelonNET6>
