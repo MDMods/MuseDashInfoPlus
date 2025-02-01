@@ -14,15 +14,15 @@ namespace MDIP.Utils;
 
 public static class Configs
 {
-	public static MainConfigs Main => ConfigManager.Instance.GetConfig<MainConfigs>(ConfigName.MainConfigs);
-	public static AdvancedConfigs Advanced => ConfigManager.Instance.GetConfig<AdvancedConfigs>(ConfigName.AdvancedConfigs);
+	public static MainConfigs Main => ConfigManager.GetConfig<MainConfigs>(ConfigName.MainConfigs);
+	public static AdvancedConfigs Advanced => ConfigManager.GetConfig<AdvancedConfigs>(ConfigName.AdvancedConfigs);
 
-	public static TextFieldLowerLeftConfigs TextFieldLowerLeft => ConfigManager.Instance.GetConfig<TextFieldLowerLeftConfigs>(ConfigName.TextFieldLowerLeftConfigs);
-	public static TextFieldLowerRightConfigs TextFieldLowerRight => ConfigManager.Instance.GetConfig<TextFieldLowerRightConfigs>(ConfigName.TextFieldLowerRightConfigs);
-	public static TextFieldScoreBelowConfigs TextFieldScoreBelow => ConfigManager.Instance.GetConfig<TextFieldScoreBelowConfigs>(ConfigName.TextFieldScoreBelowConfigs);
-	public static TextFieldScoreRightConfigs TextFieldScoreRight => ConfigManager.Instance.GetConfig<TextFieldScoreRightConfigs>(ConfigName.TextFieldScoreRightConfigs);
-	public static TextFieldUpperLeftConfigs TextFieldUpperLeft => ConfigManager.Instance.GetConfig<TextFieldUpperLeftConfigs>(ConfigName.TextFieldUpperLeftConfigs);
-	public static TextFieldUpperRightConfigs TextFieldUpperRight => ConfigManager.Instance.GetConfig<TextFieldUpperRightConfigs>(ConfigName.TextFieldUpperRightConfigs);
+	public static TextFieldLowerLeftConfigs TextFieldLowerLeft => ConfigManager.GetConfig<TextFieldLowerLeftConfigs>(ConfigName.TextFieldLowerLeftConfigs);
+	public static TextFieldLowerRightConfigs TextFieldLowerRight => ConfigManager.GetConfig<TextFieldLowerRightConfigs>(ConfigName.TextFieldLowerRightConfigs);
+	public static TextFieldScoreBelowConfigs TextFieldScoreBelow => ConfigManager.GetConfig<TextFieldScoreBelowConfigs>(ConfigName.TextFieldScoreBelowConfigs);
+	public static TextFieldScoreRightConfigs TextFieldScoreRight => ConfigManager.GetConfig<TextFieldScoreRightConfigs>(ConfigName.TextFieldScoreRightConfigs);
+	public static TextFieldUpperLeftConfigs TextFieldUpperLeft => ConfigManager.GetConfig<TextFieldUpperLeftConfigs>(ConfigName.TextFieldUpperLeftConfigs);
+	public static TextFieldUpperRightConfigs TextFieldUpperRight => ConfigManager.GetConfig<TextFieldUpperRightConfigs>(ConfigName.TextFieldUpperRightConfigs);
 
 	public static string GetConfigPath(string fileName)
 	{
