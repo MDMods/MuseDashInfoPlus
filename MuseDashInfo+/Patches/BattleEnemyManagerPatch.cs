@@ -31,7 +31,7 @@ internal class BattleEnemyManagerSetPlayResultPatch
             GameStatsManager.Mashing(note);
         else if (type.IsRegularNote() && !note.isLongPressing && type != NoteType.Mul)
         {
-            GameStatsManager.CheckMashing(true);
+            GameStatsManager.CheckMashing();
             TextObjManager.UpdateAllText();
         }
     }

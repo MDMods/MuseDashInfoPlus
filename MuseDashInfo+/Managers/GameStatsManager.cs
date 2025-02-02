@@ -253,7 +253,7 @@ public static class GameStatsManager
             MashingNotes.Remove(id);
     }
 
-    public static void CheckMashing(bool force = false)
+    public static void CheckMashing()
     {
         foreach (var kvp in MashingNotes)
         {
@@ -266,12 +266,15 @@ public static class GameStatsManager
                 return;
             }
 
-            if (!force && _stage.realTimeTick <= (note.tick + note.configData.length) * 1000)
+            if (_stage.realTimeTick <= (note.tick + note.configData.length) * 1000)
                 continue;
 
             var tooLow = mashedNum < note.GetMulHitMidThreshold();
             if (tooLow && !MissedNoteIds.Contains(id) && !PlayedNoteIds.Contains(id))
+            {
+                MissedNoteIds.Add(id);
                 _miss.Mul++;
+            }
 
             ResetMashing(id);
         }
