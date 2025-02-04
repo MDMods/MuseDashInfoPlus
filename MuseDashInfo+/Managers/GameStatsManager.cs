@@ -112,25 +112,25 @@ public static class GameStatsManager
 
     public static string FormatOverview()
     {
-        if (IsTruePerfect) return Constants.TEXT_TRUE_PERFECT.Colored(Constants.COLOR_RANK_TP);
-        return IsAllPerfect ? Constants.TEXT_ALL_PERFECT.Colored(Constants.COLOR_RANK_AP) : FormatAccuracy();
+        if (IsTruePerfect) return Configs.Main.TextTruePerfect.Colored(Configs.Main.RankTPColor);
+        return IsAllPerfect ? Configs.Main.TextAllPerfect.Colored(Configs.Main.RankAPColor) : FormatAccuracy();
     }
 
     public static string FormatAccuracy()
     {
-        if (IsAllPerfect) return "100%".Colored(IsTruePerfect ? Constants.COLOR_RANK_TP : Constants.COLOR_RANK_AP);
+        if (IsAllPerfect) return "100%".Colored(IsTruePerfect ? Configs.Main.RankTPColor : Configs.Main.RankAPColor);
         var acc = GetCalculatedAccuracy();
         var color = IsTruePerfect ?
-            Constants.COLOR_RANK_TP :
+            Configs.Main.RankTPColor :
             acc switch
             {
-                >= 100f => Constants.COLOR_RANK_AP,
-                >= 95f => Constants.COLOR_RANK_SS,
-                >= 90f => Constants.COLOR_RANK_S,
-                >= 80f => Constants.COLOR_RANK_A,
-                >= 70f => Constants.COLOR_RANK_B,
-                >= 60f => Constants.COLOR_RANK_C,
-                _ => Constants.COLOR_RANK_D
+                >= 100f => Configs.Main.RankAPColor,
+                >= 95f => Configs.Main.RankSSColor,
+                >= 90f => Configs.Main.RankSColor,
+                >= 80f => Configs.Main.RankAColor,
+                >= 70f => Configs.Main.RankBColor,
+                >= 60f => Configs.Main.RankCColor,
+                _ => Configs.Main.RankDColor
             };
         return $"{acc:F2}%".Colored(color);
     }
