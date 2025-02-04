@@ -6,6 +6,7 @@ namespace MDIP;
 public class MDIPMod : MelonMod
 {
     private static int _lastUpdateSecond = -1;
+    public static bool Reset { get; set; } = true;
     public static bool IsSongDescLoaded { get; private set; }
 
     public override void OnLateInitializeMelon()
@@ -38,17 +39,15 @@ public class MDIPMod : MelonMod
     {
         switch (sceneName)
         {
-            case "GameMain":
-            case "Welcome":
-                break;
-
-            default:
+            case "Loading" when !Reset:
+                Reset = true;
                 NoteRecordManager.Reset();
                 PnlBattleGameStartPatch.Reset();
                 GameStatsManager.Reset();
                 TextObjManager.Reset();
                 GameUtils.Reset();
                 FontUtils.UnloadFonts();
+                Melon<MDIPMod>.Logger.Warning("Reset");
                 break;
         }
     }
