@@ -25,6 +25,11 @@ public static class TextDataManager
         UpdateCachedValue("{diff}", GameUtils.MusicDiffStr);
         UpdateCachedValue("{level}", GameUtils.MusicLevel);
         UpdateCachedValue("{author}", GameUtils.MusicAuthor);
+
+        if (!GameStatsManager.IsFirstTry) return;
+        UpdateCachedValue("{scoreGap}", Configs.Main.ScoreGapTextWhenNoPersonalBest);
+        UpdateCachedValue("{gap}", CachedValues["{scoreGap}"]); // Reserve old placeholder
+        UpdateCachedValue("{accGap}", Configs.Main.AccuracyGapTextWhenNoPersonalBest);
     }
 
     public static void UpdateVariables()
@@ -32,12 +37,14 @@ public static class TextDataManager
         UpdateCachedValue("{acc}", GameStatsManager.FormatAccuracy());
         UpdateCachedValue("{overview}", GameStatsManager.FormatOverview());
         UpdateCachedValue("{stats}", GameStatsManager.FormatStats());
-        UpdateCachedValue("{scoreGap}", GameStatsManager.FormatScoreGap());
-        UpdateCachedValue("{gap}", CachedValues["{scoreGap}"]); // Reserve old placeholder
-        UpdateCachedValue("{accGap}", GameStatsManager.FormatAccuracyGap());
         UpdateCachedValue("{hit}", ((int)GameStatsManager.AccuracyCounted).ToString());
         UpdateCachedValue("{skySpeed}", GameStatsManager.CurrentSkySpeed.ToString());
         UpdateCachedValue("{groundSpeed}", GameStatsManager.CurrentGroundSpeed.ToString());
+
+        if (GameStatsManager.IsFirstTry) return;
+        UpdateCachedValue("{scoreGap}", GameStatsManager.FormatScoreGap());
+        UpdateCachedValue("{gap}", CachedValues["{scoreGap}"]); // Reserve old placeholder
+        UpdateCachedValue("{accGap}", GameStatsManager.FormatAccuracyGap());
     }
 
     private static void InvalidateFormattedTexts()

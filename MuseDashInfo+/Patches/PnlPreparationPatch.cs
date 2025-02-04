@@ -8,7 +8,8 @@ internal class PnlPreparationPatch
         if (string.IsNullOrEmpty(accuracy))
             return;
 
-        if (accuracy == "-")
+        GameStatsManager.IsFirstTry = accuracy == "-";
+        if (GameStatsManager.IsFirstTry)
             GameStatsManager.PrepPageAccuracy = 0;
         else if (float.TryParse(accuracy.TrimEnd(' ', '%'), out var x) && x > 0)
             GameStatsManager.PrepPageAccuracy = x;
@@ -19,7 +20,8 @@ internal class PnlPreparationPatch
         if (string.IsNullOrEmpty(score))
             return;
 
-        if (score == "-")
+        GameStatsManager.IsFirstTry = score == "-";
+        if (GameStatsManager.IsFirstTry)
             GameStatsManager.PrepPageScore = 0;
         else if (int.TryParse(score, out var x) && x >= 1)
             GameStatsManager.PrepPageScore = x;

@@ -20,6 +20,7 @@ public static class GameStatsManager
     private static MissStats _miss;
     private static HistoryStats _history;
     public static bool IsInGame { get; set; }
+    public static bool IsFirstTry { get; set; } = true;
 
     private static Dictionary<int, (MusicData, int)> MashingNotes { get; } = new();
     private static Dictionary<int, int> MasherGreatRecords { get; } = new();
@@ -375,8 +376,6 @@ public static class GameStatsManager
 
         ResetMashing();
 
-        PrepPageAccuracy = 0;
-        PrepPageScore = 0;
         CurrentSkySpeed = -1;
         CurrentGroundSpeed = -1;
         PlayedNoteIds.Clear();

@@ -36,6 +36,14 @@ public class MainConfigs : ConfigBase
     [ConfigCommentEn("Accuracy gap text color when lower than personal best")]
     public string AccuracyGapBehindColor { get; set; } = Constants.COLOR_GAP_BEHIND;
 
+    [ConfigCommentZh("没有历史最高分时代替最高分差值的文本（支持富文本格式）")]
+    [ConfigCommentEn("Text to display when no personal best score exists (supports rich text format)")]
+    public string ScoreGapTextWhenNoPersonalBest { get; set; } = "New";
+
+    [ConfigCommentZh("没有历史最高准确率时代替最高准确率差值的文本（支持富文本格式）")]
+    [ConfigCommentEn("Text to display when no personal best accuracy exists (supports rich text format)")]
+    public string AccuracyGapTextWhenNoPersonalBest { get; set; } = "";
+
     [ConfigCommentZh("All-Perfect 指示文本（支持富文本格式）")]
     [ConfigCommentEn("Text of All-Perfect indicator (supports rich text format)")]
     public string TextAllPerfect { get; set; } = Constants.TEXT_ALL_PERFECT;
