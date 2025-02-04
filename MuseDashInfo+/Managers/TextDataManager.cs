@@ -24,7 +24,7 @@ public static class TextDataManager
         UpdateCachedValue("{author}", GameUtils.MusicAuthor);
     }
 
-    public static void UpdateValues()
+    public static void UpdateVariables()
     {
         UpdateCachedValue("{acc}", GameStatsManager.FormatAccuracy());
         UpdateCachedValue("{overview}", GameStatsManager.FormatOverview());

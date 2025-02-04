@@ -19,7 +19,7 @@ public static class TextObjManager
         if (now - _lastUpdateTick < Configs.Advanced.DataRefreshIntervalLimit) return;
         _lastUpdateTick = now;
 
-        TextDataManager.UpdateValues();
+        TextDataManager.UpdateVariables();
 
         if (TextLowerLeftObj != null && Configs.TextFieldLowerLeft.Enabled)
             TextLowerLeftObj.SetText(TextDataManager.GetFormattedText(Configs.TextFieldLowerLeft.Text.UnEscapeReturn()));
