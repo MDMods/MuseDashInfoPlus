@@ -9,6 +9,8 @@ public class PnlVictorySetDetailInfoPatch
 {
     private static void Postfix(PnlVictory __instance)
     {
+        IsInGame = false;
+
         if (Configs.Advanced.OutputNoteRecordsToDesktop)
             NoteRecordManager.ExportToExcel();
 

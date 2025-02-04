@@ -20,6 +20,7 @@ public static class GameStatsManager
     private static CurrentStats _current;
     private static TotalStats _total;
     private static MissStats _miss;
+    public static bool IsInGame { get; set; }
 
     private static Dictionary<int, (MusicData, int)> MashingNotes { get; } = new();
     private static Dictionary<int, int> MasherGreatRecords { get; } = new();
@@ -55,7 +56,6 @@ public static class GameStatsManager
 
     public static float AccuracyRest => Math.Max(0, GetAccuracyRest());
 
-    public static bool IsInGame => _task != null && _stage != null;
     public static bool IsAllPerfect => IsInGame && _current.Great + MissCount < 1;
     public static bool IsTruePerfect => IsAllPerfect && _current.Early + _current.Late < 1;
 

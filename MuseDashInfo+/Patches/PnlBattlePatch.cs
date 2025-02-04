@@ -24,8 +24,9 @@ public class PnlBattleGameStartPatch
 
     public static void CheckAndZoom()
     {
-        MDIPMod.Reset = false;
         if (_curPnlBattle == null || _scoreTransform == null) return;
+        MDIPMod.Reset = false;
+        GameStatsManager.IsInGame = true;
 
         if (Mathf.Abs(_currentScale - _curPnlBattle.localScale.y) > 0.01f)
         {
