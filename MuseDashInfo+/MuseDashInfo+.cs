@@ -39,6 +39,9 @@ public class MDIPMod : MelonMod
     {
         switch (sceneName)
         {
+            case "UISystem_PC":
+                GameStatsManager.Reset(true);
+                break;
             case "Loading" when !Reset:
                 Reset = true;
                 NoteRecordManager.Reset();

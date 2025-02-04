@@ -9,9 +9,9 @@ internal class PnlVictorySetDetailInfoPatch
     private static void Postfix(PnlVictory __instance)
     {
         IsInGame = false;
-
-        if (Configs.Advanced.OutputNoteRecordsToDesktop)
-            NoteRecordManager.ExportToExcel();
+        IsFirstTry = false;
+        StoreHighestAccuracy((float)Math.Round(GetCalculatedAccuracy(), 2));
+        StoreHighestScore(Current.Score);
 
         if (AccuracyRest != 0 || Math.Abs(Math.Round(GetTrueAccuracy(), 2) - Math.Round(GetCalculatedAccuracy(), 2)) > 0.0001f)
         {
@@ -26,23 +26,24 @@ internal class PnlVictorySetDetailInfoPatch
             Melon<MDIPMod>.Logger.Error("======================================");
         }
 
+        if (Configs.Advanced.OutputNoteRecordsToDesktop)
+            NoteRecordManager.ExportToExcel();
+
         if (!Configs.Main.ReplaceResultsScreenMissCount) return;
 
         try
         {
-            var transforms = __instance.pnlVictory.GetComponentsInChildren<Transform>(true);
+            var pnlVictory = __instance.pnlVictory.GetComponentsInChildren<Transform>(true).FirstOrDefault(transform
+                => transform.gameObject.activeSelf
+                   && transform.name == "PnlVictory"
+                   && transform.gameObject != __instance.pnlVictory);
 
-            foreach (var transform in transforms)
-            {
-                if (transform.gameObject.activeSelf &&
-                    transform.name == "PnlVictory" &&
-                    transform.gameObject != __instance.pnlVictory)
-                {
-                    transform.Find("PnlVictory_3D/DetailInfo/Other/TxtMiss/TxtValue")
-                        .gameObject.GetComponent<Text>()
-                        .text = (MissCountHittable + Miss.Block).ToString();
-                }
-            }
+            if (pnlVictory == null)
+                throw new NullReferenceException("pnlVictory not found");
+
+            pnlVictory.Find("PnlVictory_3D/DetailInfo/Other/TxtMiss/TxtValue")
+                .gameObject.GetComponent<Text>()
+                .text = (MissCountHittable + Miss.Block).ToString();
         }
         catch (Exception e)
         {

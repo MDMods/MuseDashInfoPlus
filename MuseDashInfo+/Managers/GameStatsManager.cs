@@ -29,8 +29,8 @@ public static class GameStatsManager
     public static int CurrentSkySpeed { get; set; }
     public static int CurrentGroundSpeed { get; set; }
 
-    public static float PrepPageAccuracy { get; set; }
-    public static int PrepPageScore { get; set; }
+    public static float StoredHighestAccuracy { get; set; }
+    public static int StoredHighestScore { get; set; }
 
     public static CurrentStats Current => _current;
     public static TotalStats Total => _total;
@@ -310,14 +310,46 @@ public static class GameStatsManager
     public static MusicData GetCurMusicData()
         => _stage.GetCurMusicData();
 
+    public static void StoreHighestAccuracy(float acc)
+        => StoredHighestAccuracy = Math.Max(StoredHighestAccuracy, acc);
+
+    public static void StoreHighestScore(int score)
+        => StoredHighestScore = Math.Max(StoredHighestScore, score);
+
+    public static void StoreHighestAccuracyFromText(string text)
+    {
+        if (string.IsNullOrEmpty(text))
+            return;
+
+        IsFirstTry = text == "-";
+
+        if (float.TryParse(text.TrimEnd(' ', '%'), out var x) && x > 0)
+            StoreHighestAccuracy(x);
+        else
+            StoredHighestAccuracy = 0;
+    }
+
+    public static void StoreHighestScoreFromText(string text)
+    {
+        if (string.IsNullOrEmpty(text))
+            return;
+
+        IsFirstTry = text == "-";
+
+        if (int.TryParse(text, out var x) && x >= 1)
+            StoreHighestScore(x);
+        else
+            StoredHighestScore = 0;
+    }
+
     public static void Init()
     {
         _stage = StageBattleComponent.instance;
         _task = TaskStageTarget.instance;
         _role = BattleRoleAttributeComponent.instance;
 
-        _history.Score = Math.Max(BattleHelper.GetCurrentMusicHighScore(), PrepPageScore);
-        _history.Accuracy = PrepPageAccuracy;
+        _history.Score = Math.Max(BattleHelper.GetCurrentMusicHighScore(), StoredHighestScore);
+        _history.Accuracy = StoredHighestAccuracy;
 
         try
         {
@@ -364,7 +396,7 @@ public static class GameStatsManager
         }
     }
 
-    public static void Reset()
+    public static void Reset(bool includeStoredData = false)
     {
         _stage = null;
         _task = null;
@@ -375,6 +407,13 @@ public static class GameStatsManager
         _history = default;
 
         ResetMashing();
+
+        if (includeStoredData)
+        {
+            IsFirstTry = true;
+            StoredHighestAccuracy = 0;
+            StoredHighestScore = 0;
+        }
 
         CurrentSkySpeed = -1;
         CurrentGroundSpeed = -1;
