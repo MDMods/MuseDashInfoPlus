@@ -47,7 +47,6 @@ public class MDIPMod : MelonMod
                 TextObjManager.Reset();
                 GameUtils.Reset();
                 FontUtils.UnloadFonts();
-                Melon<MDIPMod>.Logger.Warning("Reset");
                 break;
         }
     }
@@ -56,7 +55,7 @@ public class MDIPMod : MelonMod
     {
         base.OnFixedUpdate();
 
-        if (GameStatsManager.IsInGame)
+        if (GameStatsManager.IsAvaliable)
             PnlBattleGameStartPatch.CheckAndZoom();
     }
 
@@ -64,7 +63,7 @@ public class MDIPMod : MelonMod
     {
         base.OnLateUpdate();
 
-        if (_lastUpdateSecond == DateTime.Now.Second || !GameStatsManager.IsInGame)
+        if (!GameStatsManager.IsInGame || _lastUpdateSecond == DateTime.Now.Second)
             return;
         _lastUpdateSecond = DateTime.Now.Second;
 
