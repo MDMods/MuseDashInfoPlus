@@ -20,21 +20,33 @@ public class MainConfigs : ConfigBase
     [ConfigCommentEn("Accuracy text color of great count")]
     public string GreatCountsColor { get; set; } = Constants.COLOR_WHITE;
 
+    [ConfigCommentZh("当漏击/EL计数低于历史最佳时时的漏击/EL计数差值文本颜色")]
+    [ConfigCommentEn("Text color for Miss/EL count gap when current count is lower than personal best")]
+    public string StatsGapLowerColor { get; set; } = Constants.COLOR_STATS_GAP_AHEAD;
+
+    [ConfigCommentZh("当漏击/EL计数高于历史最佳时时的漏击/EL计数差值文本颜色")]
+    [ConfigCommentEn("Text color for Miss/EL count gap when current count is higher than personal best")]
+    public string StatsGapHigherColor { get; set; } = Constants.COLOR_STATS_GAP_BEHIND;
+
     [ConfigCommentZh("当分数超过历史最高分时的分数差值文本颜色")]
     [ConfigCommentEn("Score gap text color when higher than personal best")]
-    public string ScoreGapAheadColor { get; set; } = Constants.COLOR_GAP_AHEAD;
+    public string ScoreGapAheadColor { get; set; } = Constants.COLOR_SCORE_GAP_AHEAD;
 
     [ConfigCommentZh("当分数低于历史最高分时的分数差值文本颜色")]
     [ConfigCommentEn("Score gap text color when lower than personal best")]
-    public string ScoreGapBehindColor { get; set; } = Constants.COLOR_GAP_BEHIND;
+    public string ScoreGapBehindColor { get; set; } = Constants.COLOR_SCORE_GAP_BEHIND;
 
     [ConfigCommentZh("当准确率超过历史最高准确率时的准确率差值文本颜色")]
     [ConfigCommentEn("Accuracy gap text color when higher than personal best")]
-    public string AccuracyGapAheadColor { get; set; } = Constants.COLOR_GAP_AHEAD;
+    public string AccuracyGapAheadColor { get; set; } = Constants.COLOR_ACCURACY_GAP_AHEAD;
 
     [ConfigCommentZh("当准确率低于历史最高准确率时的准确率差值文本颜色")]
     [ConfigCommentEn("Accuracy gap text color when lower than personal best")]
-    public string AccuracyGapBehindColor { get; set; } = Constants.COLOR_GAP_BEHIND;
+    public string AccuracyGapBehindColor { get; set; } = Constants.COLOR_ACCURACY_GAP_BEHIND;
+
+    [ConfigCommentZh("没有历史漏击/EL计数时代替漏击/EL计数差值的文本（支持富文本格式）")]
+    [ConfigCommentEn("Text to display when no personal best Miss/EL stats exists (supports rich text format)")]
+    public string StatsGapTextWhenNoPersonalBest { get; set; } = "NO PB DATA";
 
     [ConfigCommentZh("没有历史最高分时代替最高分差值的文本（支持富文本格式）")]
     [ConfigCommentEn("Text to display when no personal best score exists (supports rich text format)")]
@@ -119,6 +131,10 @@ public class MainConfigs : ConfigBase
     [ConfigCommentZh("SPECIAL 难度文本（支持富文本格式）")]
     [ConfigCommentEn("Text of SPECIAL difficulty (supports rich text format)")]
     public string TextDiff5 { get; set; } = Constants.TEXT_DIFF_5;
+
+    [ConfigCommentZh("判断个人最佳成绩的标准\n（将影响个人最佳成绩下的 Miss/Great/Early/Late 等数据）\n1：最高准确率\n2：最高得分")]
+    [ConfigCommentEn("Criteria for judging personal bests\n(will affect Miss/Great/Early/Late stats of personal best)\n1: Highest Accuracy\n2: Highest Score")]
+    public int PersonalBestCriteria { get; set; } = 1;
 
     [ConfigCommentZh("以模组计算的 Miss 数替代结算页面的 Miss 数")]
     [ConfigCommentEn("Show mod-calculated misses instead of game's default count on results screen")]

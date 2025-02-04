@@ -1,4 +1,5 @@
-﻿using UnityEngine.UI;
+﻿using Il2CppAssets.Scripts.Database;
+using UnityEngine.UI;
 using static MDIP.Managers.GameStatsManager;
 
 namespace MDIP.Patches;
@@ -9,9 +10,31 @@ internal class PnlVictorySetDetailInfoPatch
     private static void Postfix(PnlVictory __instance)
     {
         IsInGame = false;
+
         IsFirstTry = false;
-        StoreHighestAccuracy((float)Math.Round(GetCalculatedAccuracy(), 2));
-        StoreHighestScore(Current.Score);
+
+        var newAcc = (float)Math.Round(GetCalculatedAccuracy(), 2);
+        var newScore = Current.Score;
+
+        var newBest = Configs.Main.PersonalBestCriteria == 2
+            ? newScore > StoredHighestScore
+            : newAcc > StoredHighestAccuracy;
+
+        StoreHighestAccuracy(newAcc);
+        StoreHighestScore(newScore);
+
+        if (newBest)
+        {
+            StatsSaverManager.SetStats(GlobalDataBase.s_DbMusicTag.CurMusicInfo().uid,
+                new()
+                {
+                    Great = Current.Great,
+                    MissOther = MissCountHittable + Miss.Block,
+                    MissCollectible = MissCountCollectable,
+                    Early = Current.Early,
+                    Late = Current.Late
+                });
+        }
 
         if (AccuracyRest != 0 || Math.Abs(Math.Round(GetTrueAccuracy(), 2) - Math.Round(GetCalculatedAccuracy(), 2)) > 0.0001f)
         {

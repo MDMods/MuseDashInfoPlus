@@ -70,8 +70,7 @@ public static class GameStatsManager
             _task.m_EnergyCount,
             _current.Block,
             _task.m_RedPoint,
-            _task.m_Score,
-            _task.m_Score > _history.Score
+            _task.m_Score
         );
 
         if (!Configs.Advanced.OutputAccuracyCalculationData)
@@ -175,7 +174,6 @@ public static class GameStatsManager
                 parts.Add($"{MissCountHittable + _miss.Block}M".Colored(Configs.Main.NormalMissCountsColor));
             if (!GameUtils.IsSpellMode && MissCountCollectable > 0)
                 parts.Add($"{MissCountCollectable}H".Colored(Configs.Main.CollectableMissCountsColor));
-
             if (Configs.Main.EarlyLateCountsDisplayMode != 2)
                 return string.Join(" ", parts);
         }
@@ -184,8 +182,64 @@ public static class GameStatsManager
             parts.Add($"{_current.Early}E".Colored(Configs.Main.EarlyCountsColor));
         if (_current.Late > 0)
             parts.Add($"{_current.Late}L".Colored(Configs.Main.LateCountsColor));
-
         return string.Join(" ", parts);
+    }
+
+    public static string FormatPersonalBestStats()
+    {
+        if (_history.IsTruePerfect)
+            return Configs.Main.TextTruePerfect.Colored(Configs.Main.RankTPColor);
+
+        var parts = new List<string>();
+
+        if (_history.IsAllPerfect)
+        {
+            if (_history.Early > 0)
+                parts.Add($"{_history.Early}E".Colored(Configs.Main.EarlyCountsColor));
+            if (_history.Late > 0)
+                parts.Add($"{_history.Late}L".Colored(Configs.Main.LateCountsColor));
+        }
+        else
+        {
+            if (_history.Great > 0)
+                parts.Add($"{_history.Great}G".Colored(Configs.Main.GreatCountsColor));
+            if (_history.MissOther > 0)
+                parts.Add($"{_history.MissOther}M".Colored(Configs.Main.NormalMissCountsColor));
+            if (_history.MissCollectible > 0)
+                parts.Add($"{_history.MissCollectible}H".Colored(Configs.Main.CollectableMissCountsColor));
+        }
+        return string.Join(" ", parts);
+    }
+
+    public static string FormatPersonalBestStatsGap()
+    {
+        if (_history.IsTruePerfect && IsTruePerfect)
+            return string.Empty;
+
+        var parts = new List<string>();
+
+        if (_history.IsAllPerfect && IsAllPerfect)
+        {
+            parts.Add(FormatSingleStatsGap(_current.Early - _history.Early, "E"));
+            parts.Add(FormatSingleStatsGap(_current.Late - _history.Late, "L"));
+        }
+        else
+        {
+            parts.Add(FormatSingleStatsGap(_current.Great - _history.Great, "G"));
+            parts.Add(FormatSingleStatsGap(MissCountHittable + _miss.Block - _history.MissOther, "M"));
+            parts.Add(FormatSingleStatsGap(MissCountCollectable - _history.MissCollectible, "H"));
+        }
+        return string.Join(" ", parts);
+    }
+
+    private static string FormatSingleStatsGap(int gap, string text)
+    {
+        return gap switch
+        {
+            < 0 => $"{gap}{text}".Colored(Configs.Main.StatsGapLowerColor),
+            > 0 => $"+{gap}{text}".Colored(Configs.Main.StatsGapHigherColor),
+            _ => string.Empty
+        };
     }
 
     public static void CountNote(int id, CountNoteAction action, int doubleId = -1, bool isLongStart = false)
@@ -350,6 +404,20 @@ public static class GameStatsManager
 
         _history.Score = Math.Max(BattleHelper.GetCurrentMusicHighScore(), StoredHighestScore);
         _history.Accuracy = StoredHighestAccuracy;
+
+        var stats = StatsSaverManager.GetStats(GlobalDataBase.s_DbMusicTag.CurMusicInfo().uid);
+        if (stats != null)
+        {
+            _history.HasStats = true;
+            _history.IsAllPerfect = stats.MissOther + stats.MissCollectible <= 0;
+            _history.IsTruePerfect = _history.IsAllPerfect && stats.Early + stats.Late <= 0;
+            _history.Great = stats.Great;
+            _history.MissOther = stats.MissOther;
+            _history.MissCollectible = stats.MissCollectible;
+            _history.Early = stats.Early;
+            _history.Late = stats.Late;
+        }
+        else _history.HasStats = false;
 
         try
         {

@@ -11,8 +11,14 @@ public static class Constants
     public const string TEXT_DIFF_4 = "Hidden";
     public const string TEXT_DIFF_5 = "Special";
 
-    public const string COLOR_GAP_BEHIND = "#9338fb";
-    public const string COLOR_GAP_AHEAD = "#fe41f3";
+    public const string COLOR_SCORE_GAP_BEHIND = "#9338fb";
+    public const string COLOR_SCORE_GAP_AHEAD = "#fe41f3";
+
+    public const string COLOR_ACCURACY_GAP_BEHIND = "#9338fb";
+    public const string COLOR_ACCURACY_GAP_AHEAD = "#fe41f3";
+
+    public const string COLOR_STATS_GAP_BEHIND = "#04d6dd";
+    public const string COLOR_STATS_GAP_AHEAD = "#fe30b7";
 
     public const string COLOR_EARLY_COUNT = "#38bfee";
     public const string COLOR_LATE_COUNT = "#ff089f";
@@ -30,6 +36,8 @@ public static class Constants
 
     public const float SCORE_ZOOM_OUT_Y = 670f;
     public const float SCORE_ZOOM_IN_Y = 530f;
+
+    public static string STATS_DATA_FILE = Path.GetFullPath(Path.Combine(Application.dataPath, "..", "MuseDash_Data", "song_stats.json"));
 
     public static Vector3 POS_LOWER_LEFT_TEXT { get; private set; } = new(-866, -460, 0);
     public static Vector3 POS_LOWER_RIGHT_TEXT { get; private set; } = new(850, -460, 0);

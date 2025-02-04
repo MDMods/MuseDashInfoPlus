@@ -9,6 +9,5 @@ public record struct CurrentStats(
     int Energy,
     int Block,
     int RedPoint,
-    int Score,
-    bool IsHighScore = false
+    int Score
 );
