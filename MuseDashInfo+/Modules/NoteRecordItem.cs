@@ -18,7 +18,7 @@ public class NoteRecord(
     {
         PatchInfosDic ??= new();
         if (!PatchInfosDic.ContainsKey(name))
-            PatchInfosDic.Add(name, new());
+            PatchInfosDic.Add(name, []);
         PatchInfosDic[name].Add(info);
     }
 }
