@@ -23,14 +23,21 @@ internal class BattleEnemyManagerSetPlayResultPatch
                 break;
         }
 
-        if (type.IsRegularNote())
-            GameStatsManager.UpdateCurrentSpeed(note.isAir, note.noteData.speed);
-        GameStatsManager.UpdateCurrentStats();
+        if (!type.IsRegularNote() || note.isLongPressing)
+            return;
 
-        if (type == NoteType.Mul && result is 3 or 4)
-            GameStatsManager.Mashing(note);
-        else if (type.IsRegularNote() && !note.isLongPressing && type != NoteType.Mul)
+        GameStatsManager.UpdateCurrentSpeed(note.isAir, note.noteData.speed);
+
+        if (type == NoteType.Mul)
         {
+            if (result is not 3 and not 4)
+                return;
+            GameStatsManager.UpdateCurrentStats();
+            GameStatsManager.Mashing(note);
+        }
+        else
+        {
+            GameStatsManager.UpdateCurrentStats();
             GameStatsManager.CheckMashing();
             TextObjManager.UpdateAllText();
         }

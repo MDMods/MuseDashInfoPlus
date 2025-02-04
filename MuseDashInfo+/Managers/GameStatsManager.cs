@@ -56,7 +56,7 @@ public static class GameStatsManager
 
     public static float AccuracyRest => Math.Max(0, GetAccuracyRest());
 
-    public static bool IsAvaliable => _stage != null && _task != null;
+    public static bool IsAvailable => _stage != null && _task != null && _role != null;
     public static bool IsAllPerfect => IsInGame && _current.Great + MissCount < 1;
     public static bool IsTruePerfect => IsAllPerfect && _current.Early + _current.Late < 1;
 
@@ -66,7 +66,7 @@ public static class GameStatsManager
 
     public static void UpdateCurrentStats()
     {
-        if (_task == null) return;
+        if (!IsAvailable) return;
 
         _current = new(
             _task.m_PerfectResult,
