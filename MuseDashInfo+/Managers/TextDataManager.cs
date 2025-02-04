@@ -19,7 +19,7 @@ public static class TextDataManager
 
     public static void UpdateConstants()
     {
-        UpdateCachedValue("{hiScore}", GameStatsManager.SavedHighScore.ToString());
+        UpdateCachedValue("{hiScore}", GameStatsManager.History.Score.ToString());
         UpdateCachedValue("{total}", ((int)GameStatsManager.AccuracyTotal).ToString());
         UpdateCachedValue("{song}", GameUtils.MusicName.TruncateByWidth(45));
         UpdateCachedValue("{diff}", GameUtils.MusicDiffStr);
@@ -32,7 +32,9 @@ public static class TextDataManager
         UpdateCachedValue("{acc}", GameStatsManager.FormatAccuracy());
         UpdateCachedValue("{overview}", GameStatsManager.FormatOverview());
         UpdateCachedValue("{stats}", GameStatsManager.FormatStats());
-        UpdateCachedValue("{gap}", GameStatsManager.FormatScoreGap());
+        UpdateCachedValue("{scoreGap}", GameStatsManager.FormatScoreGap());
+        UpdateCachedValue("{gap}", CachedValues["{scoreGap}"]); // Reserve old placeholder
+        UpdateCachedValue("{accGap}", GameStatsManager.FormatAccuracyGap());
         UpdateCachedValue("{hit}", ((int)GameStatsManager.AccuracyCounted).ToString());
         UpdateCachedValue("{skySpeed}", GameStatsManager.CurrentSkySpeed.ToString());
         UpdateCachedValue("{groundSpeed}", GameStatsManager.CurrentGroundSpeed.ToString());

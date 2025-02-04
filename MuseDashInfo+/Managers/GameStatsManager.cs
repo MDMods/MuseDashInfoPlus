@@ -13,36 +13,28 @@ public static class GameStatsManager
     private static StageBattleComponent _stage;
     private static TaskStageTarget _task;
 
-    private static int _savedHighScore;
-
     private static readonly HashSet<float> SpecialValues = [0.6f, 0.7f, 0.8f, 0.9f, 1f];
 
     private static CurrentStats _current;
     private static TotalStats _total;
     private static MissStats _miss;
+    private static HistoryStats _history;
     public static bool IsInGame { get; set; }
 
     private static Dictionary<int, (MusicData, int)> MashingNotes { get; } = new();
     private static Dictionary<int, int> MasherGreatRecords { get; } = new();
     private static HashSet<int> PlayedNoteIds { get; } = [];
     private static HashSet<int> MissedNoteIds { get; } = [];
-    public static bool SavedHighScoreLocked { get; set; }
     public static int CurrentSkySpeed { get; set; }
     public static int CurrentGroundSpeed { get; set; }
 
-    public static int SavedHighScore
-    {
-        get => _savedHighScore;
-        set
-        {
-            if (value >= 0 && !SavedHighScoreLocked)
-                _savedHighScore = value;
-        }
-    }
+    public static float PrepPageAccuracy { get; set; }
+    public static int PrepPageScore { get; set; }
 
     public static CurrentStats Current => _current;
     public static TotalStats Total => _total;
     public static MissStats Miss => _miss;
+    public static HistoryStats History => _history;
 
     // Calculated properties
     public static int MissCountHittable => _miss.Monster + _miss.Long + _miss.Ghost + _miss.Mul;
@@ -78,7 +70,7 @@ public static class GameStatsManager
             _current.Block,
             _task.m_RedPoint,
             _task.m_Score,
-            _task.m_Score > _savedHighScore
+            _task.m_Score > _history.Score
         );
 
         if (!Configs.Advanced.OutputAccuracyCalculationData)
@@ -103,16 +95,19 @@ public static class GameStatsManager
 
     public static float GetTrueAccuracy() => _task.GetAccuracy() * 100f;
 
-    public static float GetCalculatedAccuracy()
+    public static float GetCalculatedAccuracy(int mode = -1)
     {
-        var acc = Configs.Main.AccuracyDisplayMode == 2
+        if (mode < 1) mode = Configs.Main.AccuracyDisplayMode;
+
+        var acc = mode == 2
             ? AccuracyCounted / (AccuracyTotal - AccuracyRest)
             : (AccuracyCounted + AccuracyRest) / AccuracyTotal;
 
         var rounded = MathF.Round(acc / Precision) * Precision;
-        return (acc < rounded && SpecialValues.Contains(rounded) ?
-            rounded - Precision :
-            rounded) * 100f;
+        return (acc < rounded && SpecialValues.Contains(rounded)
+                ? rounded - Precision
+                : rounded
+            ) * 100f;
     }
 
     public static string FormatOverview()
@@ -140,9 +135,21 @@ public static class GameStatsManager
         return $"{acc:F2}%".Colored(color);
     }
 
+    public static string FormatAccuracyGap()
+    {
+        var gap = GetCalculatedAccuracy(1) - _history.Accuracy;
+        if (Math.Abs(gap) < Precision) return string.Empty;
+
+        var (color, prefix) = gap > 0 ? (Configs.Main.AccuracyGapAheadColor, "+") : (Configs.Main.AccuracyGapBehindColor, "");
+
+        var str = $"{prefix}{gap:F2}%".Colored(color);
+
+        return str.Replace(".00%", "%");
+    }
+
     public static string FormatScoreGap()
     {
-        var gap = _current.Score - _savedHighScore;
+        var gap = _current.Score - _history.Score;
         if (gap == 0) return string.Empty;
 
         var (color, prefix) = gap > 0 ? (Configs.Main.ScoreGapAheadColor, "+") : (Configs.Main.ScoreGapBehindColor, "");
@@ -304,14 +311,15 @@ public static class GameStatsManager
 
     public static void Init()
     {
+        _stage = StageBattleComponent.instance;
+        _task = TaskStageTarget.instance;
+        _role = BattleRoleAttributeComponent.instance;
+
+        _history.Score = Math.Max(BattleHelper.GetCurrentMusicHighScore(), PrepPageScore);
+        _history.Accuracy = PrepPageAccuracy;
+
         try
         {
-            _stage = StageBattleComponent.instance;
-            _task = TaskStageTarget.instance;
-            _role = BattleRoleAttributeComponent.instance;
-
-            _savedHighScore = Math.Max(BattleHelper.GetCurrentMusicHighScore(), SavedHighScore);
-
             foreach (var note in _stage.GetMusicData())
             {
                 var type = (NoteType)note.noteData.type;
@@ -348,8 +356,6 @@ public static class GameStatsManager
                     case NoteType.Mul: _total.Mul++; break;
                 }
             }
-
-            SavedHighScoreLocked = false;
         }
         catch (Exception e)
         {
@@ -365,10 +371,12 @@ public static class GameStatsManager
         _current = default;
         _total = default;
         _miss = default;
+        _history = default;
 
         ResetMashing();
 
-        SavedHighScore = 0;
+        PrepPageAccuracy = 0;
+        PrepPageScore = 0;
         CurrentSkySpeed = -1;
         CurrentGroundSpeed = -1;
         PlayedNoteIds.Clear();

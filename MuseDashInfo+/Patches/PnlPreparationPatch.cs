@@ -1,31 +1,43 @@
-﻿using Il2Cpp;
-
-namespace MDIP.Patches;
+﻿namespace MDIP.Patches;
 
 [HarmonyPatch(typeof(PnlPreparation))]
-public class PnlPreparationPatch
+internal class PnlPreparationPatch
 {
+    private static void SetHighestAccuracy(string accuracy)
+    {
+        if (string.IsNullOrEmpty(accuracy))
+            return;
+
+        if (accuracy == "-")
+            GameStatsManager.PrepPageAccuracy = 0;
+        else if (float.TryParse(accuracy.TrimEnd(' ', '%'), out var x) && x > 0)
+            GameStatsManager.PrepPageAccuracy = x;
+    }
+
     private static void SetHighestScore(string score)
     {
         if (string.IsNullOrEmpty(score))
             return;
 
         if (score == "-")
-            GameStatsManager.SavedHighScore = 0;
+            GameStatsManager.PrepPageScore = 0;
         else if (int.TryParse(score, out var x) && x >= 1)
-            GameStatsManager.SavedHighScore = int.Parse(score);
+            GameStatsManager.PrepPageScore = x;
     }
 
     [HarmonyPatch(nameof(PnlPreparation.OnDiffTglChanged))]
     [HarmonyPostfix]
     private static void OnDiffTglChangedPostfix(PnlPreparation __instance)
-        => SetHighestScore(__instance.pnlRecord.txtScore?.text);
+    {
+        SetHighestAccuracy(__instance.pnlRecord.txtAccuracy?.m_Text);
+        SetHighestScore(__instance.pnlRecord.txtScore?.m_Text);
+    }
 
     [HarmonyPatch(nameof(PnlPreparation.OnBattleStart))]
     [HarmonyPrefix]
     private static void OnBattleStartPrefix(PnlPreparation __instance)
     {
-        SetHighestScore(__instance.pnlRecord.txtScore?.text);
-        GameStatsManager.SavedHighScoreLocked = true;
+        SetHighestAccuracy(__instance.pnlRecord.txtAccuracy?.m_Text);
+        SetHighestScore(__instance.pnlRecord.txtScore?.m_Text);
     }
 }

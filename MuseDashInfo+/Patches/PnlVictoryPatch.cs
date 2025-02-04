@@ -1,11 +1,10 @@
-﻿using Il2Cpp;
-using UnityEngine.UI;
+﻿using UnityEngine.UI;
 using static MDIP.Managers.GameStatsManager;
 
 namespace MDIP.Patches;
 
 [HarmonyPatch(typeof(PnlVictory), nameof(PnlVictory.SetDetailInfo))]
-public class PnlVictorySetDetailInfoPatch
+internal class PnlVictorySetDetailInfoPatch
 {
     private static void Postfix(PnlVictory __instance)
     {

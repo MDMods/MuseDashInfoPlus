@@ -6,7 +6,7 @@ using Object = UnityEngine.Object;
 namespace MDIP.Patches;
 
 [HarmonyPatch(typeof(PnlBattle), nameof(PnlBattle.GameStart))]
-public class PnlBattleGameStartPatch
+internal class PnlBattleGameStartPatch
 {
     private const float ZoomSpeed = 2f;
     private const float SignificantYChange = 10f;
@@ -234,8 +234,7 @@ public class PnlBattleGameStartPatch
                     Configs.TextFieldUpperLeft,
                     Constants.POS_UPPER_LEFT_TEXT,
                     false,
-                    TextAnchor.UpperLeft,
-                    FontStyle.Bold
+                    TextAnchor.UpperLeft
                 );
                 TextObjManager.TextUpperLeftObj = obj;
             }

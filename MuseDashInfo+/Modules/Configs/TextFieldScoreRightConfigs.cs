@@ -5,7 +5,7 @@ namespace MDIP.Modules.Configs;
 public class TextFieldScoreRightConfigs : ConfigBase, ITextConfig
 {
     public bool Enabled { get; set; } = true;
-    public string Text { get; set; } = "{gap}";
+    public string Text { get; set; } = "{scoreGap}";
     public float OffsetX { get; set; } = 0;
     public float OffsetY { get; set; } = 0;
     public string Font { get; set; } = "Snaps Taste";

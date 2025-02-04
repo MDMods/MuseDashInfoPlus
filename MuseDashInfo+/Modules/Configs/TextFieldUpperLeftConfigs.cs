@@ -5,11 +5,11 @@ namespace MDIP.Modules.Configs;
 public class TextFieldUpperLeftConfigs : ConfigBase, ITextConfig
 {
     public bool Enabled { get; set; } = false;
-    public string Text { get; set; } = "{acc}";
+    public string Text { get; set; } = "<b>{acc}</b> <size=40>{accGap}</size>";
     public float OffsetX { get; set; } = 0;
     public float OffsetY { get; set; } = 0;
     public string Font { get; set; } = "Snaps Taste";
-    public int FontSize { get; set; } = 100;
+    public int FontSize { get; set; } = 80;
     public string FontColor { get; set; } = Constants.COLOR_WHITE;
     public bool FontOutlineEnabled { get; set; } = false;
     public string FontOutlineColor { get; set; } = Constants.COLOR_WHITE;

@@ -7,3 +7,4 @@ global using MDIP.Utils;
 global using MDIP.Modules.Stats;
 global using MelonLoader;
 global using UnityEngine;
+global using Il2Cpp;

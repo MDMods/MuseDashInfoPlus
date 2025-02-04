@@ -3,7 +3,7 @@
 namespace MDIP.Patches;
 
 [HarmonyPatch(typeof(StatisticsManager), nameof(StatisticsManager.OnNoteResult))]
-public class StatisticsManagerPatch
+internal class StatisticsManagerPatch
 {
     private static void Prefix(StatisticsManager __instance, int result)
     {
