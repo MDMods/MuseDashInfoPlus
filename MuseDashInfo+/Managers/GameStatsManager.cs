@@ -42,18 +42,18 @@ public static class GameStatsManager
     public static int MissCountCollectable => _miss.Energy + _miss.Music + _miss.RedPoint;
     public static int MissCount => MissCountHittable + MissCountCollectable + _miss.Block;
 
-    public static float AccuracyTotal => _total.Music + _total.Energy + _total.Hittable + _total.Block;
+    public static float AccuracyCalculationTotal => _total.Music + _total.Energy + _total.Hittable + _total.Block;
 
-    public static float AccuracyCounted => _current.Perfect + _current.Great / 2f +
-                                           _current.Block + _current.Music + _current.Energy + _current.RedPoint;
+    public static float AccuracyCalculationCounted => _current.Perfect + _current.Great / 2f +
+                                                      _current.Block + _current.Music + _current.Energy + _current.RedPoint;
 
-    public static float AccuracyRest => Math.Max(0, GetAccuracyRest());
+    public static float AccuracyCalculationRest => Math.Max(0, GetAccuracyRest());
 
     public static bool IsAvailable => _stage != null && _task != null && _role != null;
     public static bool IsAllPerfect => IsInGame && _current.Great + MissCount < 1;
     public static bool IsTruePerfect => IsAllPerfect && _current.Early + _current.Late < 1;
 
-    public static float GetAccuracyRest() => AccuracyTotal - _current.Perfect - _current.Great -
+    public static float GetAccuracyRest() => AccuracyCalculationTotal - _current.Perfect - _current.Great -
                                              _current.Block - _current.Music - _current.Energy - _current.RedPoint -
                                              _miss.Music - _miss.Energy - MissCountHittable - _miss.LongPair - _miss.Block;
 
@@ -77,11 +77,11 @@ public static class GameStatsManager
             return;
 
         Melon<MDIPMod>.Logger.Warning("=========== Accuracy Stats ===========");
-        Melon<MDIPMod>.Logger.Msg($"Total:{AccuracyTotal} | Counted:{AccuracyCounted} | Rest:{AccuracyRest}");
+        Melon<MDIPMod>.Logger.Msg($"Total:{AccuracyCalculationTotal} | Counted:{AccuracyCalculationCounted} | Rest:{AccuracyCalculationRest}");
         Melon<MDIPMod>.Logger.Msg($"Total => Music:{Total.Music} | Energy:{Total.Energy} | Block:{Total.Block} | Hittable:{Total.Hittable}");
         Melon<MDIPMod>.Logger.Msg($"Counted => Music:{Current.Music} | Energy:{Current.Energy} | Block:{Current.Block} Perfect:{Current.Perfect} | Great:{Current.Great} /2f | | RedPoint:{Current.RedPoint}");
         Melon<MDIPMod>.Logger.Msg($"Miss => Music:{Miss.Music} | Energy:{Miss.Energy} | Block:{Miss.Block} | Hittable:{MissCountHittable} | LongPair:{Miss.LongPair}");
-        Melon<MDIPMod>.Logger.Msg($"{AccuracyTotal} - {Current.Perfect + Current.Great + Current.Block + Current.Music + Current.Energy + Current.RedPoint} - {Miss.Music + Miss.Energy + MissCountHittable + Miss.LongPair + Miss.Block} = {AccuracyRest}");
+        Melon<MDIPMod>.Logger.Msg($"{AccuracyCalculationTotal} - {Current.Perfect + Current.Great + Current.Block + Current.Music + Current.Energy + Current.RedPoint} - {Miss.Music + Miss.Energy + MissCountHittable + Miss.LongPair + Miss.Block} = {AccuracyCalculationRest}");
         Melon<MDIPMod>.Logger.Warning("======================================");
         Melon<MDIPMod>.Logger.Msg($"Calc Acc: {GetCalculatedAccuracy()} | True Acc:{GetTrueAccuracy()}");
         Melon<MDIPMod>.Logger.Warning("======================================");
@@ -100,8 +100,8 @@ public static class GameStatsManager
         if (mode < 1) mode = Configs.Main.AccuracyDisplayMode;
 
         var acc = mode == 2
-            ? AccuracyCounted / (AccuracyTotal - AccuracyRest)
-            : (AccuracyCounted + AccuracyRest) / AccuracyTotal;
+            ? AccuracyCalculationCounted / (AccuracyCalculationTotal - AccuracyCalculationRest)
+            : (AccuracyCalculationCounted + AccuracyCalculationRest) / AccuracyCalculationTotal;
 
         var rounded = MathF.Round(acc / Precision) * Precision;
         return (acc < rounded && SpecialValues.Contains(rounded)

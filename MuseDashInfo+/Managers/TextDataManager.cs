@@ -23,7 +23,7 @@ public static class TextDataManager
         UpdateCachedValue("{pbScore}", History.Score.ToString());
         UpdateCachedValue("{hiScore}", CachedValues["{pbScore}"]); // Reserve old placeholder
         UpdateCachedValue("{pbAcc}", $"{History.Accuracy}%");
-        UpdateCachedValue("{total}", ((int)AccuracyTotal).ToString());
+        UpdateCachedValue("{total}", ((int)AccuracyCalculationTotal).ToString());
         UpdateCachedValue("{song}", GameUtils.MusicName.TruncateByWidth(45));
         UpdateCachedValue("{diff}", GameUtils.MusicDiffStr);
         UpdateCachedValue("{level}", GameUtils.MusicLevel);
@@ -52,7 +52,7 @@ public static class TextDataManager
         UpdateCachedValue("{acc}", FormatAccuracy());
         UpdateCachedValue("{overview}", FormatOverview());
         UpdateCachedValue("{stats}", FormatStats());
-        UpdateCachedValue("{hit}", ((int)AccuracyCounted).ToString());
+        UpdateCachedValue("{hit}", ((int)(AccuracyCalculationTotal - AccuracyCalculationRest)).ToString());
         UpdateCachedValue("{skySpeed}", CurrentSkySpeed.ToString());
         UpdateCachedValue("{groundSpeed}", CurrentGroundSpeed.ToString());
 
