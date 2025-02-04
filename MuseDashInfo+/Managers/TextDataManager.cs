@@ -1,7 +1,10 @@
-﻿namespace MDIP.Managers;
+﻿using System.Text;
+
+namespace MDIP.Managers;
 
 public static class TextDataManager
 {
+    private static readonly char[] TrimChars = ['|', '\\', '-', '/', '~', '_', '=', '+'];
     private static Dictionary<string, string> CachedValues { get; } = new();
     private static Dictionary<string, string> FormattedTexts { get; } = new();
 
@@ -40,20 +43,17 @@ public static class TextDataManager
 
     public static string GetFormattedText(string originalText)
     {
-        if (string.IsNullOrWhiteSpace(originalText)) return string.Empty;
+        if (!ContainsAnyPlaceholder(originalText))
+            return originalText;
 
         if (FormattedTexts.TryGetValue(originalText, out var formatted))
             return formatted;
 
-        if (!ContainsAnyPlaceholder(originalText))
-            return originalText;
+        var sb = new StringBuilder(originalText);
+        foreach (var pair in CachedValues.Where(pair => sb.ToString().Contains(pair.Key)))
+            sb.Replace(pair.Key, pair.Value);
 
-        var result = originalText;
-        foreach (var pair in CachedValues.Where(pair => result.Contains(pair.Key)))
-            result = result.Replace(pair.Key, pair.Value);
-
-        var trimChars = new[] { '|', '\\', '-', '/', '~', '_', '=', '+' };
-        result = result.Trim().Trim(trimChars).Trim();
+        var result = sb.ToString().Trim().Trim(TrimChars).Trim();
 
         FormattedTexts[originalText] = result;
         return result;
