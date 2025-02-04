@@ -105,7 +105,9 @@ public static class GameStatsManager
 
     public static float GetCalculatedAccuracy()
     {
-        var acc = Configs.Main.AccuracyDisplayMode == 2 ? AccuracyCounted / (AccuracyTotal - AccuracyRest) : (AccuracyCounted + AccuracyRest) / AccuracyTotal;
+        var acc = Configs.Main.AccuracyDisplayMode == 2
+            ? AccuracyCounted / (AccuracyTotal - AccuracyRest)
+            : (AccuracyCounted + AccuracyRest) / AccuracyTotal;
 
         var rounded = MathF.Round(acc / Precision) * Precision;
         return (acc < rounded && SpecialValues.Contains(rounded) ?
