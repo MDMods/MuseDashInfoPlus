@@ -1,6 +1,4 @@
-﻿using Il2Cpp;
-
-namespace MDIP.Patches;
+﻿namespace MDIP.Patches;
 
 [HarmonyPatch(typeof(BaseEnemyObjectController), nameof(BaseEnemyObjectController.ControllerMissCheck))]
 internal class BaseEnemyObjectControllerPatch

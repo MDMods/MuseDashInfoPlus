@@ -7,7 +7,6 @@ public static class Configs
 {
     public static MainConfigs Main => ConfigManager.GetConfig<MainConfigs>(nameof(MainConfigs));
     public static AdvancedConfigs Advanced => ConfigManager.GetConfig<AdvancedConfigs>(nameof(AdvancedConfigs));
-
     public static TextFieldLowerLeftConfigs TextFieldLowerLeft => ConfigManager.GetConfig<TextFieldLowerLeftConfigs>(nameof(TextFieldLowerLeftConfigs));
     public static TextFieldLowerRightConfigs TextFieldLowerRight => ConfigManager.GetConfig<TextFieldLowerRightConfigs>(nameof(TextFieldLowerRightConfigs));
     public static TextFieldScoreBelowConfigs TextFieldScoreBelow => ConfigManager.GetConfig<TextFieldScoreBelowConfigs>(nameof(TextFieldScoreBelowConfigs));
