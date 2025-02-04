@@ -39,8 +39,8 @@ public static class GameStatsManager
 
     // Calculated properties
     public static int MissCountHittable => _miss.Monster + _miss.Long + _miss.Ghost + _miss.Mul;
-    public static int MissCountCollectable => _miss.Energy + _miss.Music + _miss.RedPoint;
-    public static int MissCount => MissCountHittable + MissCountCollectable + _miss.Block;
+    public static int MissCountCollectible => _miss.Energy + _miss.Music + _miss.RedPoint;
+    public static int MissCount => MissCountHittable + MissCountCollectible + _miss.Block;
 
     public static float AccuracyCalculationTotal => _total.Music + _total.Energy + _total.Hittable + _total.Block;
 
@@ -172,8 +172,8 @@ public static class GameStatsManager
                 parts.Add($"{_current.Great}G".Colored(Configs.Main.GreatCountsColor));
             if (MissCountHittable + _miss.Block > 0)
                 parts.Add($"{MissCountHittable + _miss.Block}M".Colored(Configs.Main.NormalMissCountsColor));
-            if (!GameUtils.IsSpellMode && MissCountCollectable > 0)
-                parts.Add($"{MissCountCollectable}H".Colored(Configs.Main.CollectableMissCountsColor));
+            if (!GameUtils.IsSpellMode && MissCountCollectible > 0)
+                parts.Add($"{MissCountCollectible}H".Colored(Configs.Main.CollectibleMissCountsColor));
             if (Configs.Main.EarlyLateCountsDisplayMode != 2)
                 return string.Join(" ", parts);
         }
@@ -206,7 +206,7 @@ public static class GameStatsManager
             if (_history.MissOther > 0)
                 parts.Add($"{_history.MissOther}M".Colored(Configs.Main.NormalMissCountsColor));
             if (_history.MissCollectible > 0)
-                parts.Add($"{_history.MissCollectible}H".Colored(Configs.Main.CollectableMissCountsColor));
+                parts.Add($"{_history.MissCollectible}H".Colored(Configs.Main.CollectibleMissCountsColor));
         }
         return string.Join(" ", parts);
     }
@@ -227,7 +227,7 @@ public static class GameStatsManager
         {
             parts.Add(FormatSingleStatsGap(_current.Great - _history.Great, "G"));
             parts.Add(FormatSingleStatsGap(MissCountHittable + _miss.Block - _history.MissOther, "M"));
-            parts.Add(FormatSingleStatsGap(MissCountCollectable - _history.MissCollectible, "H"));
+            parts.Add(FormatSingleStatsGap(MissCountCollectible - _history.MissCollectible, "H"));
         }
         return string.Join(" ", parts);
     }

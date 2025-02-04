@@ -14,7 +14,7 @@ public class MainConfigs : ConfigBase
 
     [ConfigCommentZh("音符/红心遗漏计数的文本颜色")]
     [ConfigCommentEn("Accuracy text color of collectable missed count")]
-    public string CollectableMissCountsColor { get; set; } = Constants.COLOR_WHITE;
+    public string CollectibleMissCountsColor { get; set; } = Constants.COLOR_WHITE;
 
     [ConfigCommentZh("Great 计数的文本颜色")]
     [ConfigCommentEn("Accuracy text color of great count")]

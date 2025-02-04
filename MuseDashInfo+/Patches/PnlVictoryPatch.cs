@@ -30,7 +30,7 @@ internal class PnlVictorySetDetailInfoPatch
                 {
                     Great = Current.Great,
                     MissOther = MissCountHittable + Miss.Block,
-                    MissCollectible = MissCountCollectable,
+                    MissCollectible = MissCountCollectible,
                     Early = Current.Early,
                     Late = Current.Late
                 });
