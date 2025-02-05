@@ -58,8 +58,7 @@ public class MDIPMod : MelonMod
     {
         base.OnFixedUpdate();
 
-        if (GameStatsManager.IsAvailable)
-            PnlBattleGameStartPatch.CheckAndZoom();
+        PnlBattleGameStartPatch.CheckAndZoom();
     }
 
     public override void OnLateUpdate()
