@@ -45,11 +45,7 @@ public static class StatsSaverManager
     {
         try
         {
-            var jsonString = JsonSerializer.Serialize(_statsDict,
-                new JsonSerializerOptions
-                {
-                    WriteIndented = true
-                });
+            var jsonString = JsonSerializer.Serialize(_statsDict);
             File.WriteAllText(Constants.STATS_DATA_FILE, jsonString);
         }
         catch (Exception ex)
