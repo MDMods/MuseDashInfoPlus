@@ -49,7 +49,7 @@ public static class TextDataManager
         UpdateCachedValue("{acc}", FormatAccuracy());
         UpdateCachedValue("{overview}", FormatOverview());
         UpdateCachedValue("{stats}", FormatStats());
-        UpdateCachedValue("{hit}", ((int)(AccuracyCalculationTotal - AccuracyCalculationRest)).ToString());
+        UpdateCachedValue("{hit}", ((int)(AccuracyCalculationCounted + Current.Great / 2f)).ToString());
         UpdateCachedValue("{skySpeed}", CurrentSkySpeed.ToString());
         UpdateCachedValue("{groundSpeed}", CurrentGroundSpeed.ToString());
 
