@@ -21,7 +21,6 @@ public static class TextDataManager
     public static void UpdateConstants()
     {
         UpdateCachedValue("{pbScore}", History.Score.ToString());
-        UpdateCachedValue("{hiScore}", CachedValues["{pbScore}"]); // Reserve old placeholder
         UpdateCachedValue("{pbAcc}", $"{History.Accuracy}%");
         UpdateCachedValue("{total}", ((int)AccuracyCalculationTotal).ToString());
         UpdateCachedValue("{song}", GameUtils.MusicName.TruncateByWidth(45));
@@ -34,7 +33,6 @@ public static class TextDataManager
         UpdateCachedValue("{pbEarly}", History.Early.ToString());
         UpdateCachedValue("{pbLate}", History.Late.ToString());
 
-
         if (!History.HasStats)
         {
             UpdateCachedValue("{pbStats}", Configs.Main.StatsGapTextWhenNoPersonalBest);
@@ -43,7 +41,6 @@ public static class TextDataManager
 
         if (!IsFirstTry) return;
         UpdateCachedValue("{scoreGap}", Configs.Main.ScoreGapTextWhenNoPersonalBest);
-        UpdateCachedValue("{gap}", CachedValues["{scoreGap}"]); // Reserve old placeholder
         UpdateCachedValue("{accGap}", Configs.Main.AccuracyGapTextWhenNoPersonalBest);
     }
 
@@ -64,7 +61,6 @@ public static class TextDataManager
 
         if (IsFirstTry) return;
         UpdateCachedValue("{scoreGap}", FormatScoreGap());
-        UpdateCachedValue("{gap}", CachedValues["{scoreGap}"]); // Reserve old placeholder
         UpdateCachedValue("{accGap}", FormatAccuracyGap());
     }
 

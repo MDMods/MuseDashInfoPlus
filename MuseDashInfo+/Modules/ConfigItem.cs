@@ -83,13 +83,24 @@ public class ConfigItem(
             var oldConfig = YamlParser.Deserialize<T>(File.ReadAllText(ConfigPath));
             var newConfig = new T();
 
-            if (Version.Parse(oldConfig.Version) >= Version.Parse(newConfig.Version))
+            var oldVersion = Version.Parse(oldConfig.Version);
+            var newVersion = Version.Parse(newConfig.Version);
+            if (oldVersion >= newVersion)
                 return oldConfig;
 
             File.Copy(ConfigPath, GetBackupPath(oldConfig.Version), true);
-            var migratedConfig = VersionControl.MigrateConfig(oldConfig, newConfig);
-            SaveConfig(migratedConfig);
-            return migratedConfig;
+
+            // Config files for versions prior to 2.3.0 are no longer compatible
+            var oldConfigIncompatible = oldVersion < Version.Parse("2.3.0")
+                                        && name is not "MainConfigs" and not "AdvancedConfigs";
+            if (oldConfigIncompatible)
+                Melon<MDIPMod>.Logger.Warning($"{name} will be restored to default because the configs before 2.3.0 are no longer compatible");
+            var finalConfig = oldConfigIncompatible
+                ? newConfig
+                : VersionControl.MigrateConfig(oldConfig, newConfig);
+
+            SaveConfig(finalConfig);
+            return finalConfig;
         }
         catch (Exception ex)
         {
@@ -105,7 +116,7 @@ public class ConfigItem(
         return defaultConfig;
     }
 
-    private Dictionary<string, (string zh, string en)> GetConfigComments<T>() where T : ConfigBase
+    private static Dictionary<string, (string zh, string en)> GetConfigComments<T>() where T : ConfigBase
     {
         var comments = typeof(T).GetProperties()
             .Select(prop => (
