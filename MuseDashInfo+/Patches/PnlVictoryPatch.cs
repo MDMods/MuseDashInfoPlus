@@ -16,8 +16,8 @@ internal class PnlVictorySetDetailInfoPatch
         var newScore = Current.Score;
 
         var newBest = Configs.Main.PersonalBestCriteria == 2
-            ? newScore > StoredHighestScore
-            : newAcc > StoredHighestAccuracy;
+            ? newScore >= StoredHighestScore
+            : newAcc >= StoredHighestAccuracy;
 
         StoreHighestAccuracy(newAcc);
         StoreHighestScore(newScore);
