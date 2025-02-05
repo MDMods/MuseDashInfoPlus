@@ -1,21 +1,22 @@
-# MuseDashInfo+
+# Info+
 
 [English](README.md) | [中文](README_zh.md)
 
 ## 概述
 
-MuseDashInfo+ 是一个高度客制化的 MuseDash 游戏模组，用于显示额外的游戏信息。
+Info+ 是一个高度客制化的 MuseDash 游戏模组，用于显示额外的游戏信息。
 
 本模组受 MuseDashCustomPlay 启发。
 
 ## 功能特性
 
-在游戏内显示各种信息，如 **谱面信息（歌名/难度/作者/等级）、准确率、Miss 计数、Great 计数、Early 计数、Late 计数、物量计数（已击打/总物量）、历史最高分、与最高分差值、天空速度、地面速度** 等。
+在游戏内显示各种信息，如 **谱面信息、准确率、Miss/Great/Early/Late/已击打/总物量计数、最高分数/准确率差值、天空/地面速度** 等。
 
-您可以随意调整各项数据的开关、位置、大小、颜色、字体甚至是自定义的文本格式。
+您可以随意调整各项数据的开关、位置、大小、颜色、字体、格式甚至是字体描边。
 
 ## 注意事项
 
+- 历史最佳记录下的 Miss/Great/Early/Late 数据并没有保存在任何地方，因此只能由 Info+ 来保存。您必须在安装 Info+ 的情况下拿到至少一次最佳成绩才能使历史最佳记录的数据差值生效
 - 若您加载了 [SongDesc](https://github.com/MDMods/SongDesc) 模组，谱面信息将默认隐藏
 - 东方特殊谱面由于不受支持将导致部分数据无法正常工作
 - 物量计数器会将长条视为两个 Note，首尾各算一个
@@ -47,17 +48,26 @@ MuseDashInfo+ 是一个高度客制化的 MuseDash 游戏模组，用于显示�
 
 您会在文本配置文件中看到类似 `text: '{overview} / {stats}'` 这样的配置项。`{dataName}` 将会按照下述的规则替换，您可以随意搭配使用。
 
-- `{hiScore}:` 当前谱面的个人最佳分数
-- `{gap}:` 当前得分与个人最佳分数的差距
-- `{total}:` 当前谱面的总物量
-- `{hit}:` 当前已经击打的物量
-- `{song}:` 当前谱面名称
-- `{diff}:` 当前谱面难度（数字）
-- `{level}:` 当前谱面难度（文本）
-- `{author}:` 当前谱面作者
+- `{pbScore}:` 个人最佳分数
+- `{scoreGap}:` 当前得分与个人最佳分数的差值
+- `{pbAcc}:` 个人最佳准确率
+- `{accGap}:` 当前准确率与个人最佳准确率的差值
 - `{acc}:` 当前准确率
+- `{total}:` 总物量
+- `{hit}:` 已经击打/拾取/跳过齿轮的物量
+- `{song}:` 谱面名称
+- `{diff}:` 谱面难度（数字）
+- `{level}:` 谱面难度（文本）
+- `{author}:` 谱面作者
 - `{overview}:` TP / AP 指示，若当前准确率低于 100%，则改为显示当前准确率
 - `{stats}:` Miss / Great / Early / Late 等数据
+- `{pbStats}:` 个人最佳记录下的 Miss / Great / Early / Late 等数据
+- `{pbStatsGap}:` 当前与个人最佳记录下的 Miss / Great / Early / Late 等数据的差值
+- `{pbGreat}:` 个人最佳记录下的 Great 计数
+- `{pbMissOther}:` 个人最佳记录下的 Miss 计数（不包括音符/红心）
+- `{pbMissCollectible}：` 个人最佳记录下的 Miss 计数（仅包括音符/红心）
+- `{pbEarly}:` 个人最佳记录下的 Early 计数
+- `{pbLate}:` 个人最佳记录下的 Late 计数
 - `{skySpeed}:` 当前天空速度
 - `{groundSpeed}:` 当前地面速度
 
@@ -71,7 +81,7 @@ MuseDashInfo+ 是一个高度客制化的 MuseDash 游戏模组，用于显示�
 
 ## 依赖项
 
-- [MelonLoader](https://github.com/LavaGang/MelonLoader/releases) v0.6.1
+- [MelonLoader](https://github.com/LavaGang/MelonLoader/releases) v0.6.1 或 v0.7.0
 - [Muse Dash on Steam](https://store.steampowered.com/app/774171/Muse_Dash/)
 
 ## 开发者说明

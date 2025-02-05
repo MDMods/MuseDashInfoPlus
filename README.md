@@ -1,22 +1,22 @@
-# MuseDashInfo+
+# Info+
 
 [English](README.md) | [中文](README_zh.md)
 
 ## Overview
 
-MuseDashInfo+ is a highly customizable Muse Dash game mod that displays additional in-game information.
+Info+ is a highly customizable Muse Dash game mod that displays additional in-game information.
 
 This mod is inspired by MuseDashCustomPlay.
 
 ## Features
 
-Displays various information including **Chart Info (Song Name/Difficulty/Author/Level), Accuracy, Miss Count, Great Count, Early Count, Late Count, Note
-Counter (Hit/Total), Personal Best Score, Score Gap, Sky Speed and Ground Speed**.
+Displays various information including **Chart Info, Accuracy, Miss/Great/Early/Late/Hit/Total Counts, Score/Accuracy Gap to Personal Best, Sky/Ground Speed** and so on.
 
-All data elements can be freely customized in terms of visibility, position, size, color, font, and even custom text formatting.
+All data elements can be freely customized in terms of visibility, position, size, color, font, formatting and even outline.
 
 ## Important Notes
 
+- The Miss/Great/Early/Late counts of personal best records are not stored in the base game, and can only be saved when Info+ is installed. You need to achieve at least one personal best score with Info+ installed for the personal best stats gap to work
 - If you loaded [SongDesc](https://github.com/mdmods/songdesc) mod, Chart Info will be disabled by default, use configuration to re-enable
 - Some data may not function properly for Touhou Danmaku charts due to compatibility issues
 - The Note Counter treats hold notes as two separate notes (counting both the start and end), while the Miss Counter and vanilla game count each hold note as a single note
@@ -51,19 +51,28 @@ All configuration files are **automatically generated upon first launch**. After
 In text configuration files, you'll find entries like `text: '{overview} / {stats}'`. The
 `{dataName}` placeholders will be replaced according to the following rules. These can be combined freely:
 
-- `{hiScore}`: Personal best score for current chart
-- `{gap}`: Difference between current score and personal best
-- `{total}`: Total note count in current chart
-- `{hit}`: Currently hit note count
-- `{song}`: Current chart name
-- `{diff}`: Current chart difficulty (numeric)
-- `{level}`: Current chart difficulty (text)
-- `{author}`: Current chart author
+- `{pbScore}`: Personal best score
+- `{scoreGap}`: Difference between current score and personal best score
+- `{pbAcc}`: Personal best accuracy
+- `{accGap}`: Difference between current accuracy and personal best accuracy  
 - `{acc}`: Current accuracy
+- `{total}`: Total note count
+- `{hit}`: Current hit/collected/jumped count
+- `{song}`: Chart name
+- `{diff}`: Chart difficulty (numeric)
+- `{level}`: Chart difficulty (text)
+- `{author}`: Chart author
 - `{overview}`: TP/AP indicator, shows current accuracy if below 100%
-- `{stats}`: Data including Miss/Great/Early/Late counts
-- `{skySpeed}:` Current sky speed
-- `{groundSpeed}:` Current ground speed
+- `{stats}`: Miss/Great/Early/Late counts
+- `{pbStats}`: Personal best Miss/Great/Early/Late counts
+- `{pbStatsGap}`: Difference between current and personal best Miss/Great/Early/Late counts
+- `{pbGreat}`: Personal best Great count
+- `{pbMissOther}`: Personal best Miss count (excluding music notes/hearts)
+- `{pbMissCollectible}`: Personal best Miss count (music notes/hearts only)
+- `{pbEarly}`: Personal best Early count
+- `{pbLate}`: Personal best Late count
+- `{skySpeed}`: Current sky speed
+- `{groundSpeed}`: Current ground speed
 
 Note: Rich text are supported for some configuration entries. For example:
 `<size=40><color=#e1bb8a>{total}</color></size>`. If you're unfamiliar with rich text, please google it. For line breaks, use `\n`.
@@ -76,7 +85,7 @@ Note: Rich text are supported for some configuration entries. For example:
 
 ## Dependencies
 
-- [MelonLoader](https://github.com/LavaGang/MelonLoader/releases) v0.6.1
+- [MelonLoader](https://github.com/LavaGang/MelonLoader/releases) v0.6.1 or v0.7.0
 - [Muse Dash on Steam](https://store.steampowered.com/app/774171/Muse_Dash/)
 
 ## Developer Notes
