@@ -1,5 +1,4 @@
-﻿using Il2CppAssets.Scripts.Database;
-using UnityEngine.UI;
+﻿using UnityEngine.UI;
 using static MDIP.Managers.GameStatsManager;
 
 namespace MDIP.Patches;
@@ -25,7 +24,7 @@ internal class PnlVictorySetDetailInfoPatch
 
         if (newBest)
         {
-            StatsSaverManager.SetStats(GlobalDataBase.s_DbMusicTag.CurMusicInfo().uid,
+            StatsSaverManager.SetStats(GameUtils.ChartUniqueID,
                 new()
                 {
                     Great = Current.Great,

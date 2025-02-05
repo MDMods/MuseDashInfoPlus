@@ -405,7 +405,7 @@ public static class GameStatsManager
         _history.Score = Math.Max(BattleHelper.GetCurrentMusicHighScore(), StoredHighestScore);
         _history.Accuracy = StoredHighestAccuracy;
 
-        var stats = StatsSaverManager.GetStats(GlobalDataBase.s_DbMusicTag.CurMusicInfo().uid);
+        var stats = StatsSaverManager.GetStats(GameUtils.ChartUniqueID);
         if (stats != null)
         {
             _history.HasStats = true;

@@ -8,10 +8,11 @@ public static class GameUtils
     public static bool IsSpellMode { get; set; }
     public static bool IsWisadelMode { get; set; }
 
-    public static string MusicName => GlobalDataBase.dbBattleStage.selectedMusicName;
-    public static int MusicDiff => GlobalDataBase.dbBattleStage.selectedDifficulty;
-    public static string MusicLevel => GlobalDataBase.dbBattleStage.selectedMusicInfo.GetMusicLevelStringByDiff(MusicDiff);
-    public static string MusicAuthor => GlobalDataBase.dbBattleStage.selectedMusicInfo.author;
+    public static string MusicName => GlobalDataBase.s_DbBattleStage.selectedMusicName;
+    public static int MusicDiff => GlobalDataBase.s_DbBattleStage.selectedDifficulty;
+    public static string MusicLevel => GlobalDataBase.s_DbBattleStage.selectedMusicInfo.GetMusicLevelStringByDiff(MusicDiff);
+    public static string MusicAuthor => GlobalDataBase.s_DbBattleStage.selectedMusicInfo.author;
+    public static string ChartUniqueID => $"{GlobalDataBase.s_DbMusicTag.CurMusicInfo().uid}-{MusicDiff}";
 
     public static string MusicDiffStr => (MusicDiff switch
     {
