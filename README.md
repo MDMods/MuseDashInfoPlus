@@ -10,7 +10,7 @@ This mod is inspired by MuseDashCustomPlay.
 
 ## Features
 
-Displays various information including **Chart Info, Accuracy, Miss/Great/Early/Late/Hit/Total Counts, Score/Accuracy Gap to Personal Best, Sky/Ground Speed** and so on.
+Displays various information including **Chart Info, Accuracy, Miss/Great/Early/Late/Hit/Total Counts, Score/Accuracy Gap from Personal Best, Sky/Ground Speed** and so on.
 
 All data elements can be freely customized in terms of visibility, position, size, color, font, formatting and even outline.
 
