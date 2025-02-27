@@ -48,7 +48,7 @@ internal class GameMissPlayMissCubePatch
                     case NoteType.Long:
                     case NoteType.Boss:
                     default:
-                        GameStatsManager.CountNote(oid, CountNoteAction.MissMonster, isDouble ? GameStatsManager.GetMusicDataByIdx(note.doubleIdx).objId : -1);
+                        GameStatsManager.CountNote(oid, CountNoteAction.MissMonster, isDouble ? GameStatsManager.GetMusicDataByIdx(note.doubleIdx).objId : (short)-1);
                         break;
                 }
             }

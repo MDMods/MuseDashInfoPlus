@@ -22,10 +22,10 @@ public static class GameStatsManager
     public static bool IsInGame { get; set; }
     public static bool IsFirstTry { get; set; } = true;
 
-    private static Dictionary<int, (MusicData, int)> MashingNotes { get; } = new();
-    private static Dictionary<int, int> MasherGreatRecords { get; } = new();
-    private static HashSet<int> PlayedNoteIds { get; } = [];
-    private static HashSet<int> MissedNoteIds { get; } = [];
+    private static Dictionary<short, (MusicData, int)> MashingNotes { get; } = new();
+    private static Dictionary<short, int> MasherGreatRecords { get; } = new();
+    private static HashSet<short> PlayedNoteIds { get; } = [];
+    private static HashSet<short> MissedNoteIds { get; } = [];
     public static int CurrentSkySpeed { get; set; }
     public static int CurrentGroundSpeed { get; set; }
 
@@ -242,7 +242,7 @@ public static class GameStatsManager
         };
     }
 
-    public static void CountNote(int oid, CountNoteAction action, int doubleOid = -1, bool isLongStart = false)
+    public static void CountNote(short oid, CountNoteAction action, short doubleOid = -1, bool isLongStart = false)
     {
         switch (action)
         {
@@ -307,7 +307,7 @@ public static class GameStatsManager
         }
     }
 
-    public static void ResetMashing(int oid = -1)
+    public static void ResetMashing(short oid = -1)
     {
         Melon<MDIPMod>.Logger.Warning($"Reset {oid}");
         if (oid < 0)
@@ -316,7 +316,11 @@ public static class GameStatsManager
             MasherGreatRecords.Clear();
         }
         else
+        {
+            if (!MissedNoteIds.Contains(oid))
+                PlayedNoteIds.Add(oid);
             MashingNotes.Remove(oid);
+        }
     }
 
     public static void CheckMashing()
@@ -332,18 +336,12 @@ public static class GameStatsManager
                 return;
             }
 
-            Melon<MDIPMod>.Logger.Warning($"Check {oid}: {mashedNum}Hit / {_current.Great}G / {note.GetMulHitLowThreshold()} {note.GetMulHitMidThreshold()} {note.GetMulHitHighThreshold()} / {_stage.realTimeTick}-{(note.tick + note.configData.length) * 1000}");
-
             if (_stage.realTimeTick <= (note.tick + note.configData.length) * 1000)
                 continue;
-
-            Melon<MDIPMod>.Logger.Error($"Timeout {oid}:  {mashedNum} / {note.GetMulHitMidThreshold()}");
 
             var tooLow = mashedNum < note.GetMulHitMidThreshold();
             if (tooLow && !MissedNoteIds.Contains(oid) && !PlayedNoteIds.Contains(oid))
             {
-                // ReSharper disable once StringLiteralTypo
-                Melon<MDIPMod>.Logger.BigError($"MISSSSSSSSSSSS {oid}:  {mashedNum} < {note.GetMulHitMidThreshold()} !!!!!!!!!!!!!!!!");
                 MissedNoteIds.Add(oid);
                 _miss.Mul++;
             }
@@ -361,8 +359,6 @@ public static class GameStatsManager
         MasherGreatRecords.TryAdd(oid, _current.Great);
         MashingNotes.TryAdd(oid, (note, 0));
         MashingNotes[oid] = (MashingNotes[oid].Item1, MashingNotes[oid].Item2 + 1);
-
-        Melon<MDIPMod>.Logger.Msg($"Mashing {oid}: {MashingNotes[oid].Item2}");
 
         CheckMashing();
     }
