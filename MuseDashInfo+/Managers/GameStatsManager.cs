@@ -38,8 +38,8 @@ public static class GameStatsManager
     public static HistoryStats History => _history;
 
     // Calculated properties
-    public static int MissCountHittable => _miss.Monster + _miss.Long + _miss.Ghost + _miss.Mul;
-    public static int MissCountCollectible => _miss.Energy + _miss.Music + _miss.RedPoint;
+    public static int MissCountHittable => _miss.Monster + _miss.Long + _miss.Mul;
+    public static int MissCountCollectible => _miss.Energy + _miss.Music + _miss.RedPoint + _miss.Ghost;
     public static int MissCount => MissCountHittable + MissCountCollectible + _miss.Block;
 
     public static float AccuracyCalculationTotal => _total.Music + _total.Energy + _total.Hittable + _total.Block;
