@@ -13,41 +13,42 @@ internal class GameMissPlayMissCubePatch
             int result = BattleEnemyManager.instance.GetPlayResult(idx);
             var note = GameStatsManager.GetMusicDataByIdx(idx);
             var type = (NoteType)note.noteData.type;
+            var oid = note.objId;
             var isDouble = note.isDouble;
 
             if (Configs.Advanced.OutputNoteRecordsToDesktop)
-                NoteRecordManager.AddRecord(idx, "MissCube", $"result:{result}");
+                NoteRecordManager.AddRecord(note, "MissCube", $"result:{result}");
 
             if (result is 0 or 1)
             {
                 switch (type)
                 {
                     case NoteType.Ghost:
-                        GameStatsManager.CountNote(idx, CountNoteAction.MissGhost);
+                        GameStatsManager.CountNote(oid, CountNoteAction.MissGhost);
                         break;
 
                     case NoteType.Energy:
-                        GameStatsManager.CountNote(idx, CountNoteAction.MissEnergy);
+                        GameStatsManager.CountNote(oid, CountNoteAction.MissEnergy);
                         break;
 
                     case NoteType.Music:
-                        GameStatsManager.CountNote(idx, CountNoteAction.MissMusic);
+                        GameStatsManager.CountNote(oid, CountNoteAction.MissMusic);
                         break;
 
                     case NoteType.Block:
                         if (result != 0)
-                            GameStatsManager.CountNote(idx, CountNoteAction.MissBlock);
+                            GameStatsManager.CountNote(oid, CountNoteAction.MissBlock);
                         break;
 
                     case NoteType.Mul:
-                        GameStatsManager.CountNote(idx, CountNoteAction.MissMul);
+                        GameStatsManager.CountNote(oid, CountNoteAction.MissMul);
                         break;
 
                     case NoteType.Monster:
                     case NoteType.Long:
                     case NoteType.Boss:
                     default:
-                        GameStatsManager.CountNote(idx, CountNoteAction.MissMonster, isDouble ? note.doubleIdx : -1);
+                        GameStatsManager.CountNote(oid, CountNoteAction.MissMonster, isDouble ? GameStatsManager.GetMusicDataByIdx(note.doubleIdx).objId : -1);
                         break;
                 }
             }

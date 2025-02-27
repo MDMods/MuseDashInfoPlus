@@ -9,17 +9,18 @@ internal class BattleEnemyManagerSetPlayResultPatch
     {
         var note = GameStatsManager.GetMusicDataByIdx(idx);
         var type = (NoteType)note.noteData.type;
+        var oid = note.objId;
 
         if (Configs.Advanced.OutputNoteRecordsToDesktop)
-            NoteRecordManager.AddRecord(idx, "SetPlayResult", $"result:{result}");
+            NoteRecordManager.AddRecord(note, "SetPlayResult", $"result:{result}");
 
         switch (result)
         {
             case 4 when type == NoteType.Block:
-                GameStatsManager.CountNote(idx, CountNoteAction.Block);
+                GameStatsManager.CountNote(oid, CountNoteAction.Block);
                 break;
             case 1 when type == NoteType.Long:
-                GameStatsManager.CountNote(idx, CountNoteAction.MissLong, -1, note.isLongPressStart);
+                GameStatsManager.CountNote(oid, CountNoteAction.MissLong, -1, note.isLongPressStart);
                 break;
         }
 

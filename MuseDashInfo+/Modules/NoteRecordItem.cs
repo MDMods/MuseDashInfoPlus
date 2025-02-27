@@ -1,13 +1,13 @@
 ﻿namespace MDIP.Modules;
 
 public class NoteRecord(
-    int id,
+    short oid,
     NoteType type,
     int doubleId,
     string longType
 )
 {
-    public int Id { get; private set; } = id;
+    public short Oid { get; private set; } = oid;
     public NoteType Type { get; private set; } = type;
     public int DoubleId { get; private set; } = doubleId;
     public string LongType { get; private set; } = longType;

@@ -9,7 +9,6 @@ internal class StatisticsManagerPatch
     {
         if (!Configs.Advanced.OutputNoteRecordsToDesktop) return;
 
-        var note = GameStatsManager.GetCurMusicData();
-        NoteRecordManager.AddRecord(int.Parse(note.noteData.id), "OnNoteResult", $"result:{result}");
+        NoteRecordManager.AddRecord(GameStatsManager.GetCurMusicData(), "OnNoteResult", $"result:{result}");
     }
 }

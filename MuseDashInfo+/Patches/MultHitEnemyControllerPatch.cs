@@ -7,7 +7,6 @@ internal class MultHitEnemyControllerPatch
     {
         if (!Configs.Advanced.OutputNoteRecordsToDesktop) return;
 
-        var note = __instance.m_MusicData;
-        NoteRecordManager.AddRecord(int.Parse(note.noteData.id), "OnControllerMiss", $"m_HasMiss:{__instance.m_HasMiss}");
+        NoteRecordManager.AddRecord(__instance.m_MusicData, "OnControllerMiss", $"m_HasMiss:{__instance.m_HasMiss}");
     }
 }

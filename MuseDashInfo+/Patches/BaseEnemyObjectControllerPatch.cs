@@ -7,7 +7,6 @@ internal class BaseEnemyObjectControllerPatch
     {
         if (!Configs.Advanced.OutputNoteRecordsToDesktop) return;
 
-        var note = __instance.m_MusicData;
-        NoteRecordManager.AddRecord(int.Parse(note.noteData.id), "ControllerMissCheck", $"m_HasMiss:{__instance.m_HasMiss}");
+        NoteRecordManager.AddRecord(__instance.m_MusicData, "ControllerMissCheck", $"m_HasMiss:{__instance.m_HasMiss}");
     }
 }

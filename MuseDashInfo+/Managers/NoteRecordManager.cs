@@ -1,4 +1,6 @@
-﻿namespace MDIP.Managers;
+﻿using Il2CppGameLogic;
+
+namespace MDIP.Managers;
 
 public static class NoteRecordManager
 {
@@ -6,20 +8,20 @@ public static class NoteRecordManager
 
     public static void Reset() => Records = new();
 
-    public static void AddRecord(int id, string patchName, string patchInfo)
+    public static void AddRecord(MusicData note, string patchName, string patchInfo)
     {
-        if (!Records.ContainsKey(id))
+        var oid = note.objId;
+        if (!Records.ContainsKey(oid))
         {
-            var note = GameStatsManager.GetMusicDataByIdx(id);
-            if (note == null || !Helper.IsRegularNote(note.noteData.type)) return;
+            if (!Helper.IsRegularNote(note.noteData.type)) return;
             var longType = "-";
             if (note.isLongPressStart) longType = "Start";
             if (note.isLongPressing) longType = "Pressing";
             if (note.isLongPressEnd) longType = "End";
-            Records.Add(id, new(id, (NoteType)note.noteData.type, note.doubleIdx, longType));
+            Records.Add(oid, new(oid, (NoteType)note.noteData.type, GameStatsManager.GetMusicDataByIdx(note.doubleIdx).objId, longType));
         }
 
-        Records[id].AddPatchInfo(patchName, patchInfo);
+        Records[oid].AddPatchInfo(patchName, patchInfo);
     }
 
     public static void ExportToExcel(string filePath = @"E:\Desktop\NoteAnalysis.csv")
@@ -32,7 +34,7 @@ public static class NoteRecordManager
 
         var lines = new List<string>();
 
-        var header = new[] { "ID", "Type", "Double", "LongType", "Result" }
+        var header = new[] { "ObjId", "Type", "Double", "LongType", "Result" }
             .Concat(patchNames)
             .ToList();
         lines.Add(string.Join(",", header));
@@ -42,7 +44,7 @@ public static class NoteRecordManager
             var record = kvp.Value;
             var row = new List<string>
             {
-                record.Id.ToString(),
+                record.Oid.ToString(),
                 record.Type.ToString(),
                 record.DoubleId.ToString(),
                 record.LongType
@@ -52,9 +54,18 @@ public static class NoteRecordManager
             {
                 if (record.PatchInfosDic.TryGetValue(name, out var infos))
                 {
-                    if (infos.Count == 0) row.Add("Empty");
-                    else if (infos.Count == 1) row.Add(infos[0]);
-                    else row.Add(string.Join(" | ", infos.Select((info, idx) => $"({idx + 1}) {info}")));
+                    switch (infos.Count)
+                    {
+                        case 0:
+                            row.Add("Empty");
+                            break;
+                        case 1:
+                            row.Add(infos[0]);
+                            break;
+                        default:
+                            row.Add(string.Join(" | ", infos.Select((info, oid) => $"({oid + 1}) {info}")));
+                            break;
+                    }
                 }
                 else row.Add("-");
             }
