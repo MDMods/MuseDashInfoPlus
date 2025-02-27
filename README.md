@@ -56,6 +56,7 @@ In text configuration files, you'll find entries like `text: '{overview} / {stat
 - `{pbAcc}`: Personal best accuracy
 - `{accGap}`: Difference between current accuracy and personal best accuracy  
 - `{acc}`: Current accuracy
+- `{rank}`: Current rank
 - `{total}`: Total note count
 - `{hit}`: Current hit/collected/jumped count
 - `{song}`: Chart name
@@ -67,8 +68,8 @@ In text configuration files, you'll find entries like `text: '{overview} / {stat
 - `{pbStats}`: Personal best Miss/Great/Early/Late counts
 - `{pbStatsGap}`: Difference between current and personal best Miss/Great/Early/Late counts
 - `{pbGreat}`: Personal best Great count
-- `{pbMissOther}`: Personal best Miss count (excluding music notes/hearts)
-- `{pbMissCollectible}`: Personal best Miss count (music notes/hearts only)
+- `{pbMissOther}`: Personal best Miss count (excluding collectible misses)
+- `{pbMissCollectible}`: Personal best Miss count (collectible misses only)
 - `{pbEarly}`: Personal best Early count
 - `{pbLate}`: Personal best Late count
 - `{skySpeed}`: Current sky speed

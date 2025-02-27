@@ -53,6 +53,7 @@ Info+ 是一个高度客制化的 MuseDash 游戏模组，用于显示额外的�
 - `{pbAcc}:` 个人最佳准确率
 - `{accGap}:` 当前准确率与个人最佳准确率的差值
 - `{acc}:` 当前准确率
+- `{rank}:` 当前评级
 - `{total}:` 总物量
 - `{hit}:` 已经击打/拾取/跳过齿轮的物量
 - `{song}:` 谱面名称
@@ -64,8 +65,8 @@ Info+ 是一个高度客制化的 MuseDash 游戏模组，用于显示额外的�
 - `{pbStats}:` 个人最佳记录下的 Miss / Great / Early / Late 等数据
 - `{pbStatsGap}:` 当前与个人最佳记录下的 Miss / Great / Early / Late 等数据的差值
 - `{pbGreat}:` 个人最佳记录下的 Great 计数
-- `{pbMissOther}:` 个人最佳记录下的 Miss 计数（不包括音符/红心）
-- `{pbMissCollectible}：` 个人最佳记录下的 Miss 计数（仅包括音符/红心）
+- `{pbMissOther}:` 个人最佳记录下的 Miss 计数（不包括可收集 Note）
+- `{pbMissCollectible}：` 个人最佳记录下的 Miss 计数（仅包括可收集 Note）
 - `{pbEarly}:` 个人最佳记录下的 Early 计数
 - `{pbLate}:` 个人最佳记录下的 Late 计数
 - `{skySpeed}:` 当前天空速度
