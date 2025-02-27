@@ -52,6 +52,7 @@ public static class TextDataManager
         UpdateCachedValue("{hit}", ((int)(AccuracyCalculationCounted + Current.Great / 2f)).ToString());
         UpdateCachedValue("{skySpeed}", CurrentSkySpeed.ToString());
         UpdateCachedValue("{groundSpeed}", CurrentGroundSpeed.ToString());
+        UpdateCachedValue("{rank}", FormatRank());
 
         if (History.HasStats)
         {

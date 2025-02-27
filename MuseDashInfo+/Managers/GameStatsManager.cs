@@ -116,6 +116,19 @@ public static class GameStatsManager
         return IsAllPerfect ? Configs.Main.TextAllPerfect.Colored(Configs.Main.RankAPColor) : FormatAccuracy();
     }
 
+    public static string FormatRank()
+        => IsTruePerfect ? Configs.Main.TextTruePerfect.Colored(Configs.Main.RankTPColor) :
+            IsAllPerfect ? Configs.Main.TextAllPerfect.Colored(Configs.Main.RankAPColor) :
+            GetCalculatedAccuracy() switch
+            {
+                >= 95f => "SS".Colored(Configs.Main.RankSSColor),
+                >= 90f => "S".Colored(Configs.Main.RankSColor),
+                >= 80f => "A".Colored(Configs.Main.RankAColor),
+                >= 70f => "B".Colored(Configs.Main.RankBColor),
+                >= 60f => "C".Colored(Configs.Main.RankCColor),
+                _ => "D".Colored(Configs.Main.RankDColor)
+            };
+
     public static string FormatAccuracy()
     {
         if (IsAllPerfect) return "100%".Colored(IsTruePerfect ? Configs.Main.RankTPColor : Configs.Main.RankAPColor);
