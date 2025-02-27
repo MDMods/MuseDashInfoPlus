@@ -1,4 +1,7 @@
-﻿namespace MDIP.Utils;
+﻿using System.Security.Cryptography;
+using System.Text;
+
+namespace MDIP.Utils;
 
 public static class Extensions
 {
@@ -55,6 +58,15 @@ public static class Extensions
     public static string EscapeReturn(this string text) => text.Replace("\n", "\\n");
 
     public static string UnEscapeReturn(this string text) => text.Replace("\\n", "\n");
+
+    public static string GetConsistentHash(this string input)
+    {
+        using var sha = SHA256.Create();
+        var bytes = Encoding.UTF8.GetBytes(input);
+        var hash = sha.ComputeHash(bytes);
+
+        return Convert.ToBase64String(hash);
+    }
 
     private static int CalculateWidth(this string input) => input.Sum(c => IsFullWidth(c) ? 2 : 1);
 

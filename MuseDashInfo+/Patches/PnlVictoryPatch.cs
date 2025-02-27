@@ -24,7 +24,7 @@ internal class PnlVictorySetDetailInfoPatch
 
         if (newBest)
         {
-            StatsSaverManager.SetStats(GameUtils.ChartUniqueID,
+            StatsSaverManager.SetStats(GameUtils.MusicHash,
                 new()
                 {
                     Great = Current.Great,

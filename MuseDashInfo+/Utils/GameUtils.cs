@@ -1,4 +1,5 @@
 ﻿using Il2CppAssets.Scripts.Database;
+using Il2CppFormulaBase;
 
 namespace MDIP.Utils;
 
@@ -8,11 +9,16 @@ public static class GameUtils
     public static bool IsSpellMode { get; set; }
     public static bool IsWisadelMode { get; set; }
 
+    public static MusicInfo MusicInfo => GlobalDataBase.s_DbBattleStage.selectedMusicInfo;
     public static string MusicName => GlobalDataBase.s_DbBattleStage.selectedMusicName;
     public static int MusicDiff => GlobalDataBase.s_DbBattleStage.selectedDifficulty;
-    public static string MusicLevel => GlobalDataBase.s_DbBattleStage.selectedMusicInfo.GetMusicLevelStringByDiff(MusicDiff);
-    public static string MusicAuthor => GlobalDataBase.s_DbBattleStage.selectedMusicInfo.author;
-    public static string ChartUniqueID => $"{GlobalDataBase.s_DbMusicTag.CurMusicInfo().uid}-{MusicDiff}";
+    public static string MusicLevel => MusicInfo.GetMusicLevelStringByDiff(MusicDiff);
+    public static string MusicAuthor => MusicInfo.author;
+
+    public static string MusicHash => (GlobalDataBase.s_DbBattleStage.selectedMusicFileName
+                                       + MusicInfo.levelDesigner
+                                       + StageBattleComponent.instance.GetMusicData().Count
+                                       + MusicDiff).GetConsistentHash();
 
     public static string MusicDiffStr => (MusicDiff switch
     {

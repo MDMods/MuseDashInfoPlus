@@ -309,7 +309,6 @@ public static class GameStatsManager
 
     public static void ResetMashing(short oid = -1)
     {
-        Melon<MDIPMod>.Logger.Warning($"Reset {oid}");
         if (oid < 0)
         {
             MashingNotes.Clear();
@@ -369,11 +368,11 @@ public static class GameStatsManager
     public static MusicData GetCurMusicData()
         => _stage.GetCurMusicData();
 
-    public static void StoreHighestAccuracy(float acc)
-        => StoredHighestAccuracy = Math.Max(StoredHighestAccuracy, acc);
+    public static void StoreHighestAccuracy(float acc, bool force = false)
+        => StoredHighestAccuracy = force ? acc : Math.Max(StoredHighestAccuracy, acc);
 
-    public static void StoreHighestScore(int score)
-        => StoredHighestScore = Math.Max(StoredHighestScore, score);
+    public static void StoreHighestScore(int score, bool force = false)
+        => StoredHighestScore = force ? score : Math.Max(StoredHighestScore, score);
 
     public static void StoreHighestAccuracyFromText(string text)
     {
@@ -383,7 +382,7 @@ public static class GameStatsManager
         IsFirstTry = text == "-";
 
         if (float.TryParse(text.TrimEnd(' ', '%'), out var x) && x > 0)
-            StoreHighestAccuracy(x);
+            StoreHighestAccuracy(x, true);
         else
             StoredHighestAccuracy = 0;
     }
@@ -396,7 +395,7 @@ public static class GameStatsManager
         IsFirstTry = text == "-";
 
         if (int.TryParse(text, out var x) && x >= 1)
-            StoreHighestScore(x);
+            StoreHighestScore(x, true);
         else
             StoredHighestScore = 0;
     }
@@ -410,7 +409,10 @@ public static class GameStatsManager
         _history.Score = Math.Max(BattleHelper.GetCurrentMusicHighScore(), StoredHighestScore);
         _history.Accuracy = StoredHighestAccuracy;
 
-        var stats = StatsSaverManager.GetStats(GameUtils.ChartUniqueID);
+        Melon<MDIPMod>.Logger.Msg($"Playing: {GameUtils.MusicName}");
+        Melon<MDIPMod>.Logger.Msg($"Hash: {GameUtils.MusicHash}");
+
+        var stats = StatsSaverManager.GetStats(GameUtils.MusicHash);
         if (stats != null)
         {
             _history.HasStats = true;
