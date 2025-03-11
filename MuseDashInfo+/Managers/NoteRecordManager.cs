@@ -4,7 +4,7 @@ namespace MDIP.Managers;
 
 public static class NoteRecordManager
 {
-    public static Dictionary<int, NoteRecord> Records { get; private set; } = new();
+    private static Dictionary<int, NoteRecord> Records { get; set; } = new();
 
     public static void Reset() => Records = new();
 
@@ -24,7 +24,7 @@ public static class NoteRecordManager
         Records[oid].AddPatchInfo(patchName, patchInfo);
     }
 
-    public static void ExportToExcel(string filePath = @"E:\Desktop\NoteAnalysis.csv")
+    public static void ExportToExcel(string filePath)
     {
         var recordDic = Records;
         var patchNames = recordDic.Values

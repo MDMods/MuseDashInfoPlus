@@ -49,7 +49,12 @@ internal class PnlVictorySetDetailInfoPatch
         }
 
         if (Configs.Advanced.OutputNoteRecordsToDesktop)
-            NoteRecordManager.ExportToExcel();
+        {
+            var folder = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Info+ Note Records\";
+            if (!Directory.Exists(folder))
+                Directory.CreateDirectory(folder);
+            NoteRecordManager.ExportToExcel($"{folder}{GameUtils.MusicName} Note Records.csv");
+        }
 
         if (!Configs.Main.ReplaceResultsScreenMissCount) return;
 
