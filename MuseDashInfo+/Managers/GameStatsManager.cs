@@ -73,18 +73,28 @@ public static class GameStatsManager
             _task.m_Score
         );
 
-        if (!Configs.Advanced.OutputAccuracyCalculationData)
-            return;
+        if (Configs.Advanced.DisplayNoteDebuggingData)
+            OutputCurrentNoteDebuggingData(true);
+    }
 
-        Melon<MDIPMod>.Logger.Warning("=========== Accuracy Stats ===========");
+    public static void OutputCurrentNoteDebuggingData(bool isInGame)
+    {
+        if (isInGame) Melon<MDIPMod>.Logger.Warning($"=========== Tick: {_stage?.realTimeTick ?? -1} | CurId: {_stage?.curTimeNodeOrder?.idx ?? -1} ===========");
+        else Melon<MDIPMod>.Logger.Error("=========== Note Count Error ===========");
         Melon<MDIPMod>.Logger.Msg($"Total:{AccuracyCalculationTotal} | Counted:{AccuracyCalculationCounted} | Rest:{AccuracyCalculationRest}");
-        Melon<MDIPMod>.Logger.Msg($"Total => Music:{Total.Music} | Energy:{Total.Energy} | Block:{Total.Block} | Hittable:{Total.Hittable}");
-        Melon<MDIPMod>.Logger.Msg($"Counted => Music:{Current.Music} | Energy:{Current.Energy} | Block:{Current.Block} Perfect:{Current.Perfect} | Great:{Current.Great} /2f | | RedPoint:{Current.RedPoint}");
-        Melon<MDIPMod>.Logger.Msg($"Miss => Music:{Miss.Music} | Energy:{Miss.Energy} | Block:{Miss.Block} | Hittable:{MissCountHittable} | LongPair:{Miss.LongPair}");
-        Melon<MDIPMod>.Logger.Msg($"{AccuracyCalculationTotal} - {Current.Perfect + Current.Great + Current.Block + Current.Music + Current.Energy + Current.RedPoint} - {Miss.Music + Miss.Energy + MissCountHittable + Miss.LongPair + Miss.Block} = {AccuracyCalculationRest}");
-        Melon<MDIPMod>.Logger.Warning("======================================");
+        Melon<MDIPMod>.Logger.Msg($"Total => Music:{Total.Music} | Energy:{Total.Energy} | Block:{Total.Block} | RedPoint:{Total.RedPoint} | Hittable:{Total.Hittable}");
+        Melon<MDIPMod>.Logger.Msg($"Counted => Music:{Current.Music} | Energy:{Current.Energy} | Block:{Current.Block} | RedPoint:{Current.RedPoint} | Perfect:{Current.Perfect} | Great:{Current.Great} /2f");
+        Melon<MDIPMod>.Logger.Msg($"Miss => Music:{Miss.Music} | Energy:{Miss.Energy} | Block:{Miss.Block} | RedPoint:{Miss.RedPoint} | Hittable:{MissCountHittable} | LongPair:{Miss.LongPair}");
+        Melon<MDIPMod>.Logger.Msg($"{AccuracyCalculationTotal} - {Current.Perfect + Current.Great + Current.Block + Current.Music + Current.Energy + Current.RedPoint} - {Miss.Music + Miss.Energy + MissCountHittable + Miss.LongPair + Miss.Block + Miss.RedPoint} = {AccuracyCalculationRest}");
+        if (!isInGame) OutputDividingLine(true);
         Melon<MDIPMod>.Logger.Msg($"Calc Acc: {GetCalculatedAccuracy()} | True Acc:{GetTrueAccuracy()}");
-        Melon<MDIPMod>.Logger.Warning("======================================");
+        if (!isInGame) OutputDividingLine(true);
+    }
+
+    private static void OutputDividingLine(bool error)
+    {
+        if (error) Melon<MDIPMod>.Logger.Error("======================================");
+        else Melon<MDIPMod>.Logger.Warning("======================================");
     }
 
     public static void UpdateCurrentSpeed(bool isAir, int speed)

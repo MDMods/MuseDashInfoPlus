@@ -8,11 +8,11 @@ public class AdvancedConfigs : ConfigBase
     [ConfigCommentEn("Data refresh interval limit (milliseconds)")]
     public int DataRefreshIntervalLimit { get; set; } = 123;
 
-    [ConfigCommentZh("显示准确率计算数据")]
-    [ConfigCommentEn("Output accuracy calculation data")]
-    public bool OutputAccuracyCalculationData { get; set; } = false;
+    [ConfigCommentZh("在控制台显示 Note 调试数据")]
+    [ConfigCommentEn("Display note debugging data in the console")]
+    public bool DisplayNoteDebuggingData { get; set; } = false;
 
-    [ConfigCommentZh("输出Note记录到桌面")]
-    [ConfigCommentEn("Output Note records to desktop")]
+    [ConfigCommentZh("游戏结算时输出 Note 记录到桌面")]
+    [ConfigCommentEn("Output note records file to desktop when the game is settled")]
     public bool OutputNoteRecordsToDesktop { get; set; } = false;
 }
