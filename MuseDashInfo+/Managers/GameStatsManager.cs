@@ -55,7 +55,7 @@ public static class GameStatsManager
 
     public static float GetAccuracyRest() => AccuracyCalculationTotal - _current.Perfect - _current.Great -
                                              _current.Block - _current.Music - _current.Energy - _current.RedPoint -
-                                             _miss.Music - _miss.Energy - MissCountHittable - _miss.LongPair - _miss.Block;
+                                             MissCount - _miss.LongPair;
 
     public static void UpdateCurrentStats()
     {
@@ -84,8 +84,9 @@ public static class GameStatsManager
         Melon<MDIPMod>.Logger.Msg($"Total:{AccuracyCalculationTotal} | Counted:{AccuracyCalculationCounted} | Rest:{AccuracyCalculationRest}");
         Melon<MDIPMod>.Logger.Msg($"Total => Music:{Total.Music} | Energy:{Total.Energy} | Block:{Total.Block} | RedPoint:{Total.RedPoint} | Hittable:{Total.Hittable}");
         Melon<MDIPMod>.Logger.Msg($"Counted => Music:{Current.Music} | Energy:{Current.Energy} | Block:{Current.Block} | RedPoint:{Current.RedPoint} | Perfect:{Current.Perfect} | Great:{Current.Great} /2f");
-        Melon<MDIPMod>.Logger.Msg($"Miss => Music:{Miss.Music} | Energy:{Miss.Energy} | Block:{Miss.Block} | RedPoint:{Miss.RedPoint} | Hittable:{MissCountHittable} | LongPair:{Miss.LongPair}");
-        Melon<MDIPMod>.Logger.Msg($"{AccuracyCalculationTotal} - {Current.Perfect + Current.Great + Current.Block + Current.Music + Current.Energy + Current.RedPoint} - {Miss.Music + Miss.Energy + MissCountHittable + Miss.LongPair + Miss.Block + Miss.RedPoint} = {AccuracyCalculationRest}");
+        Melon<MDIPMod>.Logger.Msg($"Miss => Music:{Miss.Music} | Energy:{Miss.Energy} | Block:{Miss.Block} | RedPoint:{Miss.RedPoint} | Hittable:{MissCountHittable} | LongPair:{Miss.LongPair} | Ghost:{Miss.Ghost}");
+        Melon<MDIPMod>.Logger.Msg(
+            $"{AccuracyCalculationTotal} - {Current.Perfect + Current.Great + Current.Block + Current.Music + Current.Energy + Current.RedPoint} - {Miss.Music + Miss.Energy + MissCountHittable + Miss.LongPair + Miss.Block + Miss.RedPoint + Miss.Ghost} = {AccuracyCalculationRest}");
         if (!isInGame) OutputDividingLine(true);
         Melon<MDIPMod>.Logger.Msg($"Calc Acc: {GetCalculatedAccuracy()} | True Acc:{GetTrueAccuracy()}");
         if (!isInGame) OutputDividingLine(true);
