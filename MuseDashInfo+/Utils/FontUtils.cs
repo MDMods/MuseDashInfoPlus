@@ -1,4 +1,5 @@
-﻿using UnityEngine.AddressableAssets;
+﻿using MDIP.Modules.Enums;
+using UnityEngine.AddressableAssets;
 
 namespace MDIP.Utils;
 

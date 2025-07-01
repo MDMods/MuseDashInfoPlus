@@ -1,5 +1,6 @@
 ﻿using Il2CppAssets.Scripts.UI.Panels;
 using MDIP.Interfaces;
+using MDIP.Modules.Enums;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 

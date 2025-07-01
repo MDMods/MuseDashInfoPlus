@@ -1,4 +1,4 @@
-﻿namespace MDIP.Modules;
+﻿namespace MDIP.Modules.Enums;
 
 public enum ScoreStyleType
 {

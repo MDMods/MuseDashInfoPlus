@@ -1,4 +1,4 @@
-namespace MDIP.Modules.Stats;
+namespace MDIP.Modules.StatsRecords;
 
 public record struct HistoryStats(
     int Score,
