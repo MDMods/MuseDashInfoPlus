@@ -8,6 +8,7 @@ public static class FontUtils
     {
         { FontType.SnapsTaste, "Snaps Taste" },
         { FontType.LatoRegular, "Lato-Regular" },
+        { FontType.LuckiestGuy, "LuckiestGuy-Regular" },
         { FontType.Normal, "Normal" }
     };
 
@@ -48,6 +49,5 @@ public static class FontUtils
         Fonts.Remove(type);
     }
 
-    public static Font GetFont(FontType type)
-        => Fonts.TryGetValue(type, out var font) ? font : throw new ArgumentException($"Font {type} not loaded");
+    public static Font GetFont(FontType type) => Fonts.TryGetValue(type, out var font) ? font : throw new ArgumentException($"Font {type} not loaded");
 }
