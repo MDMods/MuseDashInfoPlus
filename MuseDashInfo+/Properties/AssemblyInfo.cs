@@ -7,4 +7,4 @@ using MDIP;
 [assembly: MelonAuthorColor(255, 128, 128, 128)]
 
 [assembly: AssemblyDescription(ModBuildInfo.Description)]
-[assembly: AssemblyCopyright($"{ModBuildInfo.Author} © 2024; open-source")]
+[assembly: AssemblyCopyright($"{ModBuildInfo.Author} © 2025; open-source")]
