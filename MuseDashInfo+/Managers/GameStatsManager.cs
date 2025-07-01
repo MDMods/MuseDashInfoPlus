@@ -161,7 +161,7 @@ public static class GameStatsManager
                 >= 60f => Configs.Main.RankCColor,
                 _ => Configs.Main.RankDColor
             };
-        return $"{acc:F2}%".Colored(color);
+        return FormattableString.Invariant($"{acc:F2}%").Colored(color);
     }
 
     public static string FormatAccuracyGap()
@@ -173,7 +173,7 @@ public static class GameStatsManager
 
         var (color, prefix) = gap > 0 ? (Configs.Main.AccuracyGapAheadColor, "+") : (Configs.Main.AccuracyGapBehindColor, "");
 
-        var str = $"{prefix}{gap:F2}%".Colored(color);
+        var str = FormattableString.Invariant($"{prefix}{gap:F2}%").Colored(color);
 
         return str.Replace(".00%", "%");
     }
