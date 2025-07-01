@@ -128,7 +128,8 @@ public static class GameStatsManager
     }
 
     public static string FormatRank()
-        => IsTruePerfect ? Configs.Main.TextTruePerfect.Colored(Configs.Main.RankTPColor) :
+        => GameUtils.BattleUIType == BattleUIItem.Spell ? string.Empty :
+            IsTruePerfect ? Configs.Main.TextTruePerfect.Colored(Configs.Main.RankTPColor) :
             IsAllPerfect ? Configs.Main.TextAllPerfect.Colored(Configs.Main.RankAPColor) :
             GetCalculatedAccuracy() switch
             {
@@ -142,6 +143,8 @@ public static class GameStatsManager
 
     public static string FormatAccuracy()
     {
+        if (GameUtils.BattleUIType == BattleUIItem.Spell) return string.Empty;
+
         if (IsAllPerfect) return "100%".Colored(IsTruePerfect ? Configs.Main.RankTPColor : Configs.Main.RankAPColor);
         var acc = GetCalculatedAccuracy();
         var color = IsTruePerfect ?
@@ -161,6 +164,8 @@ public static class GameStatsManager
 
     public static string FormatAccuracyGap()
     {
+        if (GameUtils.BattleUIType == BattleUIItem.Spell) return string.Empty;
+
         var gap = GetCalculatedAccuracy(1) - _history.Accuracy;
         if (Math.Abs(gap) < Precision) return string.Empty;
 

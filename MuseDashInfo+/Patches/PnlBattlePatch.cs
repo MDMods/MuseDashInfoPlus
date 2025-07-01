@@ -211,7 +211,7 @@ internal class PnlBattleGameStartPatch
             }
 
             // Text Field Score Right
-            if (Configs.TextFieldScoreRight.Enabled)
+            if (Configs.TextFieldScoreRight.Enabled && GameUtils.BattleUIType != BattleUIItem.Spell)
             {
                 var obj = CreateTextObj(
                     "InfoPlus_TextScoreRight",
