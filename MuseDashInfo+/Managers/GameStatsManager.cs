@@ -196,7 +196,7 @@ public static class GameStatsManager
                 parts.Add($"{_current.Great}G".Colored(Configs.Main.GreatCountsColor));
             if (MissCountHittable + _miss.Block > 0)
                 parts.Add($"{MissCountHittable + _miss.Block}M".Colored(Configs.Main.NormalMissCountsColor));
-            if (!GameUtils.IsSpellMode && MissCountCollectible > 0)
+            if (GameUtils.BattleUIType != BattleUIItem.Spell && MissCountCollectible > 0)
                 parts.Add($"{MissCountCollectible}H".Colored(Configs.Main.CollectibleMissCountsColor));
             if (Configs.Main.EarlyLateCountsDisplayMode != 2)
                 return string.Join(" ", parts);

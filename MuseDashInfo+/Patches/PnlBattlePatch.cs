@@ -87,35 +87,38 @@ internal class PnlBattleGameStartPatch
 
         try
         {
+            var pnlBattleUI = __instance.transform.Find("PnlBattleUI").transform;
             var pnlBattleOthers = __instance.transform.Find("PnlBattleUI/PnlBattleOthers")?.gameObject;
-            var pnlBattleSpell = __instance.transform.Find("PnlBattleUI/PnlBattleSpell")?.gameObject;
-            var pnlBattleWisadel = __instance.transform.Find("PnlBattleUI/PnlBattleWisadel")?.gameObject;
+
             if (pnlBattleOthers == null)
                 throw new NullReferenceException("PnlBattleOthers is null");
 
-            GameObject curPnlBattle;
-            if (pnlBattleOthers.active)
+            // Find the active battle UI panel
+            GameObject pnlBattleUISub = null;
+            for (var i = 0; i < pnlBattleUI.childCount; i++)
             {
-                curPnlBattle = pnlBattleOthers;
-                GameUtils.IsOthersMode = true;
+                var child = pnlBattleUI.GetChild(i)?.gameObject;
+                if (child?.activeSelf ?? false)
+                    pnlBattleUISub = child;
             }
-            else if (pnlBattleSpell?.active ?? false)
+
+            if (pnlBattleUISub == null)
+                throw new("No active battle UI panel found!");
+
+            var panelName = pnlBattleUISub.name;
+            GameUtils.BattleUIType = panelName switch
             {
-                curPnlBattle = pnlBattleSpell;
-                GameUtils.IsSpellMode = true;
-            }
-            else if (pnlBattleWisadel?.active ?? false)
-            {
-                curPnlBattle = pnlBattleWisadel;
-                GameUtils.IsWisadelMode = true;
-            }
-            else
-                throw new("Unknown battle stage type, everything will not be loaded!");
+                "PnlBattleOthers" => BattleUIItem.Others,
+                "PnlBattleSpell" => BattleUIItem.Spell,
+                "PnlBattleWisadel" => BattleUIItem.Wisadel,
+                "PnlBattleBloodheir" => BattleUIItem.Bloodheir,
+                _ => BattleUIItem.Unknown
+            };
 
             // Zoom out all UI
-            curPnlBattle.transform.localScale = new(1f, 3f, 1f);
-            _curPnlBattle = curPnlBattle.transform;
-            _scoreTransform = curPnlBattle.transform.Find("Score");
+            pnlBattleUISub.transform.localScale = new(1f, 3f, 1f);
+            _curPnlBattle = pnlBattleUISub.transform;
+            _scoreTransform = pnlBattleUISub.transform.Find("Score");
 
             _textObjectTemplate = Object.Instantiate(pnlBattleOthers.transform.Find("Score/Djmax/TxtScore_djmax").gameObject);
             Object.Destroy(_textObjectTemplate.transform.Find("ImgIconApDjmax").gameObject);
@@ -124,27 +127,27 @@ internal class PnlBattleGameStartPatch
 
             string imgIconApPath;
             ScoreStyleType scoreStyleType;
-            if (curPnlBattle.transform.Find("Score/GC")?.gameObject.active ?? false)
+            if (pnlBattleUISub.transform.Find("Score/GC")?.gameObject.active ?? false)
             {
                 scoreStyleType = ScoreStyleType.GC;
                 imgIconApPath = "Score/GC/TxtScoreGC/ImgIconApGc";
             }
-            else if (curPnlBattle.transform.Find("Score/Djmax")?.gameObject.active ?? false)
+            else if (pnlBattleUISub.transform.Find("Score/Djmax")?.gameObject.active ?? false)
             {
                 scoreStyleType = ScoreStyleType.Djmax;
                 imgIconApPath = "Score/Djmax/TxtScore_djmax/ImgIconApDjmax";
             }
-            else if (curPnlBattle.transform.Find("Score/ArkNight")?.gameObject.active ?? false)
+            else if (pnlBattleUISub.transform.Find("Score/ArkNight")?.gameObject.active ?? false)
             {
                 scoreStyleType = ScoreStyleType.ArkNight;
                 imgIconApPath = "Score/ArkNight/Area/TxtScoreArkNight/ImgIconApArkNight";
             }
-            else if (curPnlBattle.transform.Find("Score/Other/ScoreTittle/ImgEnglish")?.gameObject.active ?? false)
+            else if (pnlBattleUISub.transform.Find("Score/Other/ScoreTittle/ImgEnglish")?.gameObject.active ?? false)
             {
                 scoreStyleType = ScoreStyleType.OtherEN;
                 imgIconApPath = "Score/Other/TxtScore/ImgIconAp";
             }
-            else if (curPnlBattle.transform.Find("Score/Other/ScoreTittle/ImgChinese")?.gameObject.active ?? false)
+            else if (pnlBattleUISub.transform.Find("Score/Other/ScoreTittle/ImgChinese")?.gameObject.active ?? false)
             {
                 scoreStyleType = ScoreStyleType.OtherCN;
                 imgIconApPath = "Score/Other/TxtScore/ImgIconAp";
@@ -153,12 +156,12 @@ internal class PnlBattleGameStartPatch
                 throw new("Unknown score style type, everything will not be loaded!");
 
             // Adjust pause button location
-            var imgPauseRect = curPnlBattle.transform.Find("Up/BtnPause/ImgPause").gameObject.GetComponent<RectTransform>();
+            var imgPauseRect = pnlBattleUISub.transform.Find("Up/BtnPause/ImgPause").gameObject.GetComponent<RectTransform>();
             imgPauseRect.sizeDelta = new(70, 70);
             imgPauseRect.anchoredPosition = new(0, 0);
 
             // Hide AP icon
-            var imgIconAp = curPnlBattle.transform.Find(imgIconApPath)?.gameObject;
+            var imgIconAp = pnlBattleUISub.transform.Find(imgIconApPath)?.gameObject;
             if (imgIconAp != null) imgIconAp.transform.localPosition = new(9999, 9999, -9999);
 
             FontUtils.LoadFonts();
@@ -168,7 +171,7 @@ internal class PnlBattleGameStartPatch
             {
                 var obj = CreateTextObj(
                     "InfoPlus_TextLowerLeft",
-                    curPnlBattle.transform.Find("Below"),
+                    pnlBattleUISub.transform.Find("Below"),
                     Configs.TextFieldLowerLeft,
                     Constants.POS_LOWER_LEFT_TEXT,
                     false,
@@ -183,7 +186,7 @@ internal class PnlBattleGameStartPatch
             {
                 var obj = CreateTextObj(
                     "InfoPlus_TextLowerRight",
-                    curPnlBattle.transform.Find("Below"),
+                    pnlBattleUISub.transform.Find("Below"),
                     Configs.TextFieldLowerRight,
                     Constants.POS_LOWER_RIGHT_TEXT,
                     false,
@@ -198,7 +201,7 @@ internal class PnlBattleGameStartPatch
             {
                 var obj = CreateTextObj(
                     "InfoPlus_TextScoreBelow",
-                    curPnlBattle.transform.Find("Score"),
+                    pnlBattleUISub.transform.Find("Score"),
                     Configs.TextFieldScoreBelow,
                     new(Constants.OFFSET_SCORE_BELOW_TEXT[scoreStyleType].x, Constants.OFFSET_SCORE_BELOW_TEXT[scoreStyleType].y == 0 ? Constants.POS_SCORE_BELOW_TEXT.y : Constants.OFFSET_SCORE_BELOW_TEXT[scoreStyleType].y, Constants.POS_SCORE_BELOW_TEXT.z),
                     false,
@@ -212,7 +215,7 @@ internal class PnlBattleGameStartPatch
             {
                 var obj = CreateTextObj(
                     "InfoPlus_TextScoreRight",
-                    curPnlBattle.transform.Find(imgIconApPath[..imgIconApPath.LastIndexOf('/')]),
+                    pnlBattleUISub.transform.Find(imgIconApPath[..imgIconApPath.LastIndexOf('/')]),
                     Configs.TextFieldScoreRight,
                     new(Constants.POS_SCORE_RIGHT_TEXT.x, Constants.OFFSET_SCORE_RIGHT_TEXT[scoreStyleType], Constants.POS_SCORE_RIGHT_TEXT.z),
                     true,
@@ -230,7 +233,7 @@ internal class PnlBattleGameStartPatch
             {
                 var obj = CreateTextObj(
                     "InfoPlus_TextUpperLeft",
-                    curPnlBattle.transform.Find("Up"),
+                    pnlBattleUISub.transform.Find("Up"),
                     Configs.TextFieldUpperLeft,
                     Constants.POS_UPPER_LEFT_TEXT,
                     false,
@@ -244,7 +247,7 @@ internal class PnlBattleGameStartPatch
             {
                 var obj = CreateTextObj(
                     "InfoPlus_TextUpperRight",
-                    curPnlBattle.transform.Find("Up"),
+                    pnlBattleUISub.transform.Find("Up"),
                     Configs.TextFieldUpperRight,
                     Constants.POS_UPPER_RIGHT_TEXT,
                     false,

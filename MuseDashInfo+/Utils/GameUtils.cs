@@ -5,9 +5,7 @@ namespace MDIP.Utils;
 
 public static class GameUtils
 {
-    public static bool IsOthersMode { get; set; }
-    public static bool IsSpellMode { get; set; }
-    public static bool IsWisadelMode { get; set; }
+    public static BattleUIItem BattleUIType { get; set; }
 
     public static MusicInfo MusicInfo => GlobalDataBase.s_DbBattleStage.selectedMusicInfo;
     public static string MusicName => GlobalDataBase.s_DbBattleStage.selectedMusicName;
@@ -31,9 +29,5 @@ public static class GameUtils
     }).ToUpper();
 
     public static void Reset()
-    {
-        IsOthersMode = false;
-        IsSpellMode = false;
-        IsWisadelMode = false;
-    }
+        => BattleUIType = BattleUIItem.Unknown;
 }
