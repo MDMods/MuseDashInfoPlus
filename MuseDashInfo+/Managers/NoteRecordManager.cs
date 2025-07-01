@@ -1,5 +1,4 @@
 ﻿using Il2CppGameLogic;
-using MDIP.Modules.Enums;
 
 namespace MDIP.Managers;
 

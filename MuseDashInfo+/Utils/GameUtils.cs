@@ -1,6 +1,5 @@
 ﻿using Il2CppAssets.Scripts.Database;
 using Il2CppFormulaBase;
-using MDIP.Modules.Enums;
 
 namespace MDIP.Utils;
 

@@ -1,5 +1,4 @@
 ﻿using Il2CppAssets.Scripts.GameCore.HostComponent;
-using MDIP.Modules.Enums;
 
 namespace MDIP.Patches;
 

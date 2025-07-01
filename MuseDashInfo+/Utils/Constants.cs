@@ -1,6 +1,4 @@
-﻿using MDIP.Modules.Enums;
-
-namespace MDIP.Utils;
+﻿namespace MDIP.Utils;
 
 public static class Constants
 {

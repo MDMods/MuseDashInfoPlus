@@ -2,7 +2,6 @@
 using Il2CppAssets.Scripts.GameCore.HostComponent;
 using Il2CppFormulaBase;
 using Il2CppGameLogic;
-using MDIP.Modules.Enums;
 using MDIP.Modules.StatsRecords;
 using GameUtils = MDIP.Utils.GameUtils;
 

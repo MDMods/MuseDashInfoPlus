@@ -1,6 +1,4 @@
-﻿using MDIP.Modules.Enums;
-
-namespace MDIP.Modules;
+﻿namespace MDIP.Modules;
 
 public class NoteRecord(
     short oid,

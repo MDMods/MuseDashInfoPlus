@@ -79,7 +79,8 @@ public static class ConfigManager
                 return;
             }
             catch (IOException)
-            { }
+            {
+            }
         }
     }
 }
