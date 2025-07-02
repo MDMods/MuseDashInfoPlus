@@ -9,6 +9,36 @@ public class MDIPMod : MelonMod
     public static bool Reset { get; set; } = true;
     public static bool IsSongDescLoaded { get; private set; }
 
+    public override void OnInitializeMelon()
+    {
+        CheckForUpdatesAsync().ContinueWith(task =>
+        {
+            if (task.IsFaulted)
+                Melon<MDIPMod>.Logger.Error($"Update check failed: {task.Exception}");
+        });
+    }
+
+    private async static Task CheckForUpdatesAsync()
+    {
+        var updateManager = new UpdateManager();
+        var updateInfo = await UpdateManager.GetUpdateInfo();
+        if (updateInfo == null)
+        {
+            Melon<MDIPMod>.Logger.Error("Failed to fetch update info.");
+            return;
+        }
+
+        if (!updateManager.CheckUpdate(updateInfo))
+        {
+            Melon<MDIPMod>.Logger.Msg("Already up to date.");
+            return;
+        }
+
+        var success = await updateManager.Update(updateInfo);
+        if (success) Melon<MDIPMod>.Logger.Warning("Auto update successful!");
+        else Melon<MDIPMod>.Logger.Error("Auto update failed!");
+    }
+
     public override void OnLateInitializeMelon()
     {
         IsSongDescLoaded = RegisteredMelons.Any(mod => mod?.MelonAssembly?.Assembly?.FullName?.TrimStart().StartsWith("SongDesc") ?? false);
