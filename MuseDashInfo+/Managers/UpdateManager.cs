@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text.Json;
 
@@ -6,7 +7,8 @@ namespace MDIP.Managers;
 public class UpdateManager
 {
     private static readonly HttpClient _httpClient = new();
-    private readonly string _modPath = Path.GetFullPath(Path.Combine(Application.dataPath, "..", "Mods", "Info+.dll"));
+    private static string ModPath => Assembly.GetExecutingAssembly().Location;
+    private static string ModFolder => Path.GetFullPath(Path.Combine(Application.dataPath, "..", @"Mods\"));
 
     public async static Task<VersionInfo> GetUpdateInfo()
     {
@@ -43,18 +45,21 @@ public class UpdateManager
     {
         if (updateInfo == null) return false;
 
-        var backupPath = _modPath + ".backup";
-        var tempPath = _modPath + ".temp";
+        var backupPath = ModPath + ".backup";
+        var tempPath = ModFolder + "Info+.temp";
+        var newPath = ModFolder + "Info+.dll";
 
         // Clean up old backup if exists
         try
         {
             if (File.Exists(backupPath))
                 File.Delete(backupPath);
+            if (File.Exists(tempPath))
+                File.Delete(tempPath);
         }
         catch (Exception ex)
         {
-            Melon<MDIPMod>.Logger.Error($"Failed to clean up old backup: {ex.Message}");
+            Melon<MDIPMod>.Logger.Error($"Failed to clean up old backup or temp file: {ex.Message}");
             return false;
         }
 
@@ -94,9 +99,9 @@ public class UpdateManager
         try
         {
             // Backup current file
-            File.Move(_modPath, backupPath);
+            File.Move(ModPath, backupPath);
             // Move new file to correct location
-            File.Move(tempPath, _modPath);
+            File.Move(tempPath, newPath);
             return true;
         }
         catch (Exception ex)
@@ -107,9 +112,9 @@ public class UpdateManager
                 return false;
             try
             {
-                if (File.Exists(_modPath))
-                    File.Delete(_modPath);
-                File.Move(backupPath, _modPath);
+                if (File.Exists(ModPath))
+                    File.Delete(ModPath);
+                File.Move(backupPath, ModPath);
             }
             catch
             {
