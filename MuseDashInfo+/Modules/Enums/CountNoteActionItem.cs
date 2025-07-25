@@ -3,6 +3,7 @@
 public enum CountNoteAction
 {
     Block,
+    Mul,
     MissMonster,
     MissBlock,
     MissLong,

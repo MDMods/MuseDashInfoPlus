@@ -34,7 +34,7 @@ public static class NoteRecordManager
 
         var lines = new List<string>();
 
-        var header = new[] { "ObjId", "Type", "Double", "LongType", "Result" }
+        var header = new[] { "ObjId", "Type", "Double", "LongType" }
             .Concat(patchNames)
             .ToList();
         lines.Add(string.Join(",", header));

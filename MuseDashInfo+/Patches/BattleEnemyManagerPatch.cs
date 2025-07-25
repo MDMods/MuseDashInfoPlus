@@ -12,7 +12,7 @@ internal class BattleEnemyManagerSetPlayResultPatch
         var oid = note.objId;
 
         if (Configs.Advanced.OutputNoteRecordsToDesktop)
-            NoteRecordManager.AddRecord(note, "SetPlayResult", $"result:{result}");
+            NoteRecordManager.AddRecord(note, "SetPlayResult", $"setResult:{result}");
 
         switch (result)
         {
@@ -24,24 +24,15 @@ internal class BattleEnemyManagerSetPlayResultPatch
                 break;
         }
 
+        if (type == NoteType.Mul)
+            GameStatsManager.CountMul(oid, result, (float)note.configData.length);
+
         if (!type.IsRegularNote() || note.isLongPressing)
             return;
 
         GameStatsManager.UpdateCurrentSpeed(note.isAir, note.noteData.speed);
-
-        if (type == NoteType.Mul)
-        {
-            if (result is not 3 and not 4)
-                return;
-            GameStatsManager.UpdateCurrentStats();
-            GameStatsManager.Mashing(note);
-        }
-        else
-        {
-            GameStatsManager.UpdateCurrentStats();
-            GameStatsManager.CheckMashing();
-            TextObjManager.UpdateAllText();
-        }
+        GameStatsManager.UpdateCurrentStats();
+        TextObjManager.UpdateAllText();
     }
 }
 

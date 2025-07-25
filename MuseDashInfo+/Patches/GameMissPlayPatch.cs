@@ -17,7 +17,7 @@ internal class GameMissPlayMissCubePatch
             var isDouble = note.isDouble;
 
             if (Configs.Advanced.OutputNoteRecordsToDesktop)
-                NoteRecordManager.AddRecord(note, "MissCube", $"result:{result}");
+                NoteRecordManager.AddRecord(note, "MissCube", $"missCube:{result}");
 
             if (result is 0 or 1)
             {
@@ -41,7 +41,6 @@ internal class GameMissPlayMissCubePatch
                         break;
 
                     case NoteType.Mul:
-                        GameStatsManager.CountNote(oid, CountNoteAction.MissMul);
                         break;
 
                     case NoteType.Monster:
@@ -53,12 +52,14 @@ internal class GameMissPlayMissCubePatch
                 }
             }
 
+            if (type == NoteType.Mul)
+                GameStatsManager.CountMul(oid, result, (float)note.configData.length);
+
             if (!type.IsRegularNote() || type == NoteType.Block || note.isLongPressing)
                 return;
 
             GameStatsManager.UpdateCurrentSpeed(note.isAir, note.noteData.speed);
             GameStatsManager.UpdateCurrentStats();
-            GameStatsManager.CheckMashing();
             TextObjManager.UpdateAllText();
         }
         catch (Exception e)

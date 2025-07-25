@@ -97,10 +97,10 @@ public class MDIPMod : MelonMod
 
         if (!GameStatsManager.IsInGame || _lastUpdateSecond == DateTime.Now.Second)
             return;
+
         _lastUpdateSecond = DateTime.Now.Second;
 
         GameStatsManager.UpdateCurrentStats();
-        GameStatsManager.CheckMashing();
         TextObjManager.UpdateAllText();
     }
 }
