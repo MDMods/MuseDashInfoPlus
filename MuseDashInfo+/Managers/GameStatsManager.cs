@@ -333,7 +333,6 @@ public static class GameStatsManager
             case CountNoteAction.MissMul:
                 MelonCoroutines.Start(CoroutineUtils.Run(() =>
                 {
-                    Melon<MDIPMod>.Logger.Warning($"{oid} => Done!");
                     if (!PlayedNoteIds.Contains(oid) && MissedNoteIds.Add(oid))
                         _miss.Mul++;
                 }, time));
@@ -347,7 +346,6 @@ public static class GameStatsManager
 
     public static void CountMul(short oid, int result, float time)
     {
-        Melon<MDIPMod>.Logger.Warning($"{oid} => {time}f");
         switch (result)
         {
             case 0 or 1:
