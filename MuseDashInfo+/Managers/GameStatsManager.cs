@@ -331,8 +331,11 @@ public static class GameStatsManager
                 break;
 
             case CountNoteAction.MissMul:
+                var curTick = _stage.realTimeTick;
                 MelonCoroutines.Start(CoroutineUtils.Run(() =>
                 {
+                    if (_stage.realTimeTick <= curTick)
+                        return;
                     if (!PlayedNoteIds.Contains(oid) && MissedNoteIds.Add(oid))
                         _miss.Mul++;
                 }, time));
