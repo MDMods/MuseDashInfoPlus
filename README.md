@@ -80,7 +80,7 @@ Note: Rich text are supported for some configuration entries. For example:
 ## Installation
 
 1. Install MelonLoader into Muse Dash based on the dependency listed below
-2. Download the [Latest Release ](https://github.com/KARPED1EM/MuseDashInfoPlus/releases)and place `Info+.dll` in the `..\MuseDash\Mods\` directory
+2. Download the [Latest Release ](https://github.com/KARPED1EM/MuseDashInfoPlus/releases)and place `Info+.dll` in the `.\MuseDash\Mods\` directory
 3. Launch the game and enjoy
 
 ## Dependencies
