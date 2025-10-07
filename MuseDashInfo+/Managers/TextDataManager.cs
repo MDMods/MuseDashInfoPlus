@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Globalization;
+using System.Text;
 using static MDIP.Managers.GameStatsManager;
 
 namespace MDIP.Managers;
@@ -53,6 +54,8 @@ public static class TextDataManager
         UpdateCachedValue("{skySpeed}", CurrentSkySpeed.ToString());
         UpdateCachedValue("{groundSpeed}", CurrentGroundSpeed.ToString());
         UpdateCachedValue("{rank}", FormatRank());
+
+        UpdateCachedValue("{time}", Helper.SafeFormatDateTime(DateTime.Now, Configs.Main.TimeDisplayFormat, CultureInfo.CurrentCulture.Name));
 
         if (History.HasStats)
         {
