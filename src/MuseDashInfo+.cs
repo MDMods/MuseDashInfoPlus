@@ -98,7 +98,7 @@ public class MDIPMod : MelonMod
             case "Loading" when !Reset:
                 Reset = true;
                 NoteRecordManager.Reset();
-                PnlBattleGameStartPatch.Reset();
+                BattleUIManager.Reset();
                 GameStatsManager.Reset();
                 TextObjManager.Reset();
                 GameUtils.Reset();
@@ -109,7 +109,7 @@ public class MDIPMod : MelonMod
 
     public override void OnFixedUpdate()
     {
-        PnlBattleGameStartPatch.CheckAndZoom();
+        BattleUIManager.CheckAndZoom();
     }
 
     public override void OnLateUpdate()
