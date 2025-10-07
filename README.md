@@ -74,13 +74,13 @@ In text configuration files, you'll find entries like `text: '{overview} / {stat
 - `{skySpeed}`: Current sky speed
 - `{groundSpeed}`: Current ground speed
 
-Note: Rich text are supported for some configuration entries. For example:
+Note: Rich text is supported for some configuration entries. For example:
 `<size=40><color=#e1bb8a>{total}</color></size>`. If you're unfamiliar with rich text, please google it. For line breaks, use `\n`.
 
 ## Installation
 
 1. Install MelonLoader into Muse Dash based on the dependency listed below
-2. Download the [Latest Release ](https://github.com/KARPED1EM/MuseDashInfoPlus/releases)and place `Info+.dll` in the `.\MuseDash\Mods\` directory
+2. Download the [Latest Release](https://github.com/KARPED1EM/MuseDashInfoPlus/releases) and place `Info+.dll` in the `.\MuseDash\Mods\` directory
 3. Launch the game and enjoy
 
 ## Dependencies
