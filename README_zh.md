@@ -1,6 +1,6 @@
 # Info+
 
-[English](README.md) | 中文
+[English](README.md) | 中文 | [日本語](README_ja.md) | [한국어](README_ko.md) | [Français](README_fr.md) | [Deutsch](README_de.md) | [Español](README_es.md) | [Русский](README_ru.md) | [Português](README_pt.md)
 
 ## 概述
 
