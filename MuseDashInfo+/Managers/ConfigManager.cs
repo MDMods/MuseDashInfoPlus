@@ -46,12 +46,7 @@ public static class ConfigManager
     }
 
     public static T GetConfig<T>(string moduleName) where T : ConfigBase, new()
-    {
-        if (!Modules.TryGetValue(moduleName, out var module))
-            throw new($"Module {moduleName} not found");
-
-        return module.GetConfig<T>();
-    }
+        => !Modules.TryGetValue(moduleName, out var module) ? throw new($"Module {moduleName} not found") : module.GetConfig<T>();
 
     public static void SaveConfig<T>(string moduleName, T config) where T : ConfigBase
     {
