@@ -1,8 +1,8 @@
 # Info+
 
-[English](README.md) | [简体中文](README_zh.md) | [繁體中文](README_zh-TW.md) | [日本語](README_ja.md) | [한국어](README_ko.md) | [Français](README_fr.md) | [Deutsch](README_de.md) | Español | [Русский](README_ru.md) | [Português](README_pt.md)
+[English](README.md) | [简体中文](README_zh-CN.md) | [繁體中文](README_zh-TW.md) | [日本語](README_ja.md) | [한국어](README_ko.md) | [Français](README_fr.md) | [Deutsch](README_de.md) | Español | [Русский](README_ru.md) | [Português](README_pt.md)
 
-> **Atención:** Este README fue generado por IA y puede contener inexactitudes o ambigüedades. Para información precisa, consulte los README oficialmente mantenidos en [chino](README_zh.md) o [inglés](README.md).
+> **Atención:** Este README fue generado por IA y puede contener inexactitudes o ambigüedades. Para información precisa, consulte los README oficialmente mantenidos en [chino](README_zh-CN.md) o [inglés](README.md).
 
 ## Descripción general
 
