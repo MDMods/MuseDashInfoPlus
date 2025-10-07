@@ -1,16 +1,24 @@
+using MDIP.Services;
+
 namespace MDIP;
 
-/// <summary>
-///     MDIP (MuseDashInfoPlus) main mod class
-/// </summary>
 public class MDIPMod : MelonMod
 {
     private static int _lastUpdateSecond = -1;
+
+    private IConfigService _configService;
+    private IUpdateService _updateService;
     public static bool Reset { get; set; } = true;
     public static bool IsSongDescLoaded { get; private set; }
 
     public override void OnInitializeMelon()
     {
+        var provider = BuildServiceProvider();
+        ModServices.Initialize(provider);
+
+        _configService = ModServices.GetRequiredService<IConfigService>();
+        _updateService = ModServices.GetRequiredService<IUpdateService>();
+
         CheckForUpdatesAsync().ContinueWith(task =>
         {
             if (task.IsFaulted)
@@ -18,32 +26,47 @@ public class MDIPMod : MelonMod
         });
     }
 
-    private async static Task CheckForUpdatesAsync()
+    private static IServiceProvider BuildServiceProvider()
     {
-        var updateManager = new UpdateManager();
-        var updateInfo = await UpdateManager.GetUpdateInfo();
+        var services = new ServiceCollection();
+        services.AddSingleton(Melon<MDIPMod>.Logger);
+        services.AddSingleton<IConfigService>(provider => new ConfigService(provider.GetRequiredService<MelonLogger.Instance>()));
+        services.AddSingleton<IUpdateService>(provider => new UpdateService(provider.GetRequiredService<MelonLogger.Instance>()));
+        services.AddSingleton<INoteRecordService>(provider => new NoteRecordService(provider.GetRequiredService<MelonLogger.Instance>()));
+        services.AddSingleton<ITextDataService, TextDataService>();
+        services.AddSingleton<ITextObjectService>(provider => new TextObjectService(provider.GetRequiredService<ITextDataService>()));
+        services.AddSingleton<IStatsSaverService>(provider => new StatsSaverService(provider.GetRequiredService<MelonLogger.Instance>()));
+        services.AddSingleton<IFontService, FontService>();
+        return services.BuildServiceProvider();
+    }
+
+    private async Task CheckForUpdatesAsync()
+    {
+        var updateInfo = await _updateService.GetUpdateInfoAsync();
         if (updateInfo == null)
         {
             Melon<MDIPMod>.Logger.Error("Failed to fetch update info.");
             return;
         }
 
-        if (!UpdateManager.CheckUpdate(updateInfo))
+        if (!_updateService.IsUpdateAvailable(updateInfo))
         {
             Melon<MDIPMod>.Logger.Msg("Already up to date.");
             return;
         }
 
-        var success = await UpdateManager.Update(updateInfo);
-        if (success) Melon<MDIPMod>.Logger.Warning("Auto update successful!");
-        else Melon<MDIPMod>.Logger.Error("Auto update failed!");
+        var success = await _updateService.ApplyUpdateAsync(updateInfo);
+        if (success)
+            Melon<MDIPMod>.Logger.Warning("Auto update successful!");
+        else
+            Melon<MDIPMod>.Logger.Error("Auto update failed!");
     }
 
     public override void OnLateInitializeMelon()
     {
         IsSongDescLoaded = RegisteredMelons.Any(mod => mod?.MelonAssembly?.Assembly?.FullName?.TrimStart().StartsWith("SongDesc") ?? false);
 
-        ConfigManager.Init();
+        _configService.Init();
 
         RegisterAndSaveConfig<MainConfigs>(nameof(MainConfigs));
         RegisterAndSaveConfig<AdvancedConfigs>(nameof(AdvancedConfigs));
@@ -54,14 +77,14 @@ public class MDIPMod : MelonMod
         RegisterAndSaveConfig<TextFieldUpperLeftConfigs>(nameof(TextFieldUpperLeftConfigs));
         RegisterAndSaveConfig<TextFieldUpperRightConfigs>(nameof(TextFieldUpperRightConfigs));
 
-        ConfigManager.ActivateWatcher();
+        _configService.ActivateWatcher();
         return;
 
-        static void RegisterAndSaveConfig<T>(string moduleName) where T : ConfigBase, new()
+        void RegisterAndSaveConfig<T>(string moduleName) where T : ConfigBase, new()
         {
             var fileName = $"{moduleName}.yml";
-            ConfigManager.RegisterModule(moduleName, fileName);
-            ConfigManager.SaveConfig(moduleName, ConfigManager.GetConfig<T>(moduleName));
+            _configService.RegisterModule(moduleName, fileName);
+            _configService.SaveConfig(moduleName, _configService.GetConfig<T>(moduleName));
         }
     }
 
@@ -86,15 +109,11 @@ public class MDIPMod : MelonMod
 
     public override void OnFixedUpdate()
     {
-        base.OnFixedUpdate();
-
         PnlBattleGameStartPatch.CheckAndZoom();
     }
 
     public override void OnLateUpdate()
     {
-        base.OnLateUpdate();
-
         if (!GameStatsManager.IsInGame || _lastUpdateSecond == DateTime.Now.Second)
             return;
 

@@ -78,7 +78,7 @@
             <HintPath>$(MelonNET6)\MelonLoader.dll</HintPath>
         </Reference>
         <Reference Include="Tomlet">
-            <HintPath>$(MelonNet6)\Tomlet.dll</HintPath>
+            <HintPath>$(MelonNET6)\Tomlet.dll</HintPath>
         </Reference>
         <Reference Include="Unity.Addressables">
             <HintPath>$(MelonAssemblies)\Unity.Addressables.dll</HintPath>
@@ -117,7 +117,7 @@
 
     <Target Name="Copy" AfterTargets="Build" Condition="'$(MD_DIRECTORY)' != ''">
         <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(MD_DIRECTORY)/Mods/" Condition="'$(Configuration)' == 'Debug'"/>
-        <Message Text="Copied DLL -&gt; $(MD_DIRECTORY)\Mods\$(AssemblyName).dll" Importance="High"/>
+        <Message Text="Copied DLL -> $(MD_DIRECTORY)\Mods\$(AssemblyName).dll" Importance="High"/>
     </Target>
 
 </Project>

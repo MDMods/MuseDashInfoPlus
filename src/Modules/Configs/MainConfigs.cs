@@ -6,7 +6,7 @@ public class MainConfigs : ConfigBase
 {
     [ConfigCommentZh("时间显示格式")]
     [ConfigCommentEn("Time display format")]
-    public string TimeDisplayFormat { get; set; } = "h:mm:ss a";
+    public string TimeDisplayFormat { get; set; } = "h:mm:ss tt";
 
     [ConfigCommentZh("准确率显示模式\n1：从100%倒减\n2：实时计算")]
     [ConfigCommentEn("Accuracy display mode\n1: Subtract from 100%\n2: Calculate in real-time")]

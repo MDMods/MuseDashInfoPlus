@@ -14,18 +14,7 @@ public static class Configs
     public static TextFieldUpperLeftConfigs TextFieldUpperLeft => ConfigManager.GetConfig<TextFieldUpperLeftConfigs>(nameof(TextFieldUpperLeftConfigs));
     public static TextFieldUpperRightConfigs TextFieldUpperRight => ConfigManager.GetConfig<TextFieldUpperRightConfigs>(nameof(TextFieldUpperRightConfigs));
 
-    public static string GetConfigPath(string fileName)
-    {
-        var configFolder = Path.GetFullPath(Path.Combine(Application.dataPath, "..", "UserData", "Info+"));
-        if (!Directory.Exists(configFolder))
-        {
-            Directory.CreateDirectory(configFolder);
-            Melon<MDIPMod>.Logger.Msg("Created config directory");
-        }
-
-        var fullPath = Path.GetFullPath(Path.Combine(configFolder, fileName));
-        return fullPath;
-    }
+    public static string GetConfigPath(string fileName) => ConfigManager.GetConfigPath(fileName);
 
     public static string GenerateComments(string chineseComment, string englishComment)
     {

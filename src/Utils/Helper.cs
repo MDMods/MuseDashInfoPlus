@@ -8,7 +8,7 @@ public static class Helper
 
     public static string SafeFormatDateTime(DateTime time, string format, string culture)
     {
-        const string defaultFormat = "h:mm:ss a";
+        const string defaultFormat = "h:mm:ss tt";
         try
         {
             if (string.IsNullOrWhiteSpace(format))

@@ -8,3 +8,6 @@ global using MDIP.Utils;
 global using MelonLoader;
 global using UnityEngine;
 global using Il2Cpp;
+global using MDIP.Core;
+global using MDIP.Core.Contracts;
+global using MDIP.Core.DependencyInjection;
