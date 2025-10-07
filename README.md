@@ -39,9 +39,9 @@ All configuration files are **automatically generated upon first launch**. After
 - `MainConfigs.yml`: Primary configuration file
 - `TextFieldLowerLeftConfigs.yml`: Text configuration for lower-left screen area
 - `TextFieldLowerRightConfigs.yml`: Text configuration for lower-right screen area
-- `TextFieldScoreBelowConfigs.yml`: Text configuration for area below the "SCORE" label (position remains fixed relative to label)
+- `TextFieldScoreBelowConfigs.yml`: Text configuration for area right of the "SCORE" label (position remains fixed relative to label)
 - `TextFieldScoreRightConfigs.yml`: Text configuration for area right of the score display (position remains fixed relative to score)
-- `TextFieldUpperLeftConfigs.yml`: Text configuration for upper-left screen area
+- `TextFieldUpperLeftConfigs.yml`: Text configuration for area below the "SCORE" label (position remains fixed relative to label)
 - `TextFieldUpperRightConfigs.yml`: Text configuration for upper-right screen area
 - `AdvancedConfigs.yml`: For advanced users only - do not modify unless you understand the parameters
 
