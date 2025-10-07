@@ -24,7 +24,7 @@ public class UpdateManager
         }
     }
 
-    public bool CheckUpdate(VersionInfo updateInfo)
+    public static bool CheckUpdate(VersionInfo updateInfo)
     {
         if (updateInfo == null) return false;
 
@@ -41,7 +41,7 @@ public class UpdateManager
         }
     }
 
-    public async Task<bool> Update(VersionInfo updateInfo)
+    public async static Task<bool> Update(VersionInfo updateInfo)
     {
         if (updateInfo == null) return false;
 

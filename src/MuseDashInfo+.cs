@@ -28,13 +28,13 @@ public class MDIPMod : MelonMod
             return;
         }
 
-        if (!updateManager.CheckUpdate(updateInfo))
+        if (!UpdateManager.CheckUpdate(updateInfo))
         {
             Melon<MDIPMod>.Logger.Msg("Already up to date.");
             return;
         }
 
-        var success = await updateManager.Update(updateInfo);
+        var success = await UpdateManager.Update(updateInfo);
         if (success) Melon<MDIPMod>.Logger.Warning("Auto update successful!");
         else Melon<MDIPMod>.Logger.Error("Auto update failed!");
     }
