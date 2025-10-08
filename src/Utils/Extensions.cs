@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using MDIP.Domain.Enums;
 
 namespace MDIP.Utils;
 
@@ -28,7 +29,7 @@ public static class Extensions
                 if (!breakSymbols.Contains(currentString[i]))
                     continue;
 
-                currentString = currentString.Substring(0, i).TrimEnd();
+                currentString = currentString[..i].TrimEnd();
                 totalWidth = CalculateWidth(currentString);
                 foundBreakPoint = true;
                 break;
@@ -61,9 +62,8 @@ public static class Extensions
 
     public static string GetConsistentHash(this string input)
     {
-        using var sha = SHA256.Create();
         var bytes = Encoding.UTF8.GetBytes(input);
-        var hash = sha.ComputeHash(bytes);
+        var hash = SHA256.HashData(bytes);
 
         return Convert.ToBase64String(hash);
     }

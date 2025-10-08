@@ -1,5 +1,8 @@
 ﻿using Il2CppAssets.Scripts.Database;
 using Il2CppFormulaBase;
+using MDIP.Application.Contracts;
+using MDIP.Domain.Configs;
+using MDIP.Domain.Enums;
 
 namespace MDIP.Utils;
 
@@ -18,15 +21,18 @@ public static class GameUtils
                                        + StageBattleComponent.instance.GetMusicData().Count
                                        + MusicDiff).GetConsistentHash();
 
-    public static string MusicDiffStr => (MusicDiff switch
+    public static string GetDifficultyLabel(IGameStatsService statsService, MainConfigs config)
     {
-        1 => Configs.Main.TextDiff1,
-        2 => Configs.Main.TextDiff2,
-        3 => Configs.Main.TextDiff3,
-        4 => Configs.Main.TextDiff4,
-        5 => Configs.Main.TextDiff5,
-        _ => "Unknown"
-    }).ToUpper();
+        return (MusicDiff switch
+        {
+            1 => config.TextDiff1,
+            2 => config.TextDiff2,
+            3 => config.TextDiff3,
+            4 => config.TextDiff4,
+            5 => config.TextDiff5,
+            _ => "Unknown"
+        }).ToUpperInvariant();
+    }
 
     public static void Reset()
         => BattleUIType = BattleUIItem.Unknown;

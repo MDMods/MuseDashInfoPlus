@@ -1,4 +1,6 @@
-﻿namespace MDIP.Utils;
+﻿using MDIP.Domain.Enums;
+
+namespace MDIP.Utils;
 
 public static class Constants
 {
@@ -37,7 +39,7 @@ public static class Constants
     public const float SCORE_ZOOM_OUT_Y = 670f;
     public const float SCORE_ZOOM_IN_Y = 530f;
 
-    public static string STATS_DATA_FILE = Path.GetFullPath(Path.Combine(Application.dataPath, "..", "MuseDash_Data", "info+_song_stats.json"));
+    public static string STATS_DATA_FILE = Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath, "..", "MuseDash_Data", "info+_song_stats.json"));
 
     public static Vector3 POS_LOWER_LEFT_TEXT { get; private set; } = new(-866, -460, 0);
     public static Vector3 POS_LOWER_RIGHT_TEXT { get; private set; } = new(850, -460, 0);

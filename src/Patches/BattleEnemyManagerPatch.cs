@@ -1,12 +1,20 @@
 ﻿using Il2CppAssets.Scripts.GameCore.HostComponent;
+using JetBrains.Annotations;
+using MDIP.Application.Contracts;
 
 namespace MDIP.Patches;
 
 [HarmonyPatch(typeof(BattleEnemyManager), nameof(BattleEnemyManager.SetPlayResult))]
-internal class BattleEnemyManagerSetPlayResultPatch
+internal static class BattleEnemyManagerSetPlayResultPatch
 {
     private static void Postfix(int idx, byte result, bool isMulStart = false, bool isMulEnd = false, bool isLeft = false)
     {
-        NoteEventManager.HandleSetPlayResult(idx, result, isMulStart, isMulEnd, isLeft);
+        NoteEventService.HandleSetPlayResult(idx, result, isMulStart, isMulEnd, isLeft);
     }
+
+    #region Injections
+
+    [UsedImplicitly] public static INoteEventService NoteEventService { get; set; }
+
+    #endregion
 }

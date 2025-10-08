@@ -1,0 +1,84 @@
+using JetBrains.Annotations;
+using MDIP.Application.Contracts;
+using MDIP.Utils;
+using Object = UnityEngine.Object;
+
+namespace MDIP.Application.Services.Text;
+
+using Object = Object;
+
+public class TextObjectService : ITextObjectService
+{
+    private long _lastUpdateTick;
+    public GameObject TextLowerLeft { get; set; }
+    public GameObject TextLowerRight { get; set; }
+    public GameObject TextScoreBelow { get; set; }
+    public GameObject TextScoreRight { get; set; }
+    public GameObject TextUpperLeft { get; set; }
+    public GameObject TextUpperRight { get; set; }
+
+    public void UpdateAllText()
+    {
+        var now = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        if (now - _lastUpdateTick < ConfigAccessor.Advanced.DataRefreshIntervalLimit)
+            return;
+
+        _lastUpdateTick = now;
+        TextDataService.UpdateVariables();
+
+        if (TextLowerLeft != null && ConfigAccessor.TextFieldLowerLeft.Enabled)
+            SetText(TextLowerLeft, ConfigAccessor.TextFieldLowerLeft.Text?.UnEscapeReturn());
+
+        if (TextLowerRight != null && ConfigAccessor.TextFieldLowerRight.Enabled)
+            SetText(TextLowerRight, ConfigAccessor.TextFieldLowerRight.Text?.UnEscapeReturn());
+
+        if (TextScoreBelow != null && ConfigAccessor.TextFieldScoreBelow.Enabled)
+            SetText(TextScoreBelow, ConfigAccessor.TextFieldScoreBelow.Text?.UnEscapeReturn());
+
+        if (TextScoreRight != null && ConfigAccessor.TextFieldScoreRight.Enabled)
+            SetText(TextScoreRight, ConfigAccessor.TextFieldScoreRight.Text?.UnEscapeReturn());
+
+        if (TextUpperLeft != null && ConfigAccessor.TextFieldUpperLeft.Enabled)
+            SetText(TextUpperLeft, ConfigAccessor.TextFieldUpperLeft.Text?.UnEscapeReturn());
+
+        if (TextUpperRight != null && ConfigAccessor.TextFieldUpperRight.Enabled)
+            SetText(TextUpperRight, ConfigAccessor.TextFieldUpperRight.Text?.UnEscapeReturn());
+    }
+
+    public void Reset()
+    {
+        TextLowerLeft = DestroyAndClear(TextLowerLeft);
+        TextLowerRight = DestroyAndClear(TextLowerRight);
+        TextScoreBelow = DestroyAndClear(TextScoreBelow);
+        TextScoreRight = DestroyAndClear(TextScoreRight);
+        TextUpperLeft = DestroyAndClear(TextUpperLeft);
+        TextUpperRight = DestroyAndClear(TextUpperRight);
+        _lastUpdateTick = 0;
+    }
+
+    private void SetText(GameObject obj, string text)
+    {
+        if (obj == null)
+            return;
+
+        var textComponent = obj.GetComponent<UnityEngine.UI.Text>();
+        if (textComponent == null)
+            return;
+
+        textComponent.text = TextDataService.GetFormattedText(text ?? string.Empty);
+    }
+
+    private static GameObject DestroyAndClear(GameObject obj)
+    {
+        if (obj != null)
+            Object.Destroy(obj);
+        return null;
+    }
+
+    #region Injections
+
+    [UsedImplicitly] public required IConfigAccessor ConfigAccessor { get; init; }
+    [UsedImplicitly] public required ITextDataService TextDataService { get; init; }
+
+    #endregion
+}
