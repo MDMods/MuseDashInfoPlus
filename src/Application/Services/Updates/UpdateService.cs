@@ -67,8 +67,8 @@ public class UpdateService : IUpdateService
     private UpdatePaths PreparePaths()
     {
         var backupPath = _modPath + ".backup";
-        var tempPath = Path.Combine(_modFolder, "Info+.temp");
-        var newPath = Path.Combine(_modFolder, "Info+.dll");
+        var tempPath = Path.Combine(_modFolder, ModBuildInfo.Name + ".temp");
+        var newPath = Path.Combine(_modFolder, ModBuildInfo.Name + ".dll");
         return new(backupPath, tempPath, newPath);
     }
 
