@@ -6,7 +6,7 @@ namespace MDIP.Utils;
 
 public static class Extensions
 {
-    public static bool IsRegularNote(this NoteType noteType) => Enum.IsDefined(typeof(NoteType), (uint)noteType);
+    public static bool IsRegularNote(this NoteType noteType) => Enum.IsDefined(typeof(NoteType), noteType);
 
     public static Color ToColor(this string color)
         => ColorUtility.TryParseHtmlString(color, out var result) ? result : Color.white;
