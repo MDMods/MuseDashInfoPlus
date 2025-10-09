@@ -18,6 +18,7 @@ namespace MDIP;
 public class MDIPMod : MelonMod
 {
     private static int _lastUpdateSecond = -1;
+    private readonly HashSet<string> _missingServicesLogged = new();
     public static bool Reset { get; set; } = true;
     public static bool IsSongDescLoaded { get; private set; }
 
@@ -43,6 +44,12 @@ public class MDIPMod : MelonMod
     {
         IsSongDescLoaded = RegisteredMelons.Any(mod => mod?.MelonAssembly?.Assembly?.FullName?.TrimStart().StartsWith("SongDesc") ?? false);
 
+        if (ConfigService == null)
+        {
+            LogMissingServiceOnce(nameof(ConfigService));
+            return;
+        }
+
         ConfigService.Init();
         foreach (var (type, name) in new (Type type, string name)[]
                  {
@@ -63,18 +70,30 @@ public class MDIPMod : MelonMod
 
     private void RegisterAndSaveConfig(Type configType, string moduleName)
     {
+        if (ConfigService == null)
+        {
+            LogMissingServiceOnce(nameof(ConfigService));
+            return;
+        }
+
         var fileName = $"{moduleName}.yml";
         ConfigService.RegisterModule(moduleName, fileName);
         var method = typeof(IConfigService).GetMethod(nameof(ConfigService.GetConfig))!
             .MakeGenericMethod(configType);
-        var config = method.Invoke(ConfigService, [moduleName]);
+        var config = method.Invoke(ConfigService, new object[] { moduleName });
         typeof(IConfigService).GetMethod(nameof(ConfigService.SaveConfig))!
             .MakeGenericMethod(configType)
-            .Invoke(ConfigService, [moduleName, config]);
+            .Invoke(ConfigService, new[] { moduleName, config });
     }
 
     public override void OnSceneWasLoaded(int buildIndex, string sceneName)
     {
+        if (GameStatsService == null)
+        {
+            LogMissingServiceOnce(nameof(GameStatsService));
+            return;
+        }
+
         switch (sceneName)
         {
             case "UISystem_PC":
@@ -82,25 +101,44 @@ public class MDIPMod : MelonMod
                 break;
             case "Loading" when !Reset:
                 Reset = true;
-                NoteRecordService.Reset();
-                BattleUIService.Reset();
+                NoteRecordService?.Reset();
+                BattleUIService?.Reset();
                 GameStatsService.Reset();
-                TextObjectService.Reset();
+                TextObjectService?.Reset();
                 GameUtils.Reset();
-                FontService.UnloadFonts();
+                FontService?.UnloadFonts();
                 break;
         }
     }
 
     public override void OnFixedUpdate()
     {
+        if (BattleUIService == null)
+        {
+            LogMissingServiceOnce(nameof(BattleUIService));
+            return;
+        }
+
         BattleUIService.CheckAndZoom();
     }
 
     public override void OnLateUpdate()
     {
+        if (GameStatsService == null)
+        {
+            LogMissingServiceOnce(nameof(GameStatsService));
+            return;
+        }
+
         if (!GameStatsService.IsInGame || _lastUpdateSecond == DateTime.Now.Second)
             return;
+
+        if (TextObjectService == null)
+        {
+            LogMissingServiceOnce(nameof(TextObjectService));
+            return;
+        }
+
         _lastUpdateSecond = DateTime.Now.Second;
         GameStatsService.UpdateCurrentStats();
         TextObjectService.UpdateAllText();
@@ -108,18 +146,24 @@ public class MDIPMod : MelonMod
 
     private async Task CheckForUpdatesAsync()
     {
+        if (UpdateService == null)
+        {
+            LogMissingServiceOnce(nameof(UpdateService));
+            return;
+        }
+
         try
         {
             var updateInfo = await UpdateService.GetUpdateInfoAsync();
             if (updateInfo == null)
             {
-                Logger.Error("Failed to fetch update info.");
+                LogError("Failed to fetch update info.");
                 return;
             }
 
             if (!UpdateService.IsUpdateAvailable(updateInfo))
             {
-                Logger.Info("Already up to date.");
+                LogInfo("Already up to date.");
                 return;
             }
 
@@ -127,17 +171,47 @@ public class MDIPMod : MelonMod
         }
         catch (Exception ex)
         {
-            Logger.Error($"Update check failed: {ex}");
+            LogError($"Update check failed: {ex}");
         }
     }
 
     private async Task HandleUpdateAsync(VersionInfo updateInfo)
     {
+        if (UpdateService == null)
+        {
+            LogMissingServiceOnce(nameof(UpdateService));
+            return;
+        }
+
         var success = await UpdateService.ApplyUpdateAsync(updateInfo);
         if (success)
-            Logger.Warning("Auto update successful!");
+            LogWarning("Auto update successful!");
         else
-            Logger.Error("Auto update failed!");
+            LogError("Auto update failed!");
+    }
+
+    private void LogInfo(string message)
+    {
+        if (Logger != null) Logger.Info(message);
+        else Melon<MDIPMod>.Logger.Msg($"[Info+] {message}");
+    }
+
+    private void LogWarning(string message)
+    {
+        if (Logger != null) Logger.Warning(message);
+        else Melon<MDIPMod>.Logger.Warning($"[Info+] {message}");
+    }
+
+    private void LogError(string message)
+    {
+        if (Logger != null) Logger.Error(message);
+        else Melon<MDIPMod>.Logger.Error($"[Info+] {message}");
+    }
+
+    private void LogMissingServiceOnce(string serviceName)
+    {
+        if (_missingServicesLogged.Add(serviceName))
+            Melon<MDIPMod>.Logger.Warning($"[Info+] Service '{serviceName}' is not available yet; skipping related operations.");
     }
 
     [UsedImplicitly] public IConfigService ConfigService { get; set; }

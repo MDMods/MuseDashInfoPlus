@@ -1,6 +1,4 @@
-﻿using System;
-using Microsoft.Extensions.DependencyInjection;
-using MDIP.Application.Services.Assets;
+﻿using MDIP.Application.Services.Assets;
 using MDIP.Application.Services.Configuration;
 using MDIP.Application.Services.Diagnostic;
 using MDIP.Application.Services.Notes;
@@ -13,32 +11,31 @@ namespace MDIP.Application.DependencyInjection;
 
 public static class ModServiceConfigurator
 {
-    public static IServiceProvider Provider { get; private set; }
+    public static SimpleServiceProvider Provider { get; private set; }
 
     public static void Build()
     {
         if (Provider != null)
             return;
 
-        var services = new ServiceCollection();
+        var provider = new SimpleServiceProvider();
 
-        services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
+        provider.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
+        provider.AddSingletonWithPropertyInjection<IConfigService, ConfigService>();
+        provider.AddSingletonWithPropertyInjection<IConfigAccessor, ConfigAccessor>();
+        provider.AddSingletonWithPropertyInjection<IFontService, FontService>();
+        provider.AddSingletonWithPropertyInjection<ITextDataService, TextDataService>();
+        provider.AddSingletonWithPropertyInjection<ITextObjectService, TextObjectService>();
+        provider.AddSingletonWithPropertyInjection<IStatsSaverService, StatsSaverService>();
+        provider.AddSingletonWithPropertyInjection<INoteRecordService, NoteRecordService>();
+        provider.AddSingletonWithPropertyInjection<IUpdateService, UpdateService>();
+        provider.AddSingletonWithPropertyInjection<IGameStatsService, GameStatsService>();
+        provider.AddSingletonWithPropertyInjection<IBattleUIService, BattleUIService>();
+        provider.AddSingletonWithPropertyInjection<INoteEventService, NoteEventService>();
+        provider.AddSingletonWithPropertyInjection<IPreparationScreenService, PreparationScreenService>();
+        provider.AddSingletonWithPropertyInjection<IVictoryScreenService, VictoryScreenService>();
 
-        services.AddSingletonWithPropertyInjection<IConfigService, ConfigService>();
-        services.AddSingletonWithPropertyInjection<IConfigAccessor, ConfigAccessor>();
-        services.AddSingletonWithPropertyInjection<IFontService, FontService>();
-        services.AddSingletonWithPropertyInjection<ITextDataService, TextDataService>();
-        services.AddSingletonWithPropertyInjection<ITextObjectService, TextObjectService>();
-        services.AddSingletonWithPropertyInjection<IStatsSaverService, StatsSaverService>();
-        services.AddSingletonWithPropertyInjection<INoteRecordService, NoteRecordService>();
-        services.AddSingletonWithPropertyInjection<IUpdateService, UpdateService>();
-        services.AddSingletonWithPropertyInjection<IGameStatsService, GameStatsService>();
-        services.AddSingletonWithPropertyInjection<IBattleUIService, BattleUIService>();
-        services.AddSingletonWithPropertyInjection<INoteEventService, NoteEventService>();
-        services.AddSingletonWithPropertyInjection<IPreparationScreenService, PreparationScreenService>();
-        services.AddSingletonWithPropertyInjection<IVictoryScreenService, VictoryScreenService>();
-
-        Provider = services.BuildServiceProvider();
+        Provider = provider;
     }
 
     public static void Inject(object instance)

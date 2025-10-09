@@ -5,7 +5,7 @@ namespace MDIP.Utils;
 public static class Constants
 {
     // ReSharper disable InconsistentNaming
-    public const string MDIP_UPDATE_INFO_URL = "";
+    public const string MDIP_UPDATE_INFO_URL = "https://mdip.leever.cn/version.json";
 
     public const string TEXT_ALL_PERFECT = "AP";
     public const string TEXT_TRUE_PERFECT = "TP";

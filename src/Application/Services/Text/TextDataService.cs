@@ -1,7 +1,6 @@
 using System.Globalization;
 using System.Text;
 using JetBrains.Annotations;
-using MDIP.Application.DependencyInjection;
 using MDIP.Application.Services.Configuration;
 using MDIP.Application.Services.Stats;
 using MDIP.Domain.Configs;
@@ -9,7 +8,7 @@ using MDIP.Utils;
 
 namespace MDIP.Application.Services.Text;
 
-public class TextDataService : ITextDataService, IPostInjectable
+public class TextDataService : ITextDataService
 {
     private static readonly char[] TrimChars = ['|', '\\', '-', '/', '~', '_', '=', '+'];
 
@@ -17,25 +16,18 @@ public class TextDataService : ITextDataService, IPostInjectable
     private readonly Dictionary<string, string> _formattedTexts = new();
     private bool _callbacksRegistered;
 
-    public void PostInject()
+    public void EnsureCallbacksRegistered()
     {
         if (_callbacksRegistered)
             return;
 
-        _callbacksRegistered = true;
-
-        ConfigService.RegisterUpdateCallback<MainConfigs>(nameof(MainConfigs), _ => ClearCaches());
-        ConfigService.RegisterUpdateCallback<AdvancedConfigs>(nameof(AdvancedConfigs), _ => ClearCaches());
-        ConfigService.RegisterUpdateCallback<TextFieldLowerLeftConfigs>(nameof(TextFieldLowerLeftConfigs), _ => ClearCaches());
-        ConfigService.RegisterUpdateCallback<TextFieldLowerRightConfigs>(nameof(TextFieldLowerRightConfigs), _ => ClearCaches());
-        ConfigService.RegisterUpdateCallback<TextFieldScoreBelowConfigs>(nameof(TextFieldScoreBelowConfigs), _ => ClearCaches());
-        ConfigService.RegisterUpdateCallback<TextFieldScoreRightConfigs>(nameof(TextFieldScoreRightConfigs), _ => ClearCaches());
-        ConfigService.RegisterUpdateCallback<TextFieldUpperLeftConfigs>(nameof(TextFieldUpperLeftConfigs), _ => ClearCaches());
-        ConfigService.RegisterUpdateCallback<TextFieldUpperRightConfigs>(nameof(TextFieldUpperRightConfigs), _ => ClearCaches());
+        TryRegisterCallbacks();
     }
 
     public void UpdateConstants()
     {
+        EnsureCallbacksRegistered();
+
         var main = ConfigAccessor.Main;
         UpdateCachedValue("{pbScore}", GameStatsService.History.Score.ToString());
         UpdateCachedValue("{pbAcc}", $"{GameStatsService.History.Accuracy}%");
@@ -65,6 +57,8 @@ public class TextDataService : ITextDataService, IPostInjectable
 
     public void UpdateVariables()
     {
+        EnsureCallbacksRegistered();
+
         var main = ConfigAccessor.Main;
         UpdateCachedValue("{acc}", GameStatsService.FormatAccuracy());
         UpdateCachedValue("{overview}", GameStatsService.FormatOverview());
@@ -105,6 +99,30 @@ public class TextDataService : ITextDataService, IPostInjectable
         return finalText;
     }
 
+    private void TryRegisterCallbacks()
+    {
+        if (_callbacksRegistered)
+            return;
+
+        try
+        {
+            ConfigService.RegisterUpdateCallback<MainConfigs>(nameof(MainConfigs), _ => ClearCaches());
+            ConfigService.RegisterUpdateCallback<AdvancedConfigs>(nameof(AdvancedConfigs), _ => ClearCaches());
+            ConfigService.RegisterUpdateCallback<TextFieldLowerLeftConfigs>(nameof(TextFieldLowerLeftConfigs), _ => ClearCaches());
+            ConfigService.RegisterUpdateCallback<TextFieldLowerRightConfigs>(nameof(TextFieldLowerRightConfigs), _ => ClearCaches());
+            ConfigService.RegisterUpdateCallback<TextFieldScoreBelowConfigs>(nameof(TextFieldScoreBelowConfigs), _ => ClearCaches());
+            ConfigService.RegisterUpdateCallback<TextFieldScoreRightConfigs>(nameof(TextFieldScoreRightConfigs), _ => ClearCaches());
+            ConfigService.RegisterUpdateCallback<TextFieldUpperLeftConfigs>(nameof(TextFieldUpperLeftConfigs), _ => ClearCaches());
+            ConfigService.RegisterUpdateCallback<TextFieldUpperRightConfigs>(nameof(TextFieldUpperRightConfigs), _ => ClearCaches());
+
+            _callbacksRegistered = true;
+        }
+        catch (InvalidOperationException)
+        {
+            // Keep _callbacksRegistered false, wait for next invoke
+        }
+    }
+
     private void UpdateCachedValue(string key, string value)
     {
         if (_cachedValues.TryGetValue(key, out var cached) && cached == value)
@@ -121,11 +139,7 @@ public class TextDataService : ITextDataService, IPostInjectable
     }
 
     private static bool ContainsAnyPlaceholder(string text)
-    {
-        if (string.IsNullOrEmpty(text))
-            return false;
-        return text.Contains('{') && text.Contains('}');
-    }
+        => !string.IsNullOrEmpty(text) && text.Contains('{') && text.Contains('}');
 
     [UsedImplicitly] public IConfigAccessor ConfigAccessor { get; set; }
     [UsedImplicitly] public IConfigService ConfigService { get; set; }

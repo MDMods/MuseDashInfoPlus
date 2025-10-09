@@ -16,7 +16,7 @@ public class Logger<T> : ILogger<T>
     public void Fatal(object message)
         => Melon<MDIPMod>.Logger.BigError(Format(message));
 
-    private string Format(object message)
+    private static string Format(object message)
     {
         var content = message switch
         {
@@ -25,6 +25,6 @@ public class Logger<T> : ILogger<T>
             _ => message.ToString() ?? string.Empty
         };
 
-        return $"[{_typeName}] {content}";
+        return $"{(typeof(T).Name == nameof(MDIPMod) ? string.Empty : $"[{typeof(T).Name}] ")}{content}";
     }
 }
