@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <RootNamespace>MDIP</RootNamespace>
         <AssemblyName>Info+</AssemblyName>
         <LangVersion>latest</LangVersion>
@@ -116,13 +116,13 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0"/>
-        <PackageReference Include="JetBrains.Annotations" Version="2024.2.0"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+        <PackageReference Include="JetBrains.Annotations" Version="2024.2.0" />
     </ItemGroup>
 
     <Target Name="Copy" AfterTargets="Build" Condition="'$(MD_DIRECTORY)' != ''">
-        <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(MD_DIRECTORY)/Mods/" Condition="'$(Configuration)' == 'Debug'"/>
-        <Message Text="Copied DLL -> $(MD_DIRECTORY)\Mods\$(AssemblyName).dll" Importance="High"/>
+        <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(MD_DIRECTORY)/Mods/" Condition="'$(Configuration)' == 'Debug'" />
+        <Message Text="Copied DLL -> $(MD_DIRECTORY)\Mods\$(AssemblyName).dll" Importance="High" />
     </Target>
 
 </Project>

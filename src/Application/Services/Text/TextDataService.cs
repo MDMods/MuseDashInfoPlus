@@ -127,7 +127,7 @@ public class TextDataService : ITextDataService, IPostInjectable
         return text.Contains('{') && text.Contains('}');
     }
 
-    [UsedImplicitly] public required IConfigAccessor ConfigAccessor { get; init; }
-    [UsedImplicitly] public required IConfigService ConfigService { get; init; }
-    [UsedImplicitly] public required IGameStatsService GameStatsService { get; init; }
+    [UsedImplicitly] public IConfigAccessor ConfigAccessor { get; set; }
+    [UsedImplicitly] public IConfigService ConfigService { get; set; }
+    [UsedImplicitly] public IGameStatsService GameStatsService { get; set; }
 }

@@ -9,6 +9,7 @@ using MDIP.Application.Services.Text;
 using MDIP.Application.Services.UI;
 using MDIP.Application.Services.Updates;
 using MDIP.Domain.Configs;
+using MDIP.Domain.Updates;
 using MDIP.Patches;
 using MDIP.Utils;
 
@@ -35,11 +36,7 @@ public class MDIPMod : MelonMod
             typeof(StatisticsManagerPatch)
         );
 
-        CheckForUpdatesAsync().ContinueWith(task =>
-        {
-            if (task is { IsFaulted: true, Exception: not null })
-                Logger.Error($"Update check failed: {task.Exception}");
-        });
+        _ = CheckForUpdatesAsync(); // Fire and forget
     }
 
     public override void OnLateInitializeMelon()
@@ -47,23 +44,33 @@ public class MDIPMod : MelonMod
         IsSongDescLoaded = RegisteredMelons.Any(mod => mod?.MelonAssembly?.Assembly?.FullName?.TrimStart().StartsWith("SongDesc") ?? false);
 
         ConfigService.Init();
-        RegisterAndSaveConfig<MainConfigs>(nameof(MainConfigs));
-        RegisterAndSaveConfig<AdvancedConfigs>(nameof(AdvancedConfigs));
-        RegisterAndSaveConfig<TextFieldLowerLeftConfigs>(nameof(TextFieldLowerLeftConfigs));
-        RegisterAndSaveConfig<TextFieldLowerRightConfigs>(nameof(TextFieldLowerRightConfigs));
-        RegisterAndSaveConfig<TextFieldScoreBelowConfigs>(nameof(TextFieldScoreBelowConfigs));
-        RegisterAndSaveConfig<TextFieldScoreRightConfigs>(nameof(TextFieldScoreRightConfigs));
-        RegisterAndSaveConfig<TextFieldUpperLeftConfigs>(nameof(TextFieldUpperLeftConfigs));
-        RegisterAndSaveConfig<TextFieldUpperRightConfigs>(nameof(TextFieldUpperRightConfigs));
-        ConfigService.ActivateWatcher();
-        return;
-
-        void RegisterAndSaveConfig<T>(string moduleName) where T : ConfigBase, new()
+        foreach (var (type, name) in new (Type type, string name)[]
+                 {
+                     (typeof(MainConfigs), nameof(MainConfigs)),
+                     (typeof(AdvancedConfigs), nameof(AdvancedConfigs)),
+                     (typeof(TextFieldLowerLeftConfigs), nameof(TextFieldLowerLeftConfigs)),
+                     (typeof(TextFieldLowerRightConfigs), nameof(TextFieldLowerRightConfigs)),
+                     (typeof(TextFieldScoreBelowConfigs), nameof(TextFieldScoreBelowConfigs)),
+                     (typeof(TextFieldScoreRightConfigs), nameof(TextFieldScoreRightConfigs)),
+                     (typeof(TextFieldUpperLeftConfigs), nameof(TextFieldUpperLeftConfigs)),
+                     (typeof(TextFieldUpperRightConfigs), nameof(TextFieldUpperRightConfigs))
+                 })
         {
-            var fileName = $"{moduleName}.yml";
-            ConfigService.RegisterModule(moduleName, fileName);
-            ConfigService.SaveConfig(moduleName, ConfigService.GetConfig<T>(moduleName));
+            RegisterAndSaveConfig(type, name);
         }
+        ConfigService.ActivateWatcher();
+    }
+
+    private void RegisterAndSaveConfig(Type configType, string moduleName)
+    {
+        var fileName = $"{moduleName}.yml";
+        ConfigService.RegisterModule(moduleName, fileName);
+        var method = typeof(IConfigService).GetMethod(nameof(ConfigService.GetConfig))!
+            .MakeGenericMethod(configType);
+        var config = method.Invoke(ConfigService, [moduleName]);
+        typeof(IConfigService).GetMethod(nameof(ConfigService.SaveConfig))!
+            .MakeGenericMethod(configType)
+            .Invoke(ConfigService, [moduleName, config]);
     }
 
     public override void OnSceneWasLoaded(int buildIndex, string sceneName)
@@ -101,19 +108,31 @@ public class MDIPMod : MelonMod
 
     private async Task CheckForUpdatesAsync()
     {
-        var updateInfo = await UpdateService.GetUpdateInfoAsync();
-        if (updateInfo == null)
+        try
         {
-            Logger.Error("Failed to fetch update info.");
-            return;
-        }
+            var updateInfo = await UpdateService.GetUpdateInfoAsync();
+            if (updateInfo == null)
+            {
+                Logger.Error("Failed to fetch update info.");
+                return;
+            }
 
-        if (!UpdateService.IsUpdateAvailable(updateInfo))
+            if (!UpdateService.IsUpdateAvailable(updateInfo))
+            {
+                Logger.Info("Already up to date.");
+                return;
+            }
+
+            await HandleUpdateAsync(updateInfo);
+        }
+        catch (Exception ex)
         {
-            Logger.Info("Already up to date.");
-            return;
+            Logger.Error($"Update check failed: {ex}");
         }
+    }
 
+    private async Task HandleUpdateAsync(VersionInfo updateInfo)
+    {
         var success = await UpdateService.ApplyUpdateAsync(updateInfo);
         if (success)
             Logger.Warning("Auto update successful!");
@@ -121,15 +140,12 @@ public class MDIPMod : MelonMod
             Logger.Error("Auto update failed!");
     }
 
-    [UsedImplicitly] public required IConfigService ConfigService { get; init; }
-    [UsedImplicitly] public required IUpdateService UpdateService { get; init; }
-    [UsedImplicitly] public required IConfigAccessor ConfigAccessor { get; init; }
-    [UsedImplicitly] public required ITextObjectService TextObjectService { get; init; }
-    [UsedImplicitly] public required ITextDataService TextDataService { get; init; }
-    [UsedImplicitly] public required IGameStatsService GameStatsService { get; init; }
-    [UsedImplicitly] public required IBattleUIService BattleUIService { get; init; }
-    [UsedImplicitly] public required INoteRecordService NoteRecordService { get; init; }
-    [UsedImplicitly] public required IStatsSaverService StatsSaverService { get; init; }
-    [UsedImplicitly] public required IFontService FontService { get; init; }
-    [UsedImplicitly] public required ILogger<MDIPMod> Logger { get; init; }
+    [UsedImplicitly] public IConfigService ConfigService { get; set; }
+    [UsedImplicitly] public IUpdateService UpdateService { get; set; }
+    [UsedImplicitly] public ITextObjectService TextObjectService { get; set; }
+    [UsedImplicitly] public IGameStatsService GameStatsService { get; set; }
+    [UsedImplicitly] public IBattleUIService BattleUIService { get; set; }
+    [UsedImplicitly] public INoteRecordService NoteRecordService { get; set; }
+    [UsedImplicitly] public IFontService FontService { get; set; }
+    [UsedImplicitly] public ILogger<MDIPMod> Logger { get; set; }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using Il2CppAssets.Scripts.GameCore.HostComponent;
+﻿using Il2CppAssets.Scripts.GameCore.HostComponent;
 using JetBrains.Annotations;
 using MDIP.Application.Services.Configuration;
 using MDIP.Application.Services.Diagnostic;
@@ -78,11 +77,6 @@ public class NoteEventService : INoteEventService
                 }
             }
 
-            Melon<MDIPMod>.Logger.Msg("");
-            Melon<MDIPMod>.Logger.Error("");
-            Melon<MDIPMod>.Logger.BigError("");
-            Melon<MDIPMod>.Logger.Warning("");
-
             if (type == NoteType.Mul)
                 GameStatsService.CountMul(oid, result, (float)note.configData.length);
 
@@ -98,8 +92,8 @@ public class NoteEventService : INoteEventService
         }
     }
 
-    [UsedImplicitly] public required IConfigAccessor ConfigAccessor { get; init; }
-    [UsedImplicitly] public required IGameStatsService GameStatsService { get; init; }
-    [UsedImplicitly] public required INoteRecordService NoteRecordService { get; init; }
-    [UsedImplicitly] public required ILogger<NoteEventService> Logger { get; init; }
+    [UsedImplicitly] public IConfigAccessor ConfigAccessor { get; set; }
+    [UsedImplicitly] public IGameStatsService GameStatsService { get; set; }
+    [UsedImplicitly] public INoteRecordService NoteRecordService { get; set; }
+    [UsedImplicitly] public ILogger<NoteEventService> Logger { get; set; }
 }

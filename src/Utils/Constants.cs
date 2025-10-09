@@ -4,6 +4,9 @@ namespace MDIP.Utils;
 
 public static class Constants
 {
+    // ReSharper disable InconsistentNaming
+    public const string MDIP_UPDATE_INFO_URL = "";
+
     public const string TEXT_ALL_PERFECT = "AP";
     public const string TEXT_TRUE_PERFECT = "TP";
 
@@ -39,16 +42,16 @@ public static class Constants
     public const float SCORE_ZOOM_OUT_Y = 670f;
     public const float SCORE_ZOOM_IN_Y = 530f;
 
-    public static string STATS_DATA_FILE = Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath, "..", "MuseDash_Data", "info+_song_stats.json"));
+    public static readonly string STATS_DATA_FILE = Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath, "..", "MuseDash_Data", "info+_song_stats.json"));
 
-    public static Vector3 POS_LOWER_LEFT_TEXT { get; private set; } = new(-866, -460, 0);
-    public static Vector3 POS_LOWER_RIGHT_TEXT { get; private set; } = new(850, -460, 0);
-    public static Vector3 POS_SCORE_BELOW_TEXT { get; private set; } = new(0, -135, 0);
-    public static Vector3 POS_SCORE_RIGHT_TEXT { get; private set; } = new(55, -64, 0);
-    public static Vector3 POS_UPPER_LEFT_TEXT { get; private set; } = new(-850, 310, 0);
-    public static Vector3 POS_UPPER_RIGHT_TEXT { get; private set; } = new(720, 470, 0);
+    public static readonly Vector3 POS_LOWER_LEFT_TEXT = new(-866, -460, 0);
+    public static readonly Vector3 POS_LOWER_RIGHT_TEXT = new(850, -460, 0);
+    public static readonly Vector3 POS_SCORE_BELOW_TEXT = new(0, -135, 0);
+    public static readonly Vector3 POS_SCORE_RIGHT_TEXT = new(55, -64, 0);
+    public static readonly Vector3 POS_UPPER_LEFT_TEXT = new(-850, 310, 0);
+    public static readonly Vector3 POS_UPPER_RIGHT_TEXT = new(720, 470, 0);
 
-    public static Dictionary<ScoreStyleType, Vector2> OFFSET_SCORE_BELOW_TEXT { get; private set; } = new()
+    public static readonly Dictionary<ScoreStyleType, Vector2> OFFSET_SCORE_BELOW_TEXT = new()
     {
         { ScoreStyleType.GC, new(325, 0) },
         { ScoreStyleType.Djmax, new(260, 0) },
@@ -58,7 +61,7 @@ public static class Constants
         { ScoreStyleType.Unknown, new(260, 0) }
     };
 
-    public static Dictionary<ScoreStyleType, float> OFFSET_SCORE_RIGHT_TEXT { get; private set; } = new()
+    public static readonly Dictionary<ScoreStyleType, float> OFFSET_SCORE_RIGHT_TEXT = new()
     {
         { ScoreStyleType.GC, -55 },
         { ScoreStyleType.Djmax, -78 },
@@ -67,4 +70,5 @@ public static class Constants
         { ScoreStyleType.OtherCN, -64 },
         { ScoreStyleType.Unknown, -64 }
     };
+    // ReSharper restore InconsistentNaming
 }

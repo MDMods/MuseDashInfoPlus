@@ -14,5 +14,5 @@ public class ConfigAccessor : IConfigAccessor
     public TextFieldUpperLeftConfigs TextFieldUpperLeft => ConfigService.GetConfig<TextFieldUpperLeftConfigs>(nameof(TextFieldUpperLeftConfigs));
     public TextFieldUpperRightConfigs TextFieldUpperRight => ConfigService.GetConfig<TextFieldUpperRightConfigs>(nameof(TextFieldUpperRightConfigs));
 
-    [UsedImplicitly] public required IConfigService ConfigService { get; init; }
+    [UsedImplicitly] public IConfigService ConfigService { get; set; }
 }

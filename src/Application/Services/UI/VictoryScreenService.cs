@@ -51,7 +51,7 @@ public class VictoryScreenService : IVictoryScreenService
             var folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Info+ Note Records");
             if (!Directory.Exists(folder))
                 Directory.CreateDirectory(folder);
-            NoteRecordService.ExportToExcel(Path.Combine(folder, $"{GameUtils.MusicName}.csv"));
+            NoteRecordService.ExportToCsv(Path.Combine(folder, $"{GameUtils.MusicName}.csv"));
         }
 
         if (!main.ReplaceResultsScreenMissCount)
@@ -77,9 +77,9 @@ public class VictoryScreenService : IVictoryScreenService
         }
     }
 
-    [UsedImplicitly] public required IConfigAccessor ConfigAccessor { get; init; }
-    [UsedImplicitly] public required IGameStatsService GameStatsService { get; init; }
-    [UsedImplicitly] public required INoteRecordService NoteRecordService { get; init; }
-    [UsedImplicitly] public required IStatsSaverService StatsSaverService { get; init; }
-    [UsedImplicitly] public required ILogger<VictoryScreenService> Logger { get; init; }
+    [UsedImplicitly] public IConfigAccessor ConfigAccessor { get; set; }
+    [UsedImplicitly] public IGameStatsService GameStatsService { get; set; }
+    [UsedImplicitly] public INoteRecordService NoteRecordService { get; set; }
+    [UsedImplicitly] public IStatsSaverService StatsSaverService { get; set; }
+    [UsedImplicitly] public ILogger<VictoryScreenService> Logger { get; set; }
 }

@@ -14,5 +14,5 @@ public class PreparationScreenService : IPreparationScreenService
         GameStatsService.StoreHighestScoreFromText(instance.pnlRecord.txtScore?.m_Text);
     }
 
-    [UsedImplicitly] public required IGameStatsService GameStatsService { get; init; }
+    [UsedImplicitly] public IGameStatsService GameStatsService { get; set; }
 }

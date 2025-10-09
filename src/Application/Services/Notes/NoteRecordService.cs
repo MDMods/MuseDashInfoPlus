@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using Il2CppGameLogic;
 using JetBrains.Annotations;
 using MDIP.Application.Services.Diagnostic;
@@ -13,6 +10,7 @@ namespace MDIP.Application.Services.Notes;
 
 public class NoteRecordService : INoteRecordService
 {
+    private static readonly string[] First = new[] { "ObjId", "Type", "Double", "LongType" };
     private Dictionary<int, NoteRecord> _records = new();
 
     public void Reset()
@@ -56,11 +54,11 @@ public class NoteRecordService : INoteRecordService
         record.AddPatchInfo(patchName, patchInfo);
     }
 
-    public void ExportToExcel(string filePath)
+    public void ExportToCsv(string filePath)
     {
         var patchNames = _records.Values.SelectMany(r => r.PatchInfosDic.Keys).Distinct().ToList();
         var lines = new List<string>();
-        var header = new[] { "ObjId", "Type", "Double", "LongType" }.Concat(patchNames).ToList();
+        var header = First.Concat(patchNames).ToList();
         lines.Add(string.Join(",", header));
 
         foreach (var kvp in _records.OrderBy(x => x.Key))
@@ -93,9 +91,9 @@ public class NoteRecordService : INoteRecordService
         }
 
         File.WriteAllLines(filePath, lines);
-        Logger.Warning($"Excel exported to: {Path.GetFullPath(filePath)}");
+        Logger.Info($"⭐ Excel exported to: {Path.GetFullPath(filePath)}");
     }
 
-    [UsedImplicitly] public required IGameStatsService GameStatsService { get; init; }
-    [UsedImplicitly] public required ILogger<NoteRecordService> Logger { get; init; }
+    [UsedImplicitly] public IGameStatsService GameStatsService { get; set; }
+    [UsedImplicitly] public ILogger<NoteRecordService> Logger { get; set; }
 }

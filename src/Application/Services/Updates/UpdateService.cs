@@ -1,14 +1,10 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Security.Cryptography;
 using System.Text.Json;
-using System.Threading.Tasks;
 using JetBrains.Annotations;
 using MDIP.Application.Services.Diagnostic;
 using MDIP.Domain.Updates;
+using MDIP.Utils;
 
 namespace MDIP.Application.Services.Updates;
 
@@ -22,7 +18,7 @@ public class UpdateService : IUpdateService
     {
         try
         {
-            var json = await _httpClient.GetStringAsync("https://mdip.leever.cn/version.json");
+            var json = await _httpClient.GetStringAsync(Constants.MDIP_UPDATE_INFO_URL);
             return JsonSerializer.Deserialize<VersionInfo>(json);
         }
         catch (Exception ex)
@@ -52,82 +48,133 @@ public class UpdateService : IUpdateService
 
     public async Task<bool> ApplyUpdateAsync(VersionInfo updateInfo)
     {
-        if (updateInfo == null)
+        ArgumentNullException.ThrowIfNull(updateInfo);
+
+        var paths = PreparePaths();
+
+        if (!TryCleanup(paths))
             return false;
 
+        if (!await TryDownloadPackageAsync(updateInfo, paths.TempPath))
+            return false;
+
+        return TryReplaceAssembly(paths);
+    }
+
+    private UpdatePaths PreparePaths()
+    {
         var backupPath = _modPath + ".backup";
         var tempPath = Path.Combine(_modFolder, "Info+.temp");
         var newPath = Path.Combine(_modFolder, "Info+.dll");
+        return new(backupPath, tempPath, newPath);
+    }
 
+    private bool TryCleanup(UpdatePaths paths)
+    {
         try
         {
-            if (File.Exists(backupPath))
-                File.Delete(backupPath);
-            if (File.Exists(tempPath))
-                File.Delete(tempPath);
+            if (File.Exists(paths.BackupPath))
+                File.Delete(paths.BackupPath);
+            if (File.Exists(paths.TempPath))
+                File.Delete(paths.TempPath);
+            return true;
         }
         catch (Exception ex)
         {
             Logger.Error($"Failed to clean up old backup or temp file: {ex.Message}");
             return false;
         }
+    }
 
-        var downloadSuccess = false;
+    private async Task<bool> TryDownloadPackageAsync(VersionInfo updateInfo, string tempPath)
+    {
         foreach (var url in updateInfo.DownloadURL ?? [])
         {
-            try
-            {
-                var response = await _httpClient.GetByteArrayAsync(url);
-                await File.WriteAllBytesAsync(tempPath, response);
-
-                var downloadedHash = CalculateFileHash(tempPath);
-                if (downloadedHash.Equals(updateInfo.Hash, StringComparison.OrdinalIgnoreCase))
-                {
-                    downloadSuccess = true;
-                    break;
-                }
-
-                Logger.Warning($"Hash mismatch for download from {url}");
-                File.Delete(tempPath);
-            }
-            catch (Exception ex)
-            {
-                Logger.Warning($"Download failed from {url}: {ex.Message}");
-                if (File.Exists(tempPath))
-                    File.Delete(tempPath);
-            }
+            if (await DownloadAndVerifyAsync(url, tempPath, updateInfo.Hash))
+                return true;
         }
 
-        if (!downloadSuccess)
-        {
-            Logger.Error("All download sources failed");
-            return false;
-        }
+        Logger.Error("All download sources failed");
+        return false;
+    }
 
+    private async Task<bool> DownloadAndVerifyAsync(string url, string tempPath, string expectedHash)
+    {
         try
         {
-            File.Move(_modPath, backupPath);
-            File.Move(tempPath, newPath);
+            var bytes = await _httpClient.GetByteArrayAsync(url);
+            await File.WriteAllBytesAsync(tempPath, bytes);
+
+            var actualHash = CalculateFileHash(tempPath);
+            if (actualHash.Equals(expectedHash, StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            Logger.Warning($"Hash mismatch for download from {url}");
+            SafeDelete(tempPath);
+            return false;
+
+        }
+        catch (Exception ex)
+        {
+            Logger.Warning($"Download failed from {url}: {ex.Message}");
+            SafeDelete(tempPath);
+            return false;
+        }
+    }
+
+    private bool TryReplaceAssembly(UpdatePaths paths)
+    {
+        try
+        {
+            File.Move(_modPath, paths.BackupPath);
+            File.Move(paths.TempPath, paths.NewPath);
             return true;
         }
         catch (Exception ex)
         {
             Logger.Error($"File replacement failed: {ex.Message}");
-            if (!File.Exists(backupPath))
-                return false;
-
-            try
-            {
-                if (File.Exists(_modPath))
-                    File.Delete(_modPath);
-                File.Move(backupPath, _modPath);
-            }
-            catch
-            {
-            }
-
+            SafeDelete(paths.TempPath);
+            TryRestoreBackup(paths.BackupPath);
             return false;
         }
+    }
+
+    private void TryRestoreBackup(string backupPath)
+    {
+        try
+        {
+            if (!File.Exists(backupPath))
+                return;
+
+            if (File.Exists(_modPath))
+                File.Delete(_modPath);
+
+            File.Move(backupPath, _modPath);
+        }
+        catch (Exception ex)
+        {
+            Logger.Error($"Failed to restore backup: {ex.Message}");
+        }
+    }
+
+    private void SafeDelete(string path)
+    {
+        try
+        {
+            if (File.Exists(path))
+                File.Delete(path);
+        }
+        catch (Exception ex)
+        {
+            Logger.Warning($"Failed to delete {path}: {ex.Message}");
+        }
+    }
+
+    private readonly struct UpdatePaths(string backupPath, string tempPath, string newPath)
+    {
+        public string BackupPath { get; } = backupPath;
+        public string TempPath { get; } = tempPath;
+        public string NewPath { get; } = newPath;
     }
 
     private static string CalculateFileHash(string filePath)
@@ -138,5 +185,5 @@ public class UpdateService : IUpdateService
         return Convert.ToHexString(hash).ToLowerInvariant();
     }
 
-    [UsedImplicitly] public required ILogger<UpdateService> Logger { get; init; }
+    [UsedImplicitly] public ILogger<UpdateService> Logger { get; set; }
 }

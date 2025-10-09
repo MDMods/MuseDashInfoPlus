@@ -26,8 +26,9 @@ public class ConfigService : IConfigService
                 watcher.Dispose();
             }
 
-            _watchers.Clear();
+            _configDirectory = null;
             _modules.Clear();
+            _watchers.Clear();
             _watchersActivated = false;
         }
     }
@@ -186,5 +187,5 @@ public class ConfigService : IConfigService
         }
     }
 
-    [UsedImplicitly] public required ILogger<ConfigService> Logger { get; init; }
+    [UsedImplicitly] public ILogger<ConfigService> Logger { get; set; }
 }

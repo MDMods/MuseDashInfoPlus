@@ -78,5 +78,5 @@ public class StatsSaverService : IStatsSaverService
         }
     }
 
-    [UsedImplicitly] public required ILogger<StatsSaverService> Logger { get; init; }
+    [UsedImplicitly] public ILogger<StatsSaverService> Logger { get; set; }
 }

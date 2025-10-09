@@ -92,14 +92,14 @@ public class ConfigItem(string name, string configPath)
             File.Copy(ConfigPath, GetBackupPath(oldConfig.Version), true);
             var oldConfigIncompatible = oldVersion < Version.Parse("2.3.0") && name is not "MainConfigs" and not "AdvancedConfigs";
             if (oldConfigIncompatible)
-                Melon<MDIPMod>.Logger.Warning($"{name} will be restored to default because the configs before 2.3.0 are no longer compatible");
+                Melon<MDIPMod>.Logger.Warning($"[{nameof(ConfigItem)}] {name} will be restored to default because the configs before 2.3.0 are no longer compatible");
             var finalConfig = oldConfigIncompatible ? newConfig : ConfigVersionControl.MigrateConfig(oldConfig, newConfig);
             SaveConfig(finalConfig);
             return finalConfig;
         }
         catch (Exception ex)
         {
-            Melon<MDIPMod>.Logger.BigError($"Failed to load config {name}: {ex}");
+            Melon<MDIPMod>.Logger.BigError($"[{nameof(ConfigItem)}] Failed to load config {name}: {ex}");
             return CreateAndSaveDefault<T>();
         }
     }

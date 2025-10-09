@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Il2CppAssets.Scripts.Database;
+﻿using Il2CppAssets.Scripts.Database;
 using Il2CppAssets.Scripts.GameCore.HostComponent;
 using Il2CppFormulaBase;
 using Il2CppGameLogic;
@@ -535,7 +532,7 @@ public class GameStatsService : IGameStatsService
         };
     }
 
-    [UsedImplicitly] public required IConfigAccessor ConfigAccessor { get; init; }
-    [UsedImplicitly] public required IStatsSaverService StatsSaverService { get; init; }
-    [UsedImplicitly] public required ILogger<GameStatsService> Logger { get; init; }
+    [UsedImplicitly] public IConfigAccessor ConfigAccessor { get; set; }
+    [UsedImplicitly] public IStatsSaverService StatsSaverService { get; set; }
+    [UsedImplicitly] public ILogger<GameStatsService> Logger { get; set; }
 }

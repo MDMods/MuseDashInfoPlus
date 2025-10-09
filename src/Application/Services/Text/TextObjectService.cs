@@ -74,6 +74,6 @@ public class TextObjectService : ITextObjectService
         return null;
     }
 
-    [UsedImplicitly] public required IConfigAccessor ConfigAccessor { get; init; }
-    [UsedImplicitly] public required ITextDataService TextDataService { get; init; }
+    [UsedImplicitly] public IConfigAccessor ConfigAccessor { get; set; }
+    [UsedImplicitly] public ITextDataService TextDataService { get; set; }
 }
