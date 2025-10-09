@@ -344,7 +344,7 @@ public class GameStatsService : IGameStatsService
                 var curTick = _stage.realTimeTick;
                 MelonCoroutines.Start(CoroutineUtils.Run(() =>
                 {
-                    if (_stage.realTimeTick <= curTick)
+                    if (_stage == null || _stage.realTimeTick <= curTick)
                         return;
                     if (!_playedNoteIds.Contains(oid) && _missedNoteIds.Add(oid))
                         _miss.Mul++;
