@@ -15,6 +15,8 @@ public static class ModServiceConfigurator
     public static SimpleServiceProvider Provider { get; private set; }
     public static IServiceScope CurrentScope { get; private set; }
 
+    private static readonly HashSet<Type> _staticInjectionTargets = new();
+
     public static void Build()
     {
         if (Provider != null)
@@ -22,7 +24,6 @@ public static class ModServiceConfigurator
 
         var provider = new SimpleServiceProvider();
 
-        // Global singleton services (whole game session)
         provider.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
         provider.AddSingletonWithPropertyInjection<IConfigService, ConfigService>();
         provider.AddSingletonWithPropertyInjection<IConfigAccessor, ConfigAccessor>();
@@ -33,7 +34,6 @@ public static class ModServiceConfigurator
         provider.AddSingletonWithPropertyInjection<IVictoryScreenService, VictoryScreenService>();
         provider.AddSingletonWithPropertyInjection<IRefreshScheduler, RefreshScheduler>();
 
-        // Game scoped services (one single game)
         provider.AddScopedWithPropertyInjection<IGameStatsService, GameStatsService>();
         provider.AddScopedWithPropertyInjection<INoteRecordService, NoteRecordService>();
         provider.AddScopedWithPropertyInjection<INoteEventService, NoteEventService>();
@@ -48,6 +48,7 @@ public static class ModServiceConfigurator
     {
         DisposeCurrentScope();
         CurrentScope = Provider.CreateScope();
+        RefreshStaticInjections();
     }
 
     public static void DisposeCurrentScope()
@@ -73,7 +74,18 @@ public static class ModServiceConfigurator
         {
             if (type == null)
                 continue;
+
+            _staticInjectionTargets.Add(type);
             Provider.InjectStaticProperties(type);
         }
+    }
+
+    public static void RefreshStaticInjections()
+    {
+        if (Provider == null)
+            throw new InvalidOperationException("Service provider not built.");
+
+        foreach (var type in _staticInjectionTargets)
+            Provider.InjectStaticProperties(type);
     }
 }

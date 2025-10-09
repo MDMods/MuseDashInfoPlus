@@ -10,6 +10,7 @@ internal static class PnlBattleGameStartPatch
 {
     private static void Postfix(PnlBattle __instance)
     {
+        ModServiceConfigurator.CreateGameScope();
         BattleUIService.OnGameStart(__instance);
     }
 

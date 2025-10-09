@@ -39,7 +39,6 @@ public class BattleUIService : IBattleUIService
         if (_textObjectTemplate != null)
             return;
 
-        ModServiceConfigurator.CreateGameScope();
         GameStatsService.IsInGame = true;
         RefreshScheduler.Reset();
 
