@@ -1,6 +1,6 @@
 using Il2CppGameLogic;
 using JetBrains.Annotations;
-using MDIP.Application.Services.Diagnostic;
+using MDIP.Application.Services.Logging;
 using MDIP.Application.Services.Stats;
 using MDIP.Domain.Enums;
 using MDIP.Domain.Notes;
@@ -10,7 +10,7 @@ namespace MDIP.Application.Services.Notes;
 
 public class NoteRecordService : INoteRecordService
 {
-    private static readonly string[] First = new[] { "ObjId", "Type", "Double", "LongType" };
+    private static readonly string[] First = ["ObjId", "Type", "Double", "LongType"];
     private Dictionary<int, NoteRecord> _records = new();
 
     public void Reset()

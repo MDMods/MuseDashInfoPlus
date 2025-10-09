@@ -4,11 +4,18 @@ namespace MDIP.Application.DependencyInjection;
 
 public sealed class SimpleServiceProvider : IServiceProvider
 {
-    private sealed class ServiceDescriptor(Type serviceType, Type implementationType, bool usePropertyInjection)
+    private sealed class ServiceDescriptor(Type serviceType, Type implementationType, ServiceLifetime lifetime, bool usePropertyInjection)
     {
         public Type ServiceType { get; } = serviceType;
         public Type ImplementationType { get; } = implementationType;
+        public ServiceLifetime Lifetime { get; } = lifetime;
         public bool UsePropertyInjection { get; } = usePropertyInjection;
+    }
+
+    public enum ServiceLifetime
+    {
+        Singleton,
+        Scoped
     }
 
     private readonly Dictionary<Type, ServiceDescriptor> _serviceDescriptors = new();
@@ -16,15 +23,22 @@ public sealed class SimpleServiceProvider : IServiceProvider
     private readonly Dictionary<Type, object> _singletons = new();
     private readonly List<ServiceDescriptor> _openGenericDescriptors = [];
     private readonly HashSet<Type> _resolving = [];
+    private readonly Dictionary<Type, object> _scopedInstances = new();
 
     public void AddSingleton(Type serviceType, Type implementationType, bool usePropertyInjection = false)
+        => AddService(serviceType, implementationType, ServiceLifetime.Singleton, usePropertyInjection);
+
+    public void AddScoped(Type serviceType, Type implementationType, bool usePropertyInjection = false)
+        => AddService(serviceType, implementationType, ServiceLifetime.Scoped, usePropertyInjection);
+
+    private void AddService(Type serviceType, Type implementationType, ServiceLifetime lifetime, bool usePropertyInjection)
     {
-        if (serviceType == null) throw new ArgumentNullException(nameof(serviceType));
-        if (implementationType == null) throw new ArgumentNullException(nameof(implementationType));
+        ArgumentNullException.ThrowIfNull(serviceType);
+        ArgumentNullException.ThrowIfNull(implementationType);
         if (implementationType.IsAbstract || implementationType.IsInterface)
             throw new InvalidOperationException($"Implementation type {implementationType} must be a non-abstract class.");
 
-        var descriptor = new ServiceDescriptor(serviceType, implementationType, usePropertyInjection);
+        var descriptor = new ServiceDescriptor(serviceType, implementationType, lifetime, usePropertyInjection);
 
         if (serviceType.IsGenericTypeDefinition)
             _openGenericDescriptors.Add(descriptor);
@@ -37,6 +51,18 @@ public sealed class SimpleServiceProvider : IServiceProvider
             throw new InvalidOperationException("Generic implementation type requires a matching generic service type.");
     }
 
+    public IServiceScope CreateScope() => new ServiceScope(this);
+
+    public void ClearScope()
+    {
+        foreach (var instance in _scopedInstances.Values)
+        {
+            if (instance is IDisposable disposable)
+                disposable.Dispose();
+        }
+        _scopedInstances.Clear();
+    }
+
     public T GetRequiredService<T>() where T : class => (T)GetRequiredService(typeof(T));
 
     public object GetRequiredService(Type serviceType)
@@ -44,13 +70,48 @@ public sealed class SimpleServiceProvider : IServiceProvider
 
     public object GetService(Type serviceType)
     {
-        if (_singletons.TryGetValue(serviceType, out var existing))
-            return existing;
-
         var descriptor = ResolveDescriptor(serviceType);
         if (descriptor == null)
             return null;
 
+        return descriptor.Lifetime switch
+        {
+            ServiceLifetime.Singleton => GetOrCreateSingleton(serviceType, descriptor),
+            ServiceLifetime.Scoped => GetOrCreateScoped(serviceType, descriptor),
+            _ => throw new InvalidOperationException($"Unknown service lifetime: {descriptor.Lifetime}")
+        };
+    }
+
+    private object GetOrCreateSingleton(Type serviceType, ServiceDescriptor descriptor)
+    {
+        if (_singletons.TryGetValue(serviceType, out var existing))
+            return existing;
+
+        var instance = CreateInstance(serviceType, descriptor);
+        _singletons[serviceType] = instance;
+
+        if (serviceType != descriptor.ImplementationType)
+            _singletons.TryAdd(descriptor.ImplementationType, instance);
+
+        return instance;
+    }
+
+    private object GetOrCreateScoped(Type serviceType, ServiceDescriptor descriptor)
+    {
+        if (_scopedInstances.TryGetValue(serviceType, out var existing))
+            return existing;
+
+        var instance = CreateInstance(serviceType, descriptor);
+        _scopedInstances[serviceType] = instance;
+
+        if (serviceType != descriptor.ImplementationType)
+            _scopedInstances.TryAdd(descriptor.ImplementationType, instance);
+
+        return instance;
+    }
+
+    private object CreateInstance(Type serviceType, ServiceDescriptor descriptor)
+    {
         if (!_resolving.Add(serviceType))
             throw new InvalidOperationException($"Circular dependency detected while resolving {serviceType}.");
 
@@ -64,15 +125,10 @@ public sealed class SimpleServiceProvider : IServiceProvider
                 implementationType = implementationType.MakeGenericType(serviceType.GetGenericArguments());
             }
 
-            var instance = CreateInstance(implementationType);
+            var instance = CreateInstanceCore(implementationType);
 
             if (descriptor.UsePropertyInjection)
                 this.InjectProperties(instance);
-
-            _singletons[serviceType] = instance;
-
-            if (serviceType != implementationType)
-                _singletons.TryAdd(implementationType, instance);
 
             return instance;
         }
@@ -84,34 +140,22 @@ public sealed class SimpleServiceProvider : IServiceProvider
 
     private ServiceDescriptor ResolveDescriptor(Type serviceType)
     {
-        if (_serviceDescriptors.TryGetValue(serviceType, out var descriptor))
+        if (_serviceDescriptors.TryGetValue(serviceType, out var descriptor) || _implementationDescriptors.TryGetValue(serviceType, out descriptor))
             return descriptor;
 
-        if (_implementationDescriptors.TryGetValue(serviceType, out descriptor))
+        if (!serviceType.IsGenericType)
+            return _serviceDescriptors.Values.FirstOrDefault(entry => serviceType.IsAssignableFrom(entry.ImplementationType));
+
+        var definition = serviceType.GetGenericTypeDefinition();
+        descriptor = _openGenericDescriptors.FirstOrDefault(d => d.ServiceType == definition);
+        if (descriptor != null)
             return descriptor;
 
-        if (serviceType.IsGenericType)
-        {
-            var definition = serviceType.GetGenericTypeDefinition();
-            descriptor = _openGenericDescriptors.FirstOrDefault(d => d.ServiceType == definition);
-            if (descriptor != null)
-                return descriptor;
-
-            descriptor = _openGenericDescriptors.FirstOrDefault(d => d.ImplementationType == definition);
-            if (descriptor != null)
-                return descriptor;
-        }
-
-        foreach (var entry in _serviceDescriptors.Values)
-        {
-            if (serviceType.IsAssignableFrom(entry.ImplementationType))
-                return entry;
-        }
-
-        return null;
+        descriptor = _openGenericDescriptors.FirstOrDefault(d => d.ImplementationType == definition);
+        return descriptor ?? _serviceDescriptors.Values.FirstOrDefault(entry => serviceType.IsAssignableFrom(entry.ImplementationType));
     }
 
-    private object CreateInstance(Type implementationType)
+    private object CreateInstanceCore(Type implementationType)
     {
         var constructors = implementationType
             .GetConstructors(BindingFlags.Public | BindingFlags.Instance)
@@ -148,4 +192,13 @@ public sealed class SimpleServiceProvider : IServiceProvider
 
         throw new InvalidOperationException($"Unable to resolve constructor for {implementationType}.");
     }
+
+    private sealed class ServiceScope(SimpleServiceProvider provider) : IServiceScope
+    {
+        public void Dispose() => provider.ClearScope();
+    }
+}
+
+public interface IServiceScope : IDisposable
+{
 }

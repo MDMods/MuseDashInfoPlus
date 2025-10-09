@@ -2,8 +2,7 @@ using JetBrains.Annotations;
 using MDIP.Application.DependencyInjection;
 using MDIP.Application.Services.Assets;
 using MDIP.Application.Services.Configuration;
-using MDIP.Application.Services.Diagnostic;
-using MDIP.Application.Services.Notes;
+using MDIP.Application.Services.Logging;
 using MDIP.Application.Services.Stats;
 using MDIP.Application.Services.Text;
 using MDIP.Application.Services.UI;
@@ -11,15 +10,14 @@ using MDIP.Application.Services.Updates;
 using MDIP.Domain.Configs;
 using MDIP.Domain.Updates;
 using MDIP.Patches;
-using MDIP.Utils;
 
 namespace MDIP;
 
+// ReSharper disable once InconsistentNaming
 public class MDIPMod : MelonMod
 {
     private static int _lastUpdateSecond = -1;
-    private readonly HashSet<string> _missingServicesLogged = new();
-    public static bool Reset { get; set; } = true;
+    private readonly HashSet<string> _missingServicesLogged = [];
     public static bool IsSongDescLoaded { get; private set; }
 
     public override void OnInitializeMelon()
@@ -37,7 +35,7 @@ public class MDIPMod : MelonMod
             typeof(StatisticsManagerPatch)
         );
 
-        _ = CheckForUpdatesAsync(); // Fire and forget
+        _ = Task.Run(CheckForUpdatesAsync);
     }
 
     public override void OnLateInitializeMelon()
@@ -80,32 +78,21 @@ public class MDIPMod : MelonMod
         ConfigService.RegisterModule(moduleName, fileName);
         var method = typeof(IConfigService).GetMethod(nameof(ConfigService.GetConfig))!
             .MakeGenericMethod(configType);
-        var config = method.Invoke(ConfigService, new object[] { moduleName });
+        var config = method.Invoke(ConfigService, [moduleName]);
         typeof(IConfigService).GetMethod(nameof(ConfigService.SaveConfig))!
             .MakeGenericMethod(configType)
-            .Invoke(ConfigService, new[] { moduleName, config });
+            .Invoke(ConfigService, [moduleName, config]);
     }
 
     public override void OnSceneWasLoaded(int buildIndex, string sceneName)
     {
-        if (GameStatsService == null)
-        {
-            LogMissingServiceOnce(nameof(GameStatsService));
-            return;
-        }
-
         switch (sceneName)
         {
             case "UISystem_PC":
-                GameStatsService.Reset(true);
+                ModServiceConfigurator.DisposeCurrentScope();
                 break;
-            case "Loading" when !Reset:
-                Reset = true;
-                NoteRecordService?.Reset();
-                BattleUIService?.Reset();
-                GameStatsService.Reset();
-                TextObjectService?.Reset();
-                GameUtils.Reset();
+            case "Loading":
+                ModServiceConfigurator.DisposeCurrentScope();
                 FontService?.UnloadFonts();
                 break;
         }
@@ -219,7 +206,6 @@ public class MDIPMod : MelonMod
     [UsedImplicitly] public ITextObjectService TextObjectService { get; set; }
     [UsedImplicitly] public IGameStatsService GameStatsService { get; set; }
     [UsedImplicitly] public IBattleUIService BattleUIService { get; set; }
-    [UsedImplicitly] public INoteRecordService NoteRecordService { get; set; }
     [UsedImplicitly] public IFontService FontService { get; set; }
     [UsedImplicitly] public ILogger<MDIPMod> Logger { get; set; }
 }

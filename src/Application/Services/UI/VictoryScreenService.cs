@@ -1,9 +1,6 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using MDIP.Application.Services.Configuration;
-using MDIP.Application.Services.Diagnostic;
+using MDIP.Application.Services.Logging;
 using MDIP.Application.Services.Notes;
 using MDIP.Application.Services.Stats;
 using MDIP.Utils;

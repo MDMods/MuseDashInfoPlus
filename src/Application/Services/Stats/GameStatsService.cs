@@ -4,7 +4,7 @@ using Il2CppFormulaBase;
 using Il2CppGameLogic;
 using JetBrains.Annotations;
 using MDIP.Application.Services.Configuration;
-using MDIP.Application.Services.Diagnostic;
+using MDIP.Application.Services.Logging;
 using MDIP.Domain.Configs;
 using MDIP.Domain.Enums;
 using MDIP.Domain.Records;
@@ -497,6 +497,14 @@ public class GameStatsService : IGameStatsService
         {
             Logger.Error(e.ToString());
         }
+
+        // 游戏开始时重置所有内部状态
+        _current = default;
+        _miss = default;
+        CurrentSkySpeed = CurrentSkySpeed == -1 ? 1 : CurrentSkySpeed;
+        CurrentGroundSpeed = CurrentGroundSpeed == -1 ? 1 : CurrentGroundSpeed;
+        _playedNoteIds.Clear();
+        _missedNoteIds.Clear();
     }
 
     public void Reset(bool includeStoredData = false)

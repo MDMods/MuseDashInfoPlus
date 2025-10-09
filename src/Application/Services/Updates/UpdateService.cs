@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Text.Json;
 using JetBrains.Annotations;
-using MDIP.Application.Services.Diagnostic;
+using MDIP.Application.Services.Logging;
 using MDIP.Domain.Updates;
 using MDIP.Utils;
 

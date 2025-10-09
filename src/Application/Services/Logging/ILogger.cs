@@ -1,4 +1,4 @@
-﻿namespace MDIP.Application.Services.Diagnostic;
+﻿namespace MDIP.Application.Services.Logging;
 
 public interface ILogger<T>
 {

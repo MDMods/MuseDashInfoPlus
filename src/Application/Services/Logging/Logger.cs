@@ -1,9 +1,7 @@
-﻿namespace MDIP.Application.Services.Diagnostic;
+﻿namespace MDIP.Application.Services.Logging;
 
 public class Logger<T> : ILogger<T>
 {
-    private readonly string _typeName = typeof(T).Name;
-
     public void Info(object message)
         => Melon<MDIPMod>.Logger.Msg(Format(message));
 

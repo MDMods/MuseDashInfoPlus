@@ -9,6 +9,11 @@ internal static class PropertyInjectionExtensions
         where TImplementation : class, TService
         => provider.AddSingleton(typeof(TService), typeof(TImplementation), true);
 
+    public static void AddScopedWithPropertyInjection<TService, TImplementation>(this SimpleServiceProvider provider)
+        where TService : class
+        where TImplementation : class, TService
+        => provider.AddScoped(typeof(TService), typeof(TImplementation), true);
+
     public static T InjectProperties<T>(this SimpleServiceProvider provider, T instance)
     {
         if (instance == null)

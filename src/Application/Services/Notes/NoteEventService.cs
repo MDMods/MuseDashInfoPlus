@@ -1,7 +1,7 @@
 ﻿using Il2CppAssets.Scripts.GameCore.HostComponent;
 using JetBrains.Annotations;
 using MDIP.Application.Services.Configuration;
-using MDIP.Application.Services.Diagnostic;
+using MDIP.Application.Services.Logging;
 using MDIP.Application.Services.Stats;
 using MDIP.Domain.Enums;
 using MDIP.Utils;

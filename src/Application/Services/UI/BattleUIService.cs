@@ -1,21 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using Il2CppAssets.Scripts.UI.Panels;
+﻿using Il2CppAssets.Scripts.UI.Panels;
 using JetBrains.Annotations;
+using MDIP.Application.DependencyInjection;
 using MDIP.Application.Services.Assets;
 using MDIP.Application.Services.Configuration;
-using MDIP.Application.Services.Diagnostic;
+using MDIP.Application.Services.Logging;
 using MDIP.Application.Services.Stats;
 using MDIP.Application.Services.Text;
 using MDIP.Domain.Configs;
 using MDIP.Domain.Enums;
 using MDIP.Utils;
-using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
 namespace MDIP.Application.Services.UI;
 
+// ReSharper disable StringLiteralTypo
 public class BattleUIService : IBattleUIService
 {
     private const float ZoomSpeed = 2f;
@@ -39,11 +38,14 @@ public class BattleUIService : IBattleUIService
         if (_textObjectTemplate != null)
             return;
 
-        MDIPMod.Reset = false;
+        ModServiceConfigurator.CreateGameScope();
         GameStatsService.IsInGame = true;
 
         try
         {
+            // Make sure fonts loaded
+            FontService.LoadFonts();
+
             var battleRoot = instance.transform.Find("PnlBattleUI").transform;
             var pnlBattleOthers = instance.transform.Find("PnlBattleUI/PnlBattleOthers")?.gameObject;
             if (pnlBattleOthers == null)
@@ -115,8 +117,6 @@ public class BattleUIService : IBattleUIService
             var imgIconAp = activeBattlePanel.transform.Find(imgIconApPath)?.gameObject;
             if (imgIconAp != null)
                 imgIconAp.transform.localPosition = new(9999, 9999, -9999);
-
-            FontService.LoadFonts();
 
             if (ConfigAccessor.TextFieldLowerLeft.Enabled)
             {
