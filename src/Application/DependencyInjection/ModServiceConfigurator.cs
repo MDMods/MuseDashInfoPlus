@@ -2,6 +2,7 @@
 using MDIP.Application.Services.Configuration;
 using MDIP.Application.Services.Logging;
 using MDIP.Application.Services.Notes;
+using MDIP.Application.Services.Scheduling;
 using MDIP.Application.Services.Stats;
 using MDIP.Application.Services.Text;
 using MDIP.Application.Services.UI;
@@ -30,6 +31,7 @@ public static class ModServiceConfigurator
         provider.AddSingletonWithPropertyInjection<IStatsSaverService, StatsSaverService>();
         provider.AddSingletonWithPropertyInjection<IPreparationScreenService, PreparationScreenService>();
         provider.AddSingletonWithPropertyInjection<IVictoryScreenService, VictoryScreenService>();
+        provider.AddSingletonWithPropertyInjection<IRefreshScheduler, RefreshScheduler>();
 
         // Game scoped services (one single game)
         provider.AddScopedWithPropertyInjection<IGameStatsService, GameStatsService>();

@@ -4,6 +4,7 @@ using MDIP.Application.DependencyInjection;
 using MDIP.Application.Services.Assets;
 using MDIP.Application.Services.Configuration;
 using MDIP.Application.Services.Logging;
+using MDIP.Application.Services.Scheduling;
 using MDIP.Application.Services.Stats;
 using MDIP.Application.Services.Text;
 using MDIP.Domain.Configs;
@@ -40,6 +41,7 @@ public class BattleUIService : IBattleUIService
 
         ModServiceConfigurator.CreateGameScope();
         GameStatsService.IsInGame = true;
+        RefreshScheduler.Reset();
 
         try
         {
@@ -351,5 +353,6 @@ public class BattleUIService : IBattleUIService
     [UsedImplicitly] [Inject] public IFontService FontService { get; set; }
     [UsedImplicitly] [Inject] public IGameStatsService GameStatsService { get; set; }
     [UsedImplicitly] [Inject] public ITextDataService TextDataService { get; set; }
+    [UsedImplicitly] [Inject] public IRefreshScheduler RefreshScheduler { get; set; }
     [UsedImplicitly] [Inject] public ILogger<BattleUIService> Logger { get; set; }
 }

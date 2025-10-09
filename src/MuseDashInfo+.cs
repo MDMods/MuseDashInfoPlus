@@ -3,9 +3,7 @@ using MDIP.Application.DependencyInjection;
 using MDIP.Application.Services.Assets;
 using MDIP.Application.Services.Configuration;
 using MDIP.Application.Services.Logging;
-using MDIP.Application.Services.Stats;
-using MDIP.Application.Services.Text;
-using MDIP.Application.Services.UI;
+using MDIP.Application.Services.Scheduling;
 using MDIP.Application.Services.Updates;
 using MDIP.Domain.Configs;
 using MDIP.Domain.Updates;
@@ -16,7 +14,6 @@ namespace MDIP;
 // ReSharper disable once InconsistentNaming
 public class MDIPMod : MelonMod
 {
-    private static int _lastUpdateSecond = -1;
     private readonly HashSet<string> _missingServicesLogged = [];
     public static bool IsSongDescLoaded { get; private set; }
 
@@ -64,9 +61,25 @@ public class MDIPMod : MelonMod
             RegisterAndSaveConfig(type, name);
         }
         ConfigService.ActivateWatcher();
-
-        LogInfo($"{ModBuildInfo.Name} has loaded correctly!");
     }
+
+    public override void OnSceneWasLoaded(int buildIndex, string sceneName)
+    {
+        switch (sceneName)
+        {
+            case "Loading":
+                ModServiceConfigurator.DisposeCurrentScope();
+                RefreshScheduler?.Reset();
+                FontService?.UnloadFonts();
+                break;
+        }
+    }
+
+    public override void OnFixedUpdate()
+        => RefreshScheduler?.OnFixedUpdateTick();
+
+    public override void OnLateUpdate()
+        => RefreshScheduler?.OnLateUpdateTick();
 
     private void RegisterAndSaveConfig(Type configType, string moduleName)
     {
@@ -84,50 +97,6 @@ public class MDIPMod : MelonMod
         typeof(IConfigService).GetMethod(nameof(ConfigService.SaveConfig))!
             .MakeGenericMethod(configType)
             .Invoke(ConfigService, [moduleName, config]);
-    }
-
-    public override void OnSceneWasLoaded(int buildIndex, string sceneName)
-    {
-        switch (sceneName)
-        {
-            case "Loading":
-                ModServiceConfigurator.DisposeCurrentScope();
-                FontService?.UnloadFonts();
-                break;
-        }
-    }
-
-    public override void OnFixedUpdate()
-    {
-        if (BattleUIService == null)
-        {
-            LogMissingServiceOnce(nameof(BattleUIService));
-            return;
-        }
-
-        BattleUIService.CheckAndZoom();
-    }
-
-    public override void OnLateUpdate()
-    {
-        if (GameStatsService == null)
-        {
-            LogMissingServiceOnce(nameof(GameStatsService));
-            return;
-        }
-
-        if (!GameStatsService.IsInGame || _lastUpdateSecond == DateTime.Now.Second)
-            return;
-
-        if (TextObjectService == null)
-        {
-            LogMissingServiceOnce(nameof(TextObjectService));
-            return;
-        }
-
-        _lastUpdateSecond = DateTime.Now.Second;
-        GameStatsService.UpdateCurrentStats();
-        TextObjectService.UpdateAllText();
     }
 
     private async Task CheckForUpdatesAsync()
@@ -207,9 +176,7 @@ public class MDIPMod : MelonMod
 
     [UsedImplicitly] [Inject] public IConfigService ConfigService { get; set; }
     [UsedImplicitly] [Inject] public IUpdateService UpdateService { get; set; }
-    [UsedImplicitly] [Inject] public ITextObjectService TextObjectService { get; set; }
-    [UsedImplicitly] [Inject] public IGameStatsService GameStatsService { get; set; }
-    [UsedImplicitly] [Inject] public IBattleUIService BattleUIService { get; set; }
     [UsedImplicitly] [Inject] public IFontService FontService { get; set; }
+    [UsedImplicitly] [Inject] public IRefreshScheduler RefreshScheduler { get; set; }
     [UsedImplicitly] [Inject] public ILogger<MDIPMod> Logger { get; set; }
 }

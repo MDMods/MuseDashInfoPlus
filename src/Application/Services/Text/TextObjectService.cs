@@ -1,4 +1,3 @@
-using System;
 using JetBrains.Annotations;
 using MDIP.Application.DependencyInjection;
 using MDIP.Application.Services.Configuration;
@@ -9,7 +8,6 @@ namespace MDIP.Application.Services.Text;
 
 public class TextObjectService : ITextObjectService
 {
-    private long _lastUpdateTick;
     public GameObject TextLowerLeft { get; set; }
     public GameObject TextLowerRight { get; set; }
     public GameObject TextScoreBelow { get; set; }
@@ -19,11 +17,6 @@ public class TextObjectService : ITextObjectService
 
     public void UpdateAllText()
     {
-        var now = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-        if (now - _lastUpdateTick < ConfigAccessor.Advanced.DataRefreshIntervalLimit)
-            return;
-
-        _lastUpdateTick = now;
         TextDataService.UpdateVariables();
 
         if (TextLowerLeft != null && ConfigAccessor.TextFieldLowerLeft.Enabled)
@@ -53,7 +46,6 @@ public class TextObjectService : ITextObjectService
         TextScoreRight = DestroyAndClear(TextScoreRight);
         TextUpperLeft = DestroyAndClear(TextUpperLeft);
         TextUpperRight = DestroyAndClear(TextUpperRight);
-        _lastUpdateTick = 0;
     }
 
     private void SetText(GameObject obj, string text)
