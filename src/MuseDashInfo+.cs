@@ -88,9 +88,6 @@ public class MDIPMod : MelonMod
     {
         switch (sceneName)
         {
-            case "UISystem_PC":
-                ModServiceConfigurator.DisposeCurrentScope();
-                break;
             case "Loading":
                 ModServiceConfigurator.DisposeCurrentScope();
                 FontService?.UnloadFonts();
