@@ -120,7 +120,7 @@ public class ConfigItem(string name, string configPath)
                 x => ToCamelCase(x.Property.Name) + ":",
                 x => (x.Comments.zh!.Comment, x.Comments.en!.Comment));
 
-        comments["version:"] = ("警告：不要改动下方的内容，否则配置或模组可能失效！", "Warning: Do not modify the content below, otherwise the configs or mod may become invalid!");
+        comments["version:"] = ("警告：不要改动下方的内容，否则配置或模组可能失效！", "Warn: Do not modify the content below, otherwise the configs or mod may become invalid!");
         return comments;
     }
 

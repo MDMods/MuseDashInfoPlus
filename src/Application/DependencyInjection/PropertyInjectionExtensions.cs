@@ -2,6 +2,9 @@
 
 namespace MDIP.Application.DependencyInjection;
 
+[AttributeUsage(AttributeTargets.Property)]
+internal sealed class InjectAttribute : Attribute { }
+
 internal static class PropertyInjectionExtensions
 {
     public static void AddSingletonWithPropertyInjection<TService, TImplementation>(this SimpleServiceProvider provider)
@@ -17,15 +20,13 @@ internal static class PropertyInjectionExtensions
     public static T InjectProperties<T>(this SimpleServiceProvider provider, T instance)
     {
         if (instance == null)
-            return default;
-
+            return default!;
         foreach (var property in GetInjectableProperties(instance.GetType(), includeStatic: false))
         {
             var service = provider.GetService(property.PropertyType);
             if (service != null)
                 property.SetValue(instance, service);
         }
-
         return instance;
     }
 
@@ -46,29 +47,20 @@ internal static class PropertyInjectionExtensions
 
         return type
             .GetProperties(flags)
-            .Where(property => IsInjectable(property, includeStatic));
+            .Where(p => IsInjectable(p, includeStatic));
     }
 
     private static bool IsInjectable(PropertyInfo property, bool includeStatic)
     {
+        if (!property.IsDefined(typeof(InjectAttribute), inherit: true))
+            return false;
+
         var setMethod = property.SetMethod;
         if (setMethod == null)
             return false;
-
         if (setMethod.IsStatic != includeStatic)
             return false;
 
-        if (property.GetIndexParameters().Length != 0)
-            return false;
-
-        return property.PropertyType.IsInterface || property.PropertyType.IsAbstract ||
-               HasUsedImplicitlyAttribute(property);
+        return property.GetIndexParameters().Length == 0;
     }
-
-    private static bool HasUsedImplicitlyAttribute(PropertyInfo property)
-        => property.GetCustomAttributes(inherit: true)
-            .Select(attribute => attribute.GetType().FullName)
-            .Any(name => name is
-                "JetBrains.Annotations.UsedImplicitlyAttribute" or
-                "Il2CppJetBrains.Annotations.UsedImplicitlyAttribute");
 }

@@ -1,5 +1,6 @@
 using Il2CppGameLogic;
 using JetBrains.Annotations;
+using MDIP.Application.DependencyInjection;
 using MDIP.Application.Services.Logging;
 using MDIP.Application.Services.Stats;
 using MDIP.Domain.Enums;
@@ -94,6 +95,6 @@ public class NoteRecordService : INoteRecordService
         Logger.Info($"⭐ Excel exported to: {Path.GetFullPath(filePath)}");
     }
 
-    [UsedImplicitly] public IGameStatsService GameStatsService { get; set; }
-    [UsedImplicitly] public ILogger<NoteRecordService> Logger { get; set; }
+    [UsedImplicitly] [Inject] public IGameStatsService GameStatsService { get; set; }
+    [UsedImplicitly] [Inject] public ILogger<NoteRecordService> Logger { get; set; }
 }

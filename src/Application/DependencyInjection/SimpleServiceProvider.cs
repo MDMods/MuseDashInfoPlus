@@ -20,10 +20,10 @@ public sealed class SimpleServiceProvider : IServiceProvider
 
     private readonly Dictionary<Type, ServiceDescriptor> _serviceDescriptors = new();
     private readonly Dictionary<Type, ServiceDescriptor> _implementationDescriptors = new();
-    private readonly Dictionary<Type, object> _singletons = new();
     private readonly List<ServiceDescriptor> _openGenericDescriptors = [];
-    private readonly HashSet<Type> _resolving = [];
+    private readonly Dictionary<Type, object> _singletons = new();
     private readonly Dictionary<Type, object> _scopedInstances = new();
+    private readonly HashSet<Type> _resolving = [];
 
     public void AddSingleton(Type serviceType, Type implementationType, bool usePropertyInjection = false)
         => AddService(serviceType, implementationType, ServiceLifetime.Singleton, usePropertyInjection);
@@ -112,19 +112,20 @@ public sealed class SimpleServiceProvider : IServiceProvider
 
     private object CreateInstance(Type serviceType, ServiceDescriptor descriptor)
     {
-        if (!_resolving.Add(serviceType))
-            throw new InvalidOperationException($"Circular dependency detected while resolving {serviceType}.");
+        var implementationType = descriptor.ImplementationType;
+
+        if (implementationType.IsGenericTypeDefinition)
+        {
+            if (!serviceType.IsGenericType)
+                throw new InvalidOperationException($"Service type {serviceType} must be generic to use implementation {implementationType}.");
+            implementationType = implementationType.MakeGenericType(serviceType.GetGenericArguments());
+        }
+
+        if (!_resolving.Add(implementationType))
+            throw new InvalidOperationException($"Circular dependency detected while resolving {implementationType}.");
 
         try
         {
-            var implementationType = descriptor.ImplementationType;
-            if (implementationType.IsGenericTypeDefinition)
-            {
-                if (!serviceType.IsGenericType)
-                    throw new InvalidOperationException($"Service type {serviceType} must be generic to use implementation {implementationType}.");
-                implementationType = implementationType.MakeGenericType(serviceType.GetGenericArguments());
-            }
-
             var instance = CreateInstanceCore(implementationType);
 
             if (descriptor.UsePropertyInjection)
@@ -134,13 +135,14 @@ public sealed class SimpleServiceProvider : IServiceProvider
         }
         finally
         {
-            _resolving.Remove(serviceType);
+            _resolving.Remove(implementationType);
         }
     }
 
     private ServiceDescriptor ResolveDescriptor(Type serviceType)
     {
-        if (_serviceDescriptors.TryGetValue(serviceType, out var descriptor) || _implementationDescriptors.TryGetValue(serviceType, out descriptor))
+        if (_serviceDescriptors.TryGetValue(serviceType, out var descriptor) ||
+            _implementationDescriptors.TryGetValue(serviceType, out descriptor))
             return descriptor;
 
         if (!serviceType.IsGenericType)
@@ -159,7 +161,7 @@ public sealed class SimpleServiceProvider : IServiceProvider
     {
         var constructors = implementationType
             .GetConstructors(BindingFlags.Public | BindingFlags.Instance)
-            .OrderBy(ctor => ctor.GetParameters().Length)
+            .OrderByDescending(ctor => ctor.GetParameters().Length)
             .ToArray();
 
         if (constructors.Length == 0)

@@ -1,5 +1,6 @@
 ﻿using Il2CppAssets.Scripts.UI.Panels;
 using JetBrains.Annotations;
+using MDIP.Application.DependencyInjection;
 using MDIP.Application.Services.UI;
 
 namespace MDIP.Patches;
@@ -12,5 +13,5 @@ internal static class PnlBattleGameStartPatch
         BattleUIService.OnGameStart(__instance);
     }
 
-    [UsedImplicitly] public static IBattleUIService BattleUIService { get; set; }
+    [UsedImplicitly] [Inject] public static IBattleUIService BattleUIService { get; set; }
 }

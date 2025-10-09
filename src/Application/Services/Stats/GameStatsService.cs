@@ -3,6 +3,7 @@ using Il2CppAssets.Scripts.GameCore.HostComponent;
 using Il2CppFormulaBase;
 using Il2CppGameLogic;
 using JetBrains.Annotations;
+using MDIP.Application.DependencyInjection;
 using MDIP.Application.Services.Configuration;
 using MDIP.Application.Services.Logging;
 using MDIP.Domain.Configs;
@@ -80,7 +81,7 @@ public class GameStatsService : IGameStatsService
             return;
 
         if (isInGame)
-            Logger.Warning($"=========== Tick: {_stage?.realTimeTick ?? -1} | CurId: {_stage?.curTimeNodeOrder?.idx ?? -1} ===========");
+            Logger.Warn($"=========== Tick: {_stage?.realTimeTick ?? -1} | CurId: {_stage?.curTimeNodeOrder?.idx ?? -1} ===========");
         else
             Logger.Error("=========== Note Count Error ===========");
         Logger.Info($"Total:{AccuracyCalculationTotal} | Counted:{AccuracyCalculationCounted} | Rest:{AccuracyCalculationRest}");
@@ -366,7 +367,7 @@ public class GameStatsService : IGameStatsService
                 CountNote(oid, CountNoteAction.Mul);
                 break;
             default:
-                Logger.Warning($"Unknown result type of mul: {result}");
+                Logger.Warn($"Unknown result type of mul: {result}");
                 break;
         }
     }
@@ -540,7 +541,7 @@ public class GameStatsService : IGameStatsService
         };
     }
 
-    [UsedImplicitly] public IConfigAccessor ConfigAccessor { get; set; }
-    [UsedImplicitly] public IStatsSaverService StatsSaverService { get; set; }
-    [UsedImplicitly] public ILogger<GameStatsService> Logger { get; set; }
+    [UsedImplicitly] [Inject] public IConfigAccessor ConfigAccessor { get; set; }
+    [UsedImplicitly] [Inject] public IStatsSaverService StatsSaverService { get; set; }
+    [UsedImplicitly] [Inject] public ILogger<GameStatsService> Logger { get; set; }
 }

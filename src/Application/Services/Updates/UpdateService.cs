@@ -2,6 +2,7 @@
 using System.Security.Cryptography;
 using System.Text.Json;
 using JetBrains.Annotations;
+using MDIP.Application.DependencyInjection;
 using MDIP.Application.Services.Logging;
 using MDIP.Domain.Updates;
 using MDIP.Utils;
@@ -111,13 +112,13 @@ public class UpdateService : IUpdateService
             if (actualHash.Equals(expectedHash, StringComparison.OrdinalIgnoreCase))
                 return true;
 
-            Logger.Warning($"Hash mismatch for download from {url}");
+            Logger.Warn($"Hash mismatch for download from {url}");
             SafeDelete(tempPath);
             return false;
         }
         catch (Exception ex)
         {
-            Logger.Warning($"Download failed from {url}: {ex.Message}");
+            Logger.Warn($"Download failed from {url}: {ex.Message}");
             SafeDelete(tempPath);
             return false;
         }
@@ -186,7 +187,7 @@ public class UpdateService : IUpdateService
         }
         catch (Exception ex)
         {
-            Logger.Warning($"Failed to delete {path}: {ex.Message}");
+            Logger.Warn($"Failed to delete {path}: {ex.Message}");
         }
     }
 
@@ -205,5 +206,5 @@ public class UpdateService : IUpdateService
         return Convert.ToHexString(hash).ToLowerInvariant();
     }
 
-    [UsedImplicitly] public ILogger<UpdateService> Logger { get; set; }
+    [UsedImplicitly] [Inject] public ILogger<UpdateService> Logger { get; set; }
 }

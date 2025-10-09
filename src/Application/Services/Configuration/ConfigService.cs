@@ -1,4 +1,5 @@
 ﻿using JetBrains.Annotations;
+using MDIP.Application.DependencyInjection;
 using MDIP.Application.Services.Logging;
 using MDIP.Domain.Configs;
 using MDIP.Domain.Configuration;
@@ -8,8 +9,10 @@ namespace MDIP.Application.Services.Configuration;
 public class ConfigService : IConfigService
 {
     private readonly Dictionary<string, ConfigItem> _modules = new(StringComparer.OrdinalIgnoreCase);
-    private readonly object _syncRoot = new();
+    private readonly Dictionary<string, ConfigItem> _pathIndex = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, FileSystemWatcher> _watchers = new(StringComparer.OrdinalIgnoreCase);
+    private readonly object _syncRoot = new();
+
     private string _configDirectory;
     private bool _watchersActivated;
 
@@ -28,6 +31,7 @@ public class ConfigService : IConfigService
 
             _configDirectory = null;
             _modules.Clear();
+            _pathIndex.Clear();
             _watchers.Clear();
             _watchersActivated = false;
         }
@@ -73,6 +77,7 @@ public class ConfigService : IConfigService
 
             var module = new ConfigItem(name, configPath);
             _modules.Add(name, module);
+            _pathIndex[configPath] = module;
         }
     }
 
@@ -156,15 +161,27 @@ public class ConfigService : IConfigService
     }
 
     private void OnConfigFileRenamed(object sender, RenamedEventArgs e)
-        => OnConfigFileChanged(sender, e);
+    {
+        lock (_syncRoot)
+        {
+            if (_pathIndex.ContainsKey(e.OldFullPath))
+            {
+                Logger.Fatal($"Config file renamed from {e.OldName} to {e.Name}. " +
+                             "Config file renaming is not allowed. The module will not be reloaded.");
+            }
+            else
+            {
+                Logger.Warn($"Unrecognized config file renamed: {e.OldFullPath} → {e.FullPath}");
+            }
+        }
+    }
 
     private void OnConfigFileChanged(object sender, FileSystemEventArgs e)
     {
         ConfigItem module;
-
         lock (_syncRoot)
         {
-            module = _modules.Values.FirstOrDefault(m => string.Equals(m.ConfigPath, e.FullPath, StringComparison.OrdinalIgnoreCase));
+            _pathIndex.TryGetValue(e.FullPath, out module);
         }
 
         if (module == null)
@@ -182,10 +199,10 @@ public class ConfigService : IConfigService
             }
             catch (IOException)
             {
-                // ignored
+                // Ignored - File might be temporary locked
             }
         }
     }
 
-    [UsedImplicitly] public ILogger<ConfigService> Logger { get; set; }
+    [UsedImplicitly] [Inject] public ILogger<ConfigService> Logger { get; set; }
 }

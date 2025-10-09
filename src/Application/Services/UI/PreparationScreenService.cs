@@ -1,4 +1,5 @@
 ﻿using JetBrains.Annotations;
+using MDIP.Application.DependencyInjection;
 using MDIP.Application.Services.Stats;
 
 namespace MDIP.Application.Services.UI;
@@ -14,5 +15,5 @@ public class PreparationScreenService : IPreparationScreenService
         GameStatsService.StoreHighestScoreFromText(instance.pnlRecord.txtScore?.m_Text);
     }
 
-    [UsedImplicitly] public IGameStatsService GameStatsService { get; set; }
+    [UsedImplicitly] [Inject] public IGameStatsService GameStatsService { get; set; }
 }

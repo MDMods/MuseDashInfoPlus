@@ -1,4 +1,5 @@
 ﻿using JetBrains.Annotations;
+using MDIP.Application.DependencyInjection;
 using MDIP.Application.Services.Configuration;
 using MDIP.Application.Services.Notes;
 
@@ -15,6 +16,6 @@ internal static class BaseEnemyObjectControllerPatch
         NoteRecordService.AddRecord(__instance.m_MusicData, "ControllerMissCheck", $"m_HasMiss:{__instance.m_HasMiss}");
     }
 
-    [UsedImplicitly] public static IConfigAccessor ConfigAccessor { get; set; }
-    [UsedImplicitly] public static INoteRecordService NoteRecordService { get; set; }
+    [UsedImplicitly] [Inject] public static IConfigAccessor ConfigAccessor { get; set; }
+    [UsedImplicitly] [Inject] public static INoteRecordService NoteRecordService { get; set; }
 }

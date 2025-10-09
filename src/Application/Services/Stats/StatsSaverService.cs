@@ -1,5 +1,6 @@
 using System.Text.Json;
 using JetBrains.Annotations;
+using MDIP.Application.DependencyInjection;
 using MDIP.Application.Services.Logging;
 using MDIP.Domain.Stats;
 using MDIP.Utils;
@@ -76,5 +77,5 @@ public class StatsSaverService : IStatsSaverService
         }
     }
 
-    [UsedImplicitly] public ILogger<StatsSaverService> Logger { get; set; }
+    [UsedImplicitly] [Inject] public ILogger<StatsSaverService> Logger { get; set; }
 }

@@ -23,7 +23,7 @@ public static class Helper
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[Warning] Invalid time format, using default. Error: {ex.Message}");
+            Console.WriteLine($"[Warn] Invalid time format, using default. Error: {ex.Message}");
             return time.ToString(defaultFormat, CultureInfo.InvariantCulture);
         }
     }

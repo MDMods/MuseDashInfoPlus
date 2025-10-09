@@ -339,10 +339,10 @@ public class BattleUIService : IBattleUIService
         return obj;
     }
 
-    [UsedImplicitly] public IConfigAccessor ConfigAccessor { get; set; }
-    [UsedImplicitly] public ITextObjectService TextObjectService { get; set; }
-    [UsedImplicitly] public IFontService FontService { get; set; }
-    [UsedImplicitly] public IGameStatsService GameStatsService { get; set; }
-    [UsedImplicitly] public ITextDataService TextDataService { get; set; }
-    [UsedImplicitly] public ILogger<BattleUIService> Logger { get; set; }
+    [UsedImplicitly] [Inject] public IConfigAccessor ConfigAccessor { get; set; }
+    [UsedImplicitly] [Inject] public ITextObjectService TextObjectService { get; set; }
+    [UsedImplicitly] [Inject] public IFontService FontService { get; set; }
+    [UsedImplicitly] [Inject] public IGameStatsService GameStatsService { get; set; }
+    [UsedImplicitly] [Inject] public ITextDataService TextDataService { get; set; }
+    [UsedImplicitly] [Inject] public ILogger<BattleUIService> Logger { get; set; }
 }

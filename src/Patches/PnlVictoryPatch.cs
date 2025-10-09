@@ -1,4 +1,5 @@
 ﻿using JetBrains.Annotations;
+using MDIP.Application.DependencyInjection;
 using MDIP.Application.Services.UI;
 
 namespace MDIP.Patches;
@@ -11,5 +12,5 @@ internal static class PnlVictorySetDetailInfoPatch
         VictoryScreenService.OnSetDetailInfo(__instance);
     }
 
-    [UsedImplicitly] public static IVictoryScreenService VictoryScreenService { get; set; }
+    [UsedImplicitly] [Inject] public static IVictoryScreenService VictoryScreenService { get; set; }
 }

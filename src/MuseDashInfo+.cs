@@ -189,7 +189,7 @@ public class MDIPMod : MelonMod
 
     private void LogWarning(string message)
     {
-        if (Logger != null) Logger.Warning(message);
+        if (Logger != null) Logger.Warn(message);
         else Melon<MDIPMod>.Logger.Warning($"[Info+] {message}");
     }
 
@@ -205,11 +205,11 @@ public class MDIPMod : MelonMod
             Melon<MDIPMod>.Logger.Warning($"[Info+] Service '{serviceName}' is not available yet; skipping related operations.");
     }
 
-    [UsedImplicitly] public IConfigService ConfigService { get; set; }
-    [UsedImplicitly] public IUpdateService UpdateService { get; set; }
-    [UsedImplicitly] public ITextObjectService TextObjectService { get; set; }
-    [UsedImplicitly] public IGameStatsService GameStatsService { get; set; }
-    [UsedImplicitly] public IBattleUIService BattleUIService { get; set; }
-    [UsedImplicitly] public IFontService FontService { get; set; }
-    [UsedImplicitly] public ILogger<MDIPMod> Logger { get; set; }
+    [UsedImplicitly] [Inject] public IConfigService ConfigService { get; set; }
+    [UsedImplicitly] [Inject] public IUpdateService UpdateService { get; set; }
+    [UsedImplicitly] [Inject] public ITextObjectService TextObjectService { get; set; }
+    [UsedImplicitly] [Inject] public IGameStatsService GameStatsService { get; set; }
+    [UsedImplicitly] [Inject] public IBattleUIService BattleUIService { get; set; }
+    [UsedImplicitly] [Inject] public IFontService FontService { get; set; }
+    [UsedImplicitly] [Inject] public ILogger<MDIPMod> Logger { get; set; }
 }

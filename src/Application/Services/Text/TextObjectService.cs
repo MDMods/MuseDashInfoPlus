@@ -1,5 +1,6 @@
 using System;
 using JetBrains.Annotations;
+using MDIP.Application.DependencyInjection;
 using MDIP.Application.Services.Configuration;
 using MDIP.Utils;
 using Object = UnityEngine.Object;
@@ -74,6 +75,6 @@ public class TextObjectService : ITextObjectService
         return null;
     }
 
-    [UsedImplicitly] public IConfigAccessor ConfigAccessor { get; set; }
-    [UsedImplicitly] public ITextDataService TextDataService { get; set; }
+    [UsedImplicitly] [Inject] public IConfigAccessor ConfigAccessor { get; set; }
+    [UsedImplicitly] [Inject] public ITextDataService TextDataService { get; set; }
 }

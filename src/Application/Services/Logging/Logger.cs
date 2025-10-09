@@ -5,7 +5,7 @@ public class Logger<T> : ILogger<T>
     public void Info(object message)
         => Melon<MDIPMod>.Logger.Msg(Format(message));
 
-    public void Warning(object message)
+    public void Warn(object message)
         => Melon<MDIPMod>.Logger.Warning(Format(message));
 
     public void Error(object message)

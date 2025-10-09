@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Text;
 using JetBrains.Annotations;
+using MDIP.Application.DependencyInjection;
 using MDIP.Application.Services.Configuration;
 using MDIP.Application.Services.Stats;
 using MDIP.Domain.Configs;
@@ -141,7 +142,7 @@ public class TextDataService : ITextDataService
     private static bool ContainsAnyPlaceholder(string text)
         => !string.IsNullOrEmpty(text) && text.Contains('{') && text.Contains('}');
 
-    [UsedImplicitly] public IConfigAccessor ConfigAccessor { get; set; }
-    [UsedImplicitly] public IConfigService ConfigService { get; set; }
-    [UsedImplicitly] public IGameStatsService GameStatsService { get; set; }
+    [UsedImplicitly] [Inject] public IConfigAccessor ConfigAccessor { get; set; }
+    [UsedImplicitly] [Inject] public IConfigService ConfigService { get; set; }
+    [UsedImplicitly] [Inject] public IGameStatsService GameStatsService { get; set; }
 }

@@ -1,4 +1,5 @@
 ﻿using JetBrains.Annotations;
+using MDIP.Application.DependencyInjection;
 using MDIP.Application.Services.UI;
 
 namespace MDIP.Patches;
@@ -20,5 +21,5 @@ internal static class PnlPreparationPatch
         PreparationScreenService.OnRecordUpdated(__instance);
     }
 
-    [UsedImplicitly] public static IPreparationScreenService PreparationScreenService { get; set; }
+    [UsedImplicitly] [Inject] public static IPreparationScreenService PreparationScreenService { get; set; }
 }

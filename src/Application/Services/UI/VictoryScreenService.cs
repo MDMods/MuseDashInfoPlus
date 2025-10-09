@@ -1,4 +1,5 @@
 ﻿using JetBrains.Annotations;
+using MDIP.Application.DependencyInjection;
 using MDIP.Application.Services.Configuration;
 using MDIP.Application.Services.Logging;
 using MDIP.Application.Services.Notes;
@@ -74,9 +75,9 @@ public class VictoryScreenService : IVictoryScreenService
         }
     }
 
-    [UsedImplicitly] public IConfigAccessor ConfigAccessor { get; set; }
-    [UsedImplicitly] public IGameStatsService GameStatsService { get; set; }
-    [UsedImplicitly] public INoteRecordService NoteRecordService { get; set; }
-    [UsedImplicitly] public IStatsSaverService StatsSaverService { get; set; }
-    [UsedImplicitly] public ILogger<VictoryScreenService> Logger { get; set; }
+    [UsedImplicitly] [Inject] public IConfigAccessor ConfigAccessor { get; set; }
+    [UsedImplicitly] [Inject] public IGameStatsService GameStatsService { get; set; }
+    [UsedImplicitly] [Inject] public INoteRecordService NoteRecordService { get; set; }
+    [UsedImplicitly] [Inject] public IStatsSaverService StatsSaverService { get; set; }
+    [UsedImplicitly] [Inject] public ILogger<VictoryScreenService> Logger { get; set; }
 }

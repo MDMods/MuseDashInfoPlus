@@ -1,5 +1,6 @@
 ﻿using Il2CppAssets.Scripts.GameCore.HostComponent;
 using JetBrains.Annotations;
+using MDIP.Application.DependencyInjection;
 using MDIP.Application.Services.Configuration;
 using MDIP.Application.Services.Logging;
 using MDIP.Application.Services.Stats;
@@ -92,8 +93,8 @@ public class NoteEventService : INoteEventService
         }
     }
 
-    [UsedImplicitly] public IConfigAccessor ConfigAccessor { get; set; }
-    [UsedImplicitly] public IGameStatsService GameStatsService { get; set; }
-    [UsedImplicitly] public INoteRecordService NoteRecordService { get; set; }
-    [UsedImplicitly] public ILogger<NoteEventService> Logger { get; set; }
+    [UsedImplicitly] [Inject] public IConfigAccessor ConfigAccessor { get; set; }
+    [UsedImplicitly] [Inject] public IGameStatsService GameStatsService { get; set; }
+    [UsedImplicitly] [Inject] public INoteRecordService NoteRecordService { get; set; }
+    [UsedImplicitly] [Inject] public ILogger<NoteEventService> Logger { get; set; }
 }

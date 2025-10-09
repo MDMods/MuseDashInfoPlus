@@ -1,4 +1,5 @@
 ﻿using JetBrains.Annotations;
+using MDIP.Application.DependencyInjection;
 using MDIP.Domain.Configs;
 
 namespace MDIP.Application.Services.Configuration;
@@ -14,5 +15,5 @@ public class ConfigAccessor : IConfigAccessor
     public TextFieldUpperLeftConfigs TextFieldUpperLeft => ConfigService.GetConfig<TextFieldUpperLeftConfigs>(nameof(TextFieldUpperLeftConfigs));
     public TextFieldUpperRightConfigs TextFieldUpperRight => ConfigService.GetConfig<TextFieldUpperRightConfigs>(nameof(TextFieldUpperRightConfigs));
 
-    [UsedImplicitly] public IConfigService ConfigService { get; set; }
+    [UsedImplicitly] [Inject] public IConfigService ConfigService { get; set; }
 }
