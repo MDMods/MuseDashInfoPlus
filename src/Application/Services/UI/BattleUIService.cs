@@ -108,7 +108,14 @@ public class BattleUIService : IBattleUIService
                 imgIconApPath = "Score/Other/TxtScore/ImgIconAp";
             }
             else
-                throw new InvalidOperationException("Unknown score style type.");
+            {
+                scoreStyleType = ScoreStyleType.OtherEN;
+                imgIconApPath = "Score/Other/TxtScore/ImgIconAp";
+
+                Logger.Warn("Unknown score style detected. Falling back to default.");
+                Logger.Warn("If you see this message, please contact the developer KARPED1EM. It's important for mod maintenance.");
+                Logger.Warn("如果您看到此信息，请联系开发者 KARPED1EM！这对模组维护非常重要。");
+            }
 
             var imgPauseRect = activeBattlePanel.transform.Find("Up/BtnPause/ImgPause").gameObject.GetComponent<RectTransform>();
             imgPauseRect.sizeDelta = new(70, 70);
