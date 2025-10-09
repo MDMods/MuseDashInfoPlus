@@ -77,11 +77,13 @@ public class UpdateService : IUpdateService
                 File.Delete(paths.BackupPath);
             if (File.Exists(paths.TempPath))
                 File.Delete(paths.TempPath);
+            if (File.Exists(paths.NewPath))
+                File.Delete(paths.NewPath);
             return true;
         }
         catch (Exception ex)
         {
-            Logger.Error($"Failed to clean up old backup or temp file: {ex.Message}");
+            Logger.Error($"Failed to clean up old files: {ex.Message}");
             return false;
         }
     }
@@ -112,7 +114,6 @@ public class UpdateService : IUpdateService
             Logger.Warning($"Hash mismatch for download from {url}");
             SafeDelete(tempPath);
             return false;
-
         }
         catch (Exception ex)
         {
@@ -126,8 +127,27 @@ public class UpdateService : IUpdateService
     {
         try
         {
-            File.Move(_modPath, paths.BackupPath);
-            File.Move(paths.TempPath, paths.NewPath);
+            if (!File.Exists(_modPath))
+                throw new FileNotFoundException("Current assembly not found", _modPath);
+
+            var currentDir = Path.GetDirectoryName(_modPath);
+            if (string.IsNullOrEmpty(currentDir))
+                throw new InvalidOperationException("Failed to resolve current assembly directory");
+
+            var targetDir = Path.GetDirectoryName(paths.NewPath);
+            if (string.IsNullOrEmpty(targetDir))
+                throw new InvalidOperationException("Failed to resolve target directory");
+
+            if (!string.Equals(currentDir.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar),
+                               targetDir.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar),
+                               StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException("Current assembly is not located in the Mods directory");
+            }
+
+            File.Move(_modPath, paths.BackupPath, true);
+            File.Move(paths.TempPath, paths.NewPath, true);
+
             return true;
         }
         catch (Exception ex)
@@ -149,7 +169,7 @@ public class UpdateService : IUpdateService
             if (File.Exists(_modPath))
                 File.Delete(_modPath);
 
-            File.Move(backupPath, _modPath);
+            File.Move(backupPath, _modPath, true);
         }
         catch (Exception ex)
         {

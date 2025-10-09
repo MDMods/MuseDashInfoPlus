@@ -147,6 +147,10 @@ public class MDIPMod : MelonMod
                 LogError("Failed to fetch update info.");
                 return;
             }
+            if (string.IsNullOrWhiteSpace(updateInfo.Hash))
+            {
+                LogError("Update hash is empty.");
+            }
 
             if (!UpdateService.IsUpdateAvailable(updateInfo))
             {
