@@ -61,6 +61,8 @@ public class MDIPMod : MelonMod
             RegisterAndSaveConfig(type, name);
         }
         ConfigService.ActivateWatcher();
+
+        LogInfo($"{ModBuildInfo.Name} has loaded correctly!");
     }
 
     public override void OnSceneWasLoaded(int buildIndex, string sceneName)
