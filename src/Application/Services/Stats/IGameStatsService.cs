@@ -2,7 +2,7 @@
 using MDIP.Domain.Enums;
 using MDIP.Domain.Records;
 
-namespace MDIP.Application.Contracts;
+namespace MDIP.Application.Services.Stats;
 
 public interface IGameStatsService
 {

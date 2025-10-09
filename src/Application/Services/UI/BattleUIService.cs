@@ -1,15 +1,20 @@
-﻿using Il2CppAssets.Scripts.UI.Panels;
+﻿using System;
+using System.Collections.Generic;
+using Il2CppAssets.Scripts.UI.Panels;
 using JetBrains.Annotations;
-using MDIP.Application.Contracts;
+using MDIP.Application.Services.Assets;
+using MDIP.Application.Services.Configuration;
+using MDIP.Application.Services.Diagnostic;
+using MDIP.Application.Services.Stats;
+using MDIP.Application.Services.Text;
 using MDIP.Domain.Configs;
 using MDIP.Domain.Enums;
 using MDIP.Utils;
+using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
 namespace MDIP.Application.Services.UI;
-
-using Object = Object;
 
 public class BattleUIService : IBattleUIService
 {
@@ -334,14 +339,10 @@ public class BattleUIService : IBattleUIService
         return obj;
     }
 
-    #region Injections
-
     [UsedImplicitly] public required IConfigAccessor ConfigAccessor { get; init; }
     [UsedImplicitly] public required ITextObjectService TextObjectService { get; init; }
     [UsedImplicitly] public required IFontService FontService { get; init; }
     [UsedImplicitly] public required IGameStatsService GameStatsService { get; init; }
     [UsedImplicitly] public required ITextDataService TextDataService { get; init; }
     [UsedImplicitly] public required ILogger<BattleUIService> Logger { get; init; }
-
-    #endregion
 }

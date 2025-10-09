@@ -1,7 +1,9 @@
 using System.Globalization;
 using System.Text;
 using JetBrains.Annotations;
-using MDIP.Application.Contracts;
+using MDIP.Application.DependencyInjection;
+using MDIP.Application.Services.Configuration;
+using MDIP.Application.Services.Stats;
 using MDIP.Domain.Configs;
 using MDIP.Utils;
 
@@ -125,11 +127,7 @@ public class TextDataService : ITextDataService, IPostInjectable
         return text.Contains('{') && text.Contains('}');
     }
 
-    #region Injections
-
     [UsedImplicitly] public required IConfigAccessor ConfigAccessor { get; init; }
     [UsedImplicitly] public required IConfigService ConfigService { get; init; }
     [UsedImplicitly] public required IGameStatsService GameStatsService { get; init; }
-
-    #endregion
 }

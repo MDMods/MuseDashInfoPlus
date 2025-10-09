@@ -1,4 +1,4 @@
-﻿using MDIP.Application.Contracts;
+﻿using System;
 
 namespace MDIP.Application.Services.Diagnostic;
 

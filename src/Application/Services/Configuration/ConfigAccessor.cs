@@ -1,5 +1,4 @@
 ﻿using JetBrains.Annotations;
-using MDIP.Application.Contracts;
 using MDIP.Domain.Configs;
 
 namespace MDIP.Application.Services.Configuration;
@@ -15,9 +14,5 @@ public class ConfigAccessor : IConfigAccessor
     public TextFieldUpperLeftConfigs TextFieldUpperLeft => ConfigService.GetConfig<TextFieldUpperLeftConfigs>(nameof(TextFieldUpperLeftConfigs));
     public TextFieldUpperRightConfigs TextFieldUpperRight => ConfigService.GetConfig<TextFieldUpperRightConfigs>(nameof(TextFieldUpperRightConfigs));
 
-    #region Injections
-
     [UsedImplicitly] public required IConfigService ConfigService { get; init; }
-
-    #endregion
 }

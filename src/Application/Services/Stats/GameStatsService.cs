@@ -1,10 +1,13 @@
-﻿using Il2CppAssets.Scripts.Database;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Il2CppAssets.Scripts.Database;
 using Il2CppAssets.Scripts.GameCore.HostComponent;
 using Il2CppFormulaBase;
 using Il2CppGameLogic;
 using JetBrains.Annotations;
-using MDIP.Application.Contracts;
-using MDIP.Application.Services.Notes;
+using MDIP.Application.Services.Configuration;
+using MDIP.Application.Services.Diagnostic;
 using MDIP.Domain.Configs;
 using MDIP.Domain.Enums;
 using MDIP.Domain.Records;
@@ -532,11 +535,7 @@ public class GameStatsService : IGameStatsService
         };
     }
 
-    #region Injections
-
-    [UsedImplicitly] public required IConfigAccessor ConfigAccessor {get; init;}
-    [UsedImplicitly] public required IStatsSaverService StatsSaverService {get; init;}
-    [UsedImplicitly] public required ILogger<GameStatsService> Logger {get; init;}
-
-    #endregion
+    [UsedImplicitly] public required IConfigAccessor ConfigAccessor { get; init; }
+    [UsedImplicitly] public required IStatsSaverService StatsSaverService { get; init; }
+    [UsedImplicitly] public required ILogger<GameStatsService> Logger { get; init; }
 }

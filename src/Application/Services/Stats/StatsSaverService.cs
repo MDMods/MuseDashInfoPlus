@@ -1,6 +1,8 @@
+using System.Collections.Generic;
+using System.IO;
 using System.Text.Json;
 using JetBrains.Annotations;
-using MDIP.Application.Contracts;
+using MDIP.Application.Services.Diagnostic;
 using MDIP.Domain.Stats;
 using MDIP.Utils;
 
@@ -76,9 +78,5 @@ public class StatsSaverService : IStatsSaverService
         }
     }
 
-    #region Injections
-
     [UsedImplicitly] public required ILogger<StatsSaverService> Logger { get; init; }
-
-    #endregion
 }

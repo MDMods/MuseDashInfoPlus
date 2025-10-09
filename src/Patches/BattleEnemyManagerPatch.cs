@@ -1,6 +1,6 @@
 ﻿using Il2CppAssets.Scripts.GameCore.HostComponent;
 using JetBrains.Annotations;
-using MDIP.Application.Contracts;
+using MDIP.Application.Services.Notes;
 
 namespace MDIP.Patches;
 
@@ -12,9 +12,5 @@ internal static class BattleEnemyManagerSetPlayResultPatch
         NoteEventService.HandleSetPlayResult(idx, result, isMulStart, isMulEnd, isLeft);
     }
 
-    #region Injections
-
     [UsedImplicitly] public static INoteEventService NoteEventService { get; set; }
-
-    #endregion
 }

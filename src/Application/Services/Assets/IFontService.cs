@@ -1,6 +1,6 @@
-using MDIP.Domain.Enums;
+﻿using MDIP.Domain.Enums;
 
-namespace MDIP.Application.Contracts;
+namespace MDIP.Application.Services.Assets;
 
 public interface IFontService
 {

@@ -1,4 +1,3 @@
-using MDIP.Application.Contracts;
 using MDIP.Domain.Enums;
 using UnityEngine.AddressableAssets;
 

@@ -1,13 +1,11 @@
 ﻿using JetBrains.Annotations;
-using MDIP.Application.Contracts;
+using MDIP.Application.Services.UI;
 
 namespace MDIP.Patches;
 
 [HarmonyPatch(typeof(PnlPreparation))]
 internal static class PnlPreparationPatch
 {
-
-
     [HarmonyPatch(nameof(PnlPreparation.OnDiffTglChanged))]
     [HarmonyPostfix]
     private static void OnDiffTglChangedPostfix(PnlPreparation __instance)
@@ -22,9 +20,5 @@ internal static class PnlPreparationPatch
         PreparationScreenService.OnRecordUpdated(__instance);
     }
 
-    #region Injections
-
     [UsedImplicitly] public static IPreparationScreenService PreparationScreenService { get; set; }
-
-    #endregion
 }

@@ -1,6 +1,6 @@
 ﻿using Il2CppAssets.Scripts.Database;
 using Il2CppFormulaBase;
-using MDIP.Application.Contracts;
+using MDIP.Application.Services.Stats;
 using MDIP.Domain.Configs;
 using MDIP.Domain.Enums;
 

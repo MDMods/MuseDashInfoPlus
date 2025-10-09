@@ -1,5 +1,11 @@
-﻿using JetBrains.Annotations;
-using MDIP.Application.Contracts;
+﻿using System;
+using System.IO;
+using System.Linq;
+using JetBrains.Annotations;
+using MDIP.Application.Services.Configuration;
+using MDIP.Application.Services.Diagnostic;
+using MDIP.Application.Services.Notes;
+using MDIP.Application.Services.Stats;
 using MDIP.Utils;
 
 namespace MDIP.Application.Services.UI;
@@ -71,13 +77,9 @@ public class VictoryScreenService : IVictoryScreenService
         }
     }
 
-    #region Injections
-
     [UsedImplicitly] public required IConfigAccessor ConfigAccessor { get; init; }
     [UsedImplicitly] public required IGameStatsService GameStatsService { get; init; }
     [UsedImplicitly] public required INoteRecordService NoteRecordService { get; init; }
     [UsedImplicitly] public required IStatsSaverService StatsSaverService { get; init; }
     [UsedImplicitly] public required ILogger<VictoryScreenService> Logger { get; init; }
-
-    #endregion
 }

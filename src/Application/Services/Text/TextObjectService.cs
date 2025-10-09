@@ -1,11 +1,10 @@
+using System;
 using JetBrains.Annotations;
-using MDIP.Application.Contracts;
+using MDIP.Application.Services.Configuration;
 using MDIP.Utils;
 using Object = UnityEngine.Object;
 
 namespace MDIP.Application.Services.Text;
-
-using Object = Object;
 
 public class TextObjectService : ITextObjectService
 {
@@ -75,10 +74,6 @@ public class TextObjectService : ITextObjectService
         return null;
     }
 
-    #region Injections
-
     [UsedImplicitly] public required IConfigAccessor ConfigAccessor { get; init; }
     [UsedImplicitly] public required ITextDataService TextDataService { get; init; }
-
-    #endregion
 }

@@ -1,5 +1,5 @@
 ﻿using JetBrains.Annotations;
-using MDIP.Application.Contracts;
+using MDIP.Application.Services.UI;
 
 namespace MDIP.Patches;
 
@@ -11,9 +11,5 @@ internal static class PnlVictorySetDetailInfoPatch
         VictoryScreenService.OnSetDetailInfo(__instance);
     }
 
-    #region Injections
-
     [UsedImplicitly] public static IVictoryScreenService VictoryScreenService { get; set; }
-
-    #endregion
 }

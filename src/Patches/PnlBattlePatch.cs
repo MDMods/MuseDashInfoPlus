@@ -1,6 +1,6 @@
 ﻿using Il2CppAssets.Scripts.UI.Panels;
 using JetBrains.Annotations;
-using MDIP.Application.Contracts;
+using MDIP.Application.Services.UI;
 
 namespace MDIP.Patches;
 
@@ -12,9 +12,5 @@ internal static class PnlBattleGameStartPatch
         BattleUIService.OnGameStart(__instance);
     }
 
-    #region Injections
-
     [UsedImplicitly] public static IBattleUIService BattleUIService { get; set; }
-
-    #endregion
 }

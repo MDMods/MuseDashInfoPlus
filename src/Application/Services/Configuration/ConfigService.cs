@@ -1,9 +1,9 @@
-using JetBrains.Annotations;
-using MDIP.Application.Contracts;
+﻿using JetBrains.Annotations;
+using MDIP.Application.Services.Diagnostic;
 using MDIP.Domain.Configs;
 using MDIP.Domain.Configuration;
 
-namespace MDIP.Infrastructure.Configuration;
+namespace MDIP.Application.Services.Configuration;
 
 public class ConfigService : IConfigService
 {
@@ -155,9 +155,7 @@ public class ConfigService : IConfigService
     }
 
     private void OnConfigFileRenamed(object sender, RenamedEventArgs e)
-    {
-        OnConfigFileChanged(sender, e);
-    }
+        => OnConfigFileChanged(sender, e);
 
     private void OnConfigFileChanged(object sender, FileSystemEventArgs e)
     {
@@ -188,9 +186,5 @@ public class ConfigService : IConfigService
         }
     }
 
-    #region Injections
-
     [UsedImplicitly] public required ILogger<ConfigService> Logger { get; init; }
-
-    #endregion
 }

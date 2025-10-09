@@ -1,6 +1,9 @@
-﻿using Il2CppAssets.Scripts.GameCore.HostComponent;
+﻿using System;
+using Il2CppAssets.Scripts.GameCore.HostComponent;
 using JetBrains.Annotations;
-using MDIP.Application.Contracts;
+using MDIP.Application.Services.Configuration;
+using MDIP.Application.Services.Diagnostic;
+using MDIP.Application.Services.Stats;
 using MDIP.Domain.Enums;
 using MDIP.Utils;
 
@@ -95,12 +98,8 @@ public class NoteEventService : INoteEventService
         }
     }
 
-    #region Injections
-
     [UsedImplicitly] public required IConfigAccessor ConfigAccessor { get; init; }
     [UsedImplicitly] public required IGameStatsService GameStatsService { get; init; }
     [UsedImplicitly] public required INoteRecordService NoteRecordService { get; init; }
     [UsedImplicitly] public required ILogger<NoteEventService> Logger { get; init; }
-
-    #endregion
 }

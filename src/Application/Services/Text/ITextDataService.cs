@@ -1,4 +1,4 @@
-namespace MDIP.Application.Contracts;
+﻿namespace MDIP.Application.Services.Text;
 
 public interface ITextDataService
 {

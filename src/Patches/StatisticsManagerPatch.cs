@@ -1,6 +1,8 @@
 ﻿using Il2CppAssets.Scripts.GameCore.Managers;
 using JetBrains.Annotations;
-using MDIP.Application.Contracts;
+using MDIP.Application.Services.Configuration;
+using MDIP.Application.Services.Notes;
+using MDIP.Application.Services.Stats;
 
 namespace MDIP.Patches;
 
@@ -15,11 +17,7 @@ internal static class StatisticsManagerPatch
         NoteRecordService.AddRecord(GameStatsService.GetCurMusicData(), "OnNoteResult", $"noteResult:{result}");
     }
 
-    #region Injections
-
     [UsedImplicitly] public static IConfigAccessor ConfigAccessor { get; set; }
     [UsedImplicitly] public static INoteRecordService NoteRecordService { get; set; }
     [UsedImplicitly] public static IGameStatsService GameStatsService { get; set; }
-
-    #endregion
 }

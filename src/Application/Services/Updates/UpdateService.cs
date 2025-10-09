@@ -1,13 +1,18 @@
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text.Json;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
-using MDIP.Application.Contracts;
+using MDIP.Application.Services.Diagnostic;
 using MDIP.Domain.Updates;
 
-namespace MDIP.Infrastructure.Updates;
+namespace MDIP.Application.Services.Updates;
 
-public class UpdateService() : IUpdateService
+public class UpdateService : IUpdateService
 {
     private readonly HttpClient _httpClient = new();
     private readonly string _modFolder = Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath, "..", @"Mods\"));
@@ -119,7 +124,6 @@ public class UpdateService() : IUpdateService
             }
             catch
             {
-                // ignored
             }
 
             return false;
@@ -134,9 +138,5 @@ public class UpdateService() : IUpdateService
         return Convert.ToHexString(hash).ToLowerInvariant();
     }
 
-    #region Injections
-
     [UsedImplicitly] public required ILogger<UpdateService> Logger { get; init; }
-
-    #endregion
 }

@@ -1,6 +1,6 @@
 ﻿using MDIP.Domain.Configs;
 
-namespace MDIP.Application.Contracts;
+namespace MDIP.Application.Services.Configuration;
 
 public interface IConfigAccessor
 {

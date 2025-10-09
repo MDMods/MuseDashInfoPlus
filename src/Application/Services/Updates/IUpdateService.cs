@@ -1,6 +1,6 @@
-using MDIP.Domain.Updates;
+﻿using MDIP.Domain.Updates;
 
-namespace MDIP.Application.Contracts;
+namespace MDIP.Application.Services.Updates;
 
 public interface IUpdateService
 {

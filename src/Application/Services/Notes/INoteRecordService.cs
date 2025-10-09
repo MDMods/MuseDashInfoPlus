@@ -1,6 +1,6 @@
-using Il2CppGameLogic;
+﻿using Il2CppGameLogic;
 
-namespace MDIP.Application.Contracts;
+namespace MDIP.Application.Services.Notes;
 
 public interface INoteRecordService
 {

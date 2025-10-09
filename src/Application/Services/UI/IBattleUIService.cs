@@ -1,6 +1,6 @@
 ﻿using Il2CppAssets.Scripts.UI.Panels;
 
-namespace MDIP.Application.Contracts;
+namespace MDIP.Application.Services.UI;
 
 public interface IBattleUIService
 {

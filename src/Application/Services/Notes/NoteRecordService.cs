@@ -1,6 +1,10 @@
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Il2CppGameLogic;
 using JetBrains.Annotations;
-using MDIP.Application.Contracts;
+using MDIP.Application.Services.Diagnostic;
+using MDIP.Application.Services.Stats;
 using MDIP.Domain.Enums;
 using MDIP.Domain.Notes;
 using MDIP.Utils;
@@ -92,10 +96,6 @@ public class NoteRecordService : INoteRecordService
         Logger.Warning($"Excel exported to: {Path.GetFullPath(filePath)}");
     }
 
-    #region Injections
-
     [UsedImplicitly] public required IGameStatsService GameStatsService { get; init; }
     [UsedImplicitly] public required ILogger<NoteRecordService> Logger { get; init; }
-
-    #endregion
 }

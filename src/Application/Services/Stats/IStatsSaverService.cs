@@ -1,6 +1,6 @@
-using MDIP.Domain.Stats;
+﻿using MDIP.Domain.Stats;
 
-namespace MDIP.Application.Contracts;
+namespace MDIP.Application.Services.Stats;
 
 public interface IStatsSaverService
 {

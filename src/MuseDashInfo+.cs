@@ -1,6 +1,13 @@
 using JetBrains.Annotations;
-using MDIP.Application.Bootstrap;
-using MDIP.Application.Contracts;
+using MDIP.Application.DependencyInjection;
+using MDIP.Application.Services.Assets;
+using MDIP.Application.Services.Configuration;
+using MDIP.Application.Services.Diagnostic;
+using MDIP.Application.Services.Notes;
+using MDIP.Application.Services.Stats;
+using MDIP.Application.Services.Text;
+using MDIP.Application.Services.UI;
+using MDIP.Application.Services.Updates;
 using MDIP.Domain.Configs;
 using MDIP.Patches;
 using MDIP.Utils;
@@ -114,8 +121,6 @@ public class MDIPMod : MelonMod
             Logger.Error("Auto update failed!");
     }
 
-    #region Injections
-
     [UsedImplicitly] public required IConfigService ConfigService { get; init; }
     [UsedImplicitly] public required IUpdateService UpdateService { get; init; }
     [UsedImplicitly] public required IConfigAccessor ConfigAccessor { get; init; }
@@ -127,6 +132,4 @@ public class MDIPMod : MelonMod
     [UsedImplicitly] public required IStatsSaverService StatsSaverService { get; init; }
     [UsedImplicitly] public required IFontService FontService { get; init; }
     [UsedImplicitly] public required ILogger<MDIPMod> Logger { get; init; }
-
-    #endregion
 }
