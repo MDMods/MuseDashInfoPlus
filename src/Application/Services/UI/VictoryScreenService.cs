@@ -71,7 +71,7 @@ public class VictoryScreenService : IVictoryScreenService
         }
         catch (Exception ex)
         {
-            Logger.Error(ex.ToString());
+            Logger.Error(ex);
         }
     }
 

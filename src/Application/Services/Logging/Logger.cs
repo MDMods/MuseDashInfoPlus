@@ -19,7 +19,7 @@ public class Logger<T> : ILogger<T>
         var content = message switch
         {
             null => "null",
-            Exception ex => $"{ex.Message}\n{ex.StackTrace}",
+            Exception ex => ex.ToString(),
             _ => message.ToString() ?? string.Empty
         };
 

@@ -24,7 +24,8 @@ public class UpdateService : IUpdateService
         }
         catch (Exception ex)
         {
-            Logger.Error($"Failed to get update info: {ex.Message}");
+            Logger.Error("Failed to get update info.");
+            Logger.Error(ex);
             return null;
         }
     }
@@ -42,7 +43,8 @@ public class UpdateService : IUpdateService
         }
         catch (Exception ex)
         {
-            Logger.Error($"Version comparison failed: {ex.Message}");
+            Logger.Error("Version comparison failed.");
+            Logger.Error(ex);
             return false;
         }
     }
@@ -84,7 +86,8 @@ public class UpdateService : IUpdateService
         }
         catch (Exception ex)
         {
-            Logger.Error($"Failed to clean up old files: {ex.Message}");
+            Logger.Error("Failed to clean up old files.");
+            Logger.Error(ex);
             return false;
         }
     }
@@ -153,7 +156,8 @@ public class UpdateService : IUpdateService
         }
         catch (Exception ex)
         {
-            Logger.Error($"File replacement failed: {ex.Message}");
+            Logger.Error("File replacement failed.");
+            Logger.Error(ex);
             SafeDelete(paths.TempPath);
             TryRestoreBackup(paths.BackupPath);
             return false;
@@ -174,7 +178,8 @@ public class UpdateService : IUpdateService
         }
         catch (Exception ex)
         {
-            Logger.Error($"Failed to restore backup: {ex.Message}");
+            Logger.Error("Failed to restore backup.");
+            Logger.Error(ex);
         }
     }
 
@@ -187,7 +192,8 @@ public class UpdateService : IUpdateService
         }
         catch (Exception ex)
         {
-            Logger.Warn($"Failed to delete {path}: {ex.Message}");
+            Logger.Warn($"Failed to delete {path}.");
+            Logger.Warn(ex);
         }
     }
 

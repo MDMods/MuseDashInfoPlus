@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using MDIP.Domain.Enums;
 
 namespace MDIP.Utils;
 
@@ -19,9 +18,8 @@ public static class Helper
 
             return time.ToString(format, cultureInfo);
         }
-        catch (Exception ex)
+        catch
         {
-            Console.WriteLine($"[Warn] Invalid time format, using default. Error: {ex.Message}");
             return time.ToString(defaultFormat, CultureInfo.InvariantCulture);
         }
     }

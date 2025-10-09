@@ -56,7 +56,8 @@ public class StatsSaverService : IStatsSaverService
             }
             catch (Exception ex)
             {
-                Logger.Error($"Error loading stats data: {ex.Message}");
+                Logger.Error("Error loading stats data.");
+                Logger.Error(ex);
                 _statsDict = new();
             }
         }
@@ -73,7 +74,8 @@ public class StatsSaverService : IStatsSaverService
         }
         catch (Exception ex)
         {
-            Logger.Error($"Error saving stats data: {ex.Message}");
+            Logger.Error("Error saving stats data.");
+            Logger.Error(ex);
         }
     }
 

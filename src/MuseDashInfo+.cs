@@ -159,7 +159,8 @@ public class MDIPMod : MelonMod
         }
         catch (Exception ex)
         {
-            LogError($"Update check failed: {ex}");
+            LogError("Update check failed.");
+            LogError(ex.ToString());
         }
     }
 
@@ -173,7 +174,7 @@ public class MDIPMod : MelonMod
 
         var success = await UpdateService.ApplyUpdateAsync(updateInfo);
         if (success)
-            LogWarning("Auto update successful!");
+            LogWarn("Auto update successful!");
         else
             LogError("Auto update failed!");
     }
@@ -181,25 +182,25 @@ public class MDIPMod : MelonMod
     private void LogInfo(string message)
     {
         if (Logger != null) Logger.Info(message);
-        else Melon<MDIPMod>.Logger.Msg($"[Info+] {message}");
+        else Melon<MDIPMod>.Logger.Msg(message);
     }
 
-    private void LogWarning(string message)
+    private void LogWarn(string message)
     {
         if (Logger != null) Logger.Warn(message);
-        else Melon<MDIPMod>.Logger.Warning($"[Info+] {message}");
+        else Melon<MDIPMod>.Logger.Warning(message);
     }
 
     private void LogError(string message)
     {
         if (Logger != null) Logger.Error(message);
-        else Melon<MDIPMod>.Logger.Error($"[Info+] {message}");
+        else Melon<MDIPMod>.Logger.Error(message);
     }
 
     private void LogMissingServiceOnce(string serviceName)
     {
         if (_missingServicesLogged.Add(serviceName))
-            Melon<MDIPMod>.Logger.Warning($"[Info+] Service '{serviceName}' is not available yet; skipping related operations.");
+            Melon<MDIPMod>.Logger.Warning($"Service '{serviceName}' is not available yet; skipping related operations.");
     }
 
     [UsedImplicitly] [Inject] public IConfigService ConfigService { get; set; }

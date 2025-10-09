@@ -99,7 +99,8 @@ public class ConfigItem(string name, string configPath)
         }
         catch (Exception ex)
         {
-            Melon<MDIPMod>.Logger.BigError($"[{nameof(ConfigItem)}] Failed to load config {name}: {ex}");
+            Melon<MDIPMod>.Logger.BigError($"[{nameof(ConfigItem)}] Failed to load config {name}");
+            Melon<MDIPMod>.Logger.BigError($"[{nameof(ConfigItem)}] {ex}");
             return CreateAndSaveDefault<T>();
         }
     }
