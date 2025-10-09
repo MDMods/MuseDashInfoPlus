@@ -6,31 +6,37 @@ namespace MDIP.Utils;
 
 public static class Extensions
 {
+    public static bool IsRegularNote(this NoteType noteType) => Enum.IsDefined(typeof(NoteType), (uint)noteType);
+
+    public static Color ToColor(this string color)
+        => ColorUtility.TryParseHtmlString(color, out var result) ? result : Color.white;
+
     public static string Colored(this string text, string color) => $"<color={color}>{text}</color>";
 
     public static string TruncateByWidth(this string input, int maxWidth)
     {
         if (string.IsNullOrEmpty(input)) return input;
 
-        var totalWidth = CalculateWidth(input);
+        var stripped = System.Text.RegularExpressions.Regex.Replace(input, "<.*?>", string.Empty);
 
+        var totalWidth = stripped.CalculateWidth();
         if (totalWidth <= maxWidth) return input;
 
         var breakSymbols = new[] { ' ', '-', '—', '》', '，', '。', '、', '：', '；', ')', '）', '》', '」', '』', '!', '！', '.', ',', '…' };
 
-        var currentString = input;
+        var currentStripped = stripped;
 
         while (totalWidth > maxWidth)
         {
             var foundBreakPoint = false;
 
-            for (var i = currentString.Length - 1; i >= 0; i--)
+            for (var i = currentStripped.Length - 1; i >= 0; i--)
             {
-                if (!breakSymbols.Contains(currentString[i]))
+                if (!breakSymbols.Contains(currentStripped[i]))
                     continue;
 
-                currentString = currentString[..i].TrimEnd();
-                totalWidth = CalculateWidth(currentString);
+                currentStripped = currentStripped[..i].TrimEnd();
+                totalWidth = currentStripped.CalculateWidth();
                 foundBreakPoint = true;
                 break;
             }
@@ -39,21 +45,35 @@ public static class Extensions
                 break;
         }
 
-        if (totalWidth <= maxWidth)
-            return currentString;
-
-        var width = 0;
-        var charCount = 0;
-
-        foreach (var charWidth in currentString.Select(c => IsFullWidth(c) ? 2 : 1).TakeWhile(charWidth => width + charWidth <= maxWidth))
+        if (totalWidth > maxWidth)
         {
-            width += charWidth;
-            charCount++;
+            var width = 0;
+            var charCount = 0;
+            foreach (var charWidth in currentStripped.Select(c => IsFullWidth(c) ? 2 : 1).TakeWhile(charWidth => width + charWidth <= maxWidth))
+            {
+                width += charWidth;
+                charCount++;
+            }
+            currentStripped = currentStripped[..charCount];
         }
 
-        currentString = currentString[..charCount];
+        var visibleCount = 0;
+        var j = 0;
+        while (j < input.Length && visibleCount < currentStripped.Length)
+        {
+            if (input[j] == '<')
+            {
+                var end = input.IndexOf('>', j);
+                if (end == -1) break;
+                j = end + 1;
+                continue;
+            }
 
-        return currentString;
+            visibleCount++;
+            j++;
+        }
+
+        return input[..j];
     }
 
     public static string EscapeReturn(this string text) => text.Replace("\n", "\\n");
@@ -68,15 +88,17 @@ public static class Extensions
         return Convert.ToBase64String(hash);
     }
 
-    private static int CalculateWidth(this string input) => input.Sum(c => IsFullWidth(c) ? 2 : 1);
+    public static int CalculateWidth(this string input) => input.Sum(c => IsFullWidth(c) ? 2 : 1);
 
-    private static bool IsFullWidth(this char c)
-        => c >= 0x4E00 && c <= 0x9FFF || // CJK统一汉字
-           c >= 0x3000 && c <= 0x303F || // CJK标点符号
-           c >= 0xFF00 && c <= 0xFFEF; // 全角ASCII、全角标点
-
-    public static bool IsRegularNote(this NoteType noteType) => Helper.IsRegularNote((uint)noteType);
-
-    public static Color ToColor(this string color)
-        => ColorUtility.TryParseHtmlString(color, out var result) ? result : Color.white;
+    public static bool IsFullWidth(this char c)
+        => c >= 0x1100 && (
+            c <= 0x115F ||
+            c == 0x2329 || c == 0x232A ||
+            (c >= 0x2E80 && c <= 0xA4CF && c != 0x303F) ||
+            (c >= 0xAC00 && c <= 0xD7A3) ||
+            (c >= 0xF900 && c <= 0xFAFF) ||
+            (c >= 0xFE10 && c <= 0xFE19) ||
+            (c >= 0xFE30 && c <= 0xFE6F) ||
+            (c >= 0xFF00 && c <= 0xFF60) ||
+            (c >= 0xFFE0 && c <= 0xFFE6));
 }

@@ -22,7 +22,7 @@ public class NoteRecordService : INoteRecordService
         var oid = note.objId;
         if (!_records.ContainsKey(oid))
         {
-            if (!Helper.IsRegularNote(note.noteData.type))
+            if (!Enum.IsDefined(typeof(NoteType), note.noteData.type))
                 return;
 
             var longType = "-";
