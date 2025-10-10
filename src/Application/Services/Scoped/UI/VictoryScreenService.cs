@@ -18,13 +18,14 @@ public class VictoryScreenService : IVictoryScreenService
 
         var hash = MusicInfoUtils.CurMusicHash;
 
-        var newAcc = (float)Math.Round(GameStatsService.GetCalculatedAccuracy(), 2);
+        var newAcc = (float)Math.Round(GameStatsService.GetTrueAccuracy(), 2);
         var newScore = GameStatsService.Current.Score;
 
-        var main = ConfigAccessor.Main;
-        var newBest = main.PersonalBestCriteria == 2
-            ? RuntimeSongDataStore.StorePersonalBestScore(hash, newScore)
-            : RuntimeSongDataStore.StorePersonalBestAccuracy(hash, newAcc);
+        var accBest = RuntimeSongDataStore.StorePersonalBestAccuracy(hash, newAcc);
+        var scoreBest = RuntimeSongDataStore.StorePersonalBestScore(hash, newScore);
+
+        var mainConfig = ConfigAccessor.Main;
+        var newBest = mainConfig.PersonalBestCriteria == 2 ? scoreBest : accBest;
 
         if (newBest)
         {
@@ -52,7 +53,7 @@ public class VictoryScreenService : IVictoryScreenService
             NoteRecordService.ExportToCsv(Path.Combine(folder, $"{MusicInfoUtils.CurMusicName}.csv"));
         }
 
-        if (!main.ReplaceResultsScreenMissCount)
+        if (!mainConfig.ReplaceResultsScreenMissCount)
             return;
 
         try
