@@ -130,7 +130,7 @@ public class GameStatsService : IGameStatsService
     public string FormatRank()
     {
         var main = ConfigAccessor.Main;
-        if (GameUtils.BattleUIType == BattleUIItem.Spell)
+        if (MusicInfoUtils.BattleUIType == BattleUIItem.Spell)
             return string.Empty;
         if (IsTruePerfect)
             return main.TextTruePerfect.Colored(main.RankTPColor);
@@ -152,7 +152,7 @@ public class GameStatsService : IGameStatsService
     public string FormatAccuracy()
     {
         var main = ConfigAccessor.Main;
-        if (GameUtils.BattleUIType == BattleUIItem.Spell)
+        if (MusicInfoUtils.BattleUIType == BattleUIItem.Spell)
             return string.Empty;
         if (IsAllPerfect)
             return "100%".Colored(IsTruePerfect ? main.RankTPColor : main.RankAPColor);
@@ -176,7 +176,7 @@ public class GameStatsService : IGameStatsService
     public string FormatAccuracyGap()
     {
         var main = ConfigAccessor.Main;
-        if (GameUtils.BattleUIType == BattleUIItem.Spell)
+        if (MusicInfoUtils.BattleUIType == BattleUIItem.Spell)
             return string.Empty;
 
         var gap = GetCalculatedAccuracy(1) - _history.Accuracy;
@@ -215,7 +215,7 @@ public class GameStatsService : IGameStatsService
                 parts.Add($"{_current.Great}G".Colored(main.GreatCountsColor));
             if (MissCountHittable + _miss.Block > 0)
                 parts.Add($"{MissCountHittable + _miss.Block}M".Colored(main.NormalMissCountsColor));
-            if (GameUtils.BattleUIType != BattleUIItem.Spell && MissCountCollectible > 0)
+            if (MusicInfoUtils.BattleUIType != BattleUIItem.Spell && MissCountCollectible > 0)
                 parts.Add($"{MissCountCollectible}H".Colored(main.CollectibleMissCountsColor));
             if (main.EarlyLateCountsDisplayMode != 2)
                 return string.Join(" ", parts);
@@ -380,14 +380,14 @@ public class GameStatsService : IGameStatsService
         _task = TaskStageTarget.instance;
         _role = BattleRoleAttributeComponent.instance;
 
-        var record = RuntimeSongDataStore.TryGet(GameUtils.MusicHash);
+        var record = RuntimeSongDataStore.TryGet(MusicInfoUtils.CurMusicHash);
         _history.Score = Math.Max(BattleHelper.GetCurrentMusicHighScore(), record.PersonalBestScore);
         _history.Accuracy = record.PersonalBestAccuracy;
 
-        Logger.Info($"Playing: {GameUtils.MusicName}");
-        Logger.Info($"Hash: {GameUtils.MusicHash}");
+        Logger.Info($"Playing: {MusicInfoUtils.CurMusicName}");
+        Logger.Info($"Hash: {MusicInfoUtils.CurMusicHash}");
 
-        var stats = StatsSaverService.GetStats(GameUtils.MusicHash);
+        var stats = StatsSaverService.GetStats(MusicInfoUtils.CurMusicHash);
         if (stats != null)
         {
             _history.HasStats = true;

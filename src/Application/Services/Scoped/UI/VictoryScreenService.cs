@@ -16,7 +16,7 @@ public class VictoryScreenService : IVictoryScreenService
     {
         GameStatsService.IsPlayerPlaying = false;
 
-        var hash = GameUtils.MusicHash;
+        var hash = MusicInfoUtils.CurMusicHash;
 
         var newAcc = (float)Math.Round(GameStatsService.GetCalculatedAccuracy(), 2);
         var newScore = GameStatsService.Current.Score;
@@ -28,7 +28,7 @@ public class VictoryScreenService : IVictoryScreenService
 
         if (newBest)
         {
-            StatsSaverService.SetStats(GameUtils.MusicHash,
+            StatsSaverService.SetStats(MusicInfoUtils.CurMusicHash,
                 new()
                 {
                     Great = GameStatsService.Current.Great,
@@ -49,7 +49,7 @@ public class VictoryScreenService : IVictoryScreenService
             var folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Info+ Note Records");
             if (!Directory.Exists(folder))
                 Directory.CreateDirectory(folder);
-            NoteRecordService.ExportToCsv(Path.Combine(folder, $"{GameUtils.MusicName}.csv"));
+            NoteRecordService.ExportToCsv(Path.Combine(folder, $"{MusicInfoUtils.CurMusicName}.csv"));
         }
 
         if (!main.ReplaceResultsScreenMissCount)

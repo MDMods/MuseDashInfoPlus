@@ -34,10 +34,10 @@ public class TextDataService : ITextDataService
         UpdateCachedValue("{pbScore}", GameStatsService.History.Score.ToString());
         UpdateCachedValue("{pbAcc}", $"{GameStatsService.History.Accuracy}%");
         UpdateCachedValue("{total}", ((int)GameStatsService.AccuracyCalculationTotal).ToString());
-        UpdateCachedValue("{song}", GameUtils.MusicName.TruncateByWidth(45));
-        UpdateCachedValue("{diff}", GameUtils.GetDifficultyLabel(GameStatsService, main));
-        UpdateCachedValue("{level}", GameUtils.MusicLevel);
-        UpdateCachedValue("{author}", GameUtils.MusicAuthor);
+        UpdateCachedValue("{song}", MusicInfoUtils.CurMusicName.TruncateByWidth(45));
+        UpdateCachedValue("{diff}", MusicInfoUtils.GetDifficultyLabel(main));
+        UpdateCachedValue("{level}", MusicInfoUtils.CurMusicLevel);
+        UpdateCachedValue("{author}", MusicInfoUtils.CurMusicAuthor);
         UpdateCachedValue("{pbGreat}", GameStatsService.History.Great.ToString());
         UpdateCachedValue("{pbMissOther}", GameStatsService.History.MissOther.ToString());
         UpdateCachedValue("{pbMissCollectible}", GameStatsService.History.MissCollectible.ToString());
@@ -50,7 +50,7 @@ public class TextDataService : ITextDataService
             UpdateCachedValue("{pbStatsGap}", main.StatsGapTextWhenNoPersonalBest);
         }
 
-        if (!RuntimeSongDataStore.IsFirstTry(GameUtils.MusicHash))
+        if (!RuntimeSongDataStore.IsFirstTry(MusicInfoUtils.CurMusicHash))
             return;
 
         UpdateCachedValue("{scoreGap}", main.ScoreGapTextWhenNoPersonalBest);
@@ -77,7 +77,7 @@ public class TextDataService : ITextDataService
             UpdateCachedValue("{pbStatsGap}", GameStatsService.FormatPersonalBestStatsGap());
         }
 
-        if (RuntimeSongDataStore.IsFirstTry(GameUtils.MusicHash))
+        if (RuntimeSongDataStore.IsFirstTry(MusicInfoUtils.CurMusicHash))
             return;
 
         UpdateCachedValue("{scoreGap}", GameStatsService.FormatScoreGap());

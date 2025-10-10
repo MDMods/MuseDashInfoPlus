@@ -64,7 +64,7 @@ public class BattleUIService : IBattleUIService
             if (activeBattlePanel == null)
                 throw new InvalidOperationException("No active battle UI panel found.");
 
-            GameUtils.BattleUIType = activeBattlePanel.name switch
+            MusicInfoUtils.BattleUIType = activeBattlePanel.name switch
             {
                 "PnlBattleOthers" => BattleUIItem.Others,
                 "PnlBattleSpell" => BattleUIItem.Spell,
@@ -170,7 +170,7 @@ public class BattleUIService : IBattleUIService
                 TextObjectService.TextScoreBelow = obj;
             }
 
-            if (ConfigAccessor.TextFieldScoreRight.Enabled && GameUtils.BattleUIType != BattleUIItem.Spell)
+            if (ConfigAccessor.TextFieldScoreRight.Enabled && MusicInfoUtils.BattleUIType != BattleUIItem.Spell)
             {
                 var parentPath = imgIconApPath[..imgIconApPath.LastIndexOf('/')];
                 var parentTransform = activeBattlePanel.transform.Find(parentPath);
