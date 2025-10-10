@@ -7,6 +7,7 @@ namespace MDIP.Application.Services.Scoped.Stats;
 public interface IGameStatsService
 {
     bool IsPlayerPlaying { get; set; }
+    string PlayingMusicHash { get; set; }
     CurrentStats Current { get; }
     TotalStats Total { get; }
     MissStats Miss { get; }

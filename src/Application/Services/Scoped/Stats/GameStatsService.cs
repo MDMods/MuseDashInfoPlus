@@ -33,6 +33,7 @@ public class GameStatsService : IGameStatsService
     private TotalStats _total;
 
     public bool IsPlayerPlaying { get; set; } = true;
+    public string PlayingMusicHash { get; set; } = "null";
     public CurrentStats Current => _current;
     public TotalStats Total => _total;
     public MissStats Miss => _miss;
@@ -384,14 +385,16 @@ public class GameStatsService : IGameStatsService
         _task = TaskStageTarget.instance;
         _role = BattleRoleAttributeComponent.instance;
 
-        var record = RuntimeSongDataStore.TryGet(MusicInfoUtils.CurMusicHash);
+        PlayingMusicHash = MusicInfoUtils.CurMusicHash;
+
+        var record = RuntimeSongDataStore.TryGet(PlayingMusicHash);
         _history.Score = Math.Max(BattleHelper.GetCurrentMusicHighScore(), record.PersonalBestScore);
         _history.Accuracy = record.PersonalBestAccuracy;
 
         Logger.Info($"Playing: {MusicInfoUtils.CurMusicName}");
-        Logger.Info($"Hash: {MusicInfoUtils.CurMusicHash}");
+        Logger.Info($"Hash: {PlayingMusicHash}");
 
-        var stats = StatsSaverService.GetStats(MusicInfoUtils.CurMusicHash);
+        var stats = StatsSaverService.GetStats(PlayingMusicHash);
         if (stats != null)
         {
             _history.HasStats = true;

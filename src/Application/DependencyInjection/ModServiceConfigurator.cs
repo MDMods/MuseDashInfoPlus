@@ -50,6 +50,7 @@ public static class ModServiceConfigurator
     {
         DisposeCurrentScope();
         CurrentScope = Provider.CreateScope();
+        Provider.RefreshSingletonPropertyInjections();
         RefreshStaticInjections();
     }
 

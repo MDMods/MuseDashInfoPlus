@@ -16,7 +16,7 @@ public class VictoryScreenService : IVictoryScreenService
     {
         GameStatsService.IsPlayerPlaying = false;
 
-        var hash = MusicInfoUtils.CurMusicHash;
+        var hash = GameStatsService.PlayingMusicHash;
 
         var newAcc = (float)Math.Round(GameStatsService.GetTrueAccuracy(), 2);
         var newScore = GameStatsService.Current.Score;

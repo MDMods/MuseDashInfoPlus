@@ -16,6 +16,7 @@ public sealed class SimpleServiceProvider : IServiceProvider
     private readonly Dictionary<Type, object> _singletons = new();
     private readonly Dictionary<Type, object> _scopedInstances = new();
     private readonly HashSet<Type> _resolving = [];
+    private readonly List<object> _propertyInjectedSingletons = [];
     private int _scopeDepth;
 
     public object GetService(Type serviceType)
@@ -70,6 +71,12 @@ public sealed class SimpleServiceProvider : IServiceProvider
         _scopedInstances.Clear();
     }
 
+    public void RefreshSingletonPropertyInjections()
+    {
+        foreach (var instance in _propertyInjectedSingletons)
+            this.InjectProperties(instance);
+    }
+
     public T GetRequiredService<T>() where T : class => (T)GetRequiredService(typeof(T));
 
     public object GetRequiredService(Type serviceType)
@@ -85,6 +92,9 @@ public sealed class SimpleServiceProvider : IServiceProvider
 
         if (serviceType != descriptor.ImplementationType)
             _singletons.TryAdd(descriptor.ImplementationType, instance);
+
+        if (descriptor.UsePropertyInjection)
+            _propertyInjectedSingletons.Add(instance);
 
         return instance;
     }
