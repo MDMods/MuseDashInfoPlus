@@ -35,6 +35,8 @@ public class BattleUIService : IBattleUIService
     private ScoreStyleType _scoreStyleType = ScoreStyleType.Unknown;
     private string _imgIconApParentPath;
 
+    private Vector3 _textScoreRightLocalPosition;
+
     private static int _pendingApplyRequests;
 
     private float CurrentY => _scoreTransform?.localPosition.y ?? Constants.SCORE_ZOOM_OUT_Y;
@@ -280,9 +282,7 @@ public class BattleUIService : IBattleUIService
     }
 
     public static void RequestApplyConfigChanges()
-    {
-        Interlocked.Increment(ref _pendingApplyRequests);
-    }
+        => Interlocked.Increment(ref _pendingApplyRequests);
 
     private static float EaseInCubic(float value) => value * value * value;
     private static float EaseOutCubic(float value) => 1f - Mathf.Pow(1f - value, 3f);
@@ -344,7 +344,8 @@ public class BattleUIService : IBattleUIService
             else
                 TextObjectService.TextScoreBelow = DestroyAndClear(TextObjectService.TextScoreBelow);
 
-            // ScoreRight（Spell UI excluded）
+            // ScoreRight (Spell UI excluded)
+            _textScoreRightLocalPosition = _currentPanel.Find(_imgIconApParentPath).Find("InfoPlus_TextScoreRight")?.localPosition ??  Vector3.zero;
             if (ConfigAccessor.TextFieldScoreRight.Enabled && MusicInfoUtils.BattleUIType != BattleUIItem.Spell)
             {
                 var parentTransform = _currentPanel.Find(_imgIconApParentPath);
@@ -361,6 +362,9 @@ public class BattleUIService : IBattleUIService
                 rect.anchorMax = new(1, 1);
                 rect.pivot = new(1, 1);
                 TextObjectService.TextScoreRight = obj;
+
+                if (_textScoreRightLocalPosition !=  Vector3.zero)
+                    obj.transform.localPosition = _textScoreRightLocalPosition;
             }
             else
                 TextObjectService.TextScoreRight = DestroyAndClear(TextObjectService.TextScoreRight);
