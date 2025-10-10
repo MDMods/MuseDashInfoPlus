@@ -32,6 +32,11 @@ public class BattleUIService : IBattleUIService
     private GameObject _textObjectTemplate;
     private float _zoomProgress;
 
+    private ScoreStyleType _scoreStyleType = ScoreStyleType.Unknown;
+    private string _imgIconApParentPath;
+
+    private static int _pendingApplyRequests;
+
     private float CurrentY => _scoreTransform?.localPosition.y ?? Constants.SCORE_ZOOM_OUT_Y;
 
     public void OnGameStart(PnlBattle instance)
@@ -79,41 +84,42 @@ public class BattleUIService : IBattleUIService
             _textObjectTemplate.transform.localPosition = new(9999, 9999, -9999);
 
             string imgIconApPath;
-            ScoreStyleType scoreStyleType;
             if (activeBattlePanel.transform.Find("Score/GC")?.gameObject.active ?? false)
             {
-                scoreStyleType = ScoreStyleType.GC;
+                _scoreStyleType = ScoreStyleType.GC;
                 imgIconApPath = "Score/GC/TxtScoreGC/ImgIconApGc";
             }
             else if (activeBattlePanel.transform.Find("Score/Djmax")?.gameObject.active ?? false)
             {
-                scoreStyleType = ScoreStyleType.Djmax;
+                _scoreStyleType = ScoreStyleType.Djmax;
                 imgIconApPath = "Score/Djmax/TxtScore_djmax/ImgIconApDjmax";
             }
             else if (activeBattlePanel.transform.Find("Score/ArkNight")?.gameObject.active ?? false)
             {
-                scoreStyleType = ScoreStyleType.ArkNight;
+                _scoreStyleType = ScoreStyleType.ArkNight;
                 imgIconApPath = "Score/ArkNight/Area/TxtScoreArkNight/ImgIconApArkNight";
             }
             else if (activeBattlePanel.transform.Find("Score/Other/ScoreTittle/ImgEnglish")?.gameObject.active ?? false)
             {
-                scoreStyleType = ScoreStyleType.OtherEN;
+                _scoreStyleType = ScoreStyleType.OtherEN;
                 imgIconApPath = "Score/Other/TxtScore/ImgIconAp";
             }
             else if (activeBattlePanel.transform.Find("Score/Other/ScoreTittle/ImgChinese")?.gameObject.active ?? false)
             {
-                scoreStyleType = ScoreStyleType.OtherCN;
+                _scoreStyleType = ScoreStyleType.OtherCN;
                 imgIconApPath = "Score/Other/TxtScore/ImgIconAp";
             }
             else
             {
-                scoreStyleType = ScoreStyleType.OtherEN;
+                _scoreStyleType = ScoreStyleType.OtherEN;
                 imgIconApPath = "Score/Other/TxtScore/ImgIconAp";
 
                 Logger.Warn("Unknown score style detected. Falling back to default.");
                 Logger.Warn("If you see this message, please contact the developer KARPED1EM. It's important for mod maintenance.");
                 Logger.Warn("如果您看到此信息，请联系开发者 KARPED1EM！这对模组维护非常重要。");
             }
+
+            _imgIconApParentPath = imgIconApPath[..imgIconApPath.LastIndexOf('/')];
 
             var imgPauseRect = activeBattlePanel.transform.Find("Up/BtnPause/ImgPause").gameObject.GetComponent<RectTransform>();
             imgPauseRect.sizeDelta = new(70, 70);
@@ -153,7 +159,7 @@ public class BattleUIService : IBattleUIService
 
             if (ConfigAccessor.TextFieldScoreBelow.Enabled)
             {
-                var offset = Constants.OFFSET_SCORE_BELOW_TEXT[scoreStyleType];
+                var offset = Constants.OFFSET_SCORE_BELOW_TEXT[_scoreStyleType];
                 var position = new Vector3(offset.x, offset.y == 0 ? Constants.POS_SCORE_BELOW_TEXT.y : offset.y, Constants.POS_SCORE_BELOW_TEXT.z);
                 var obj = CreateTextObj(
                     "InfoPlus_TextScoreBelow",
@@ -168,13 +174,12 @@ public class BattleUIService : IBattleUIService
 
             if (ConfigAccessor.TextFieldScoreRight.Enabled && MusicInfoUtils.BattleUIType != BattleUIItem.Spell)
             {
-                var parentPath = imgIconApPath[..imgIconApPath.LastIndexOf('/')];
-                var parentTransform = activeBattlePanel.transform.Find(parentPath);
+                var parentTransform = activeBattlePanel.transform.Find(_imgIconApParentPath);
                 var obj = CreateTextObj(
                     "InfoPlus_TextScoreRight",
                     parentTransform,
                     ConfigAccessor.TextFieldScoreRight,
-                    new(Constants.POS_SCORE_RIGHT_TEXT.x, Constants.OFFSET_SCORE_RIGHT_TEXT[scoreStyleType], Constants.POS_SCORE_RIGHT_TEXT.z),
+                    new(Constants.POS_SCORE_RIGHT_TEXT.x, Constants.OFFSET_SCORE_RIGHT_TEXT[_scoreStyleType], Constants.POS_SCORE_RIGHT_TEXT.z),
                     true,
                     TextAnchor.LowerLeft
                 );
@@ -266,8 +271,143 @@ public class BattleUIService : IBattleUIService
         _previousY = CurrentY;
     }
 
+    public void ApplyPendingConfigChanges()
+    {
+        if (Interlocked.Exchange(ref _pendingApplyRequests, 0) <= 0)
+            return;
+
+        OnConfigsUpdated();
+    }
+
+    public static void RequestApplyConfigChanges()
+    {
+        Interlocked.Increment(ref _pendingApplyRequests);
+    }
+
     private static float EaseInCubic(float value) => value * value * value;
     private static float EaseOutCubic(float value) => 1f - Mathf.Pow(1f - value, 3f);
+
+    private void OnConfigsUpdated()
+    {
+        if (_currentPanel == null || _textObjectTemplate == null)
+            return;
+
+        try
+        {
+            // LowerLeft
+            if (ConfigAccessor.TextFieldLowerLeft.Enabled)
+            {
+                TextObjectService.TextLowerLeft = CreateTextObj(
+                    "InfoPlus_TextLowerLeft",
+                    _currentPanel.Find("Below"),
+                    ConfigAccessor.TextFieldLowerLeft,
+                    Constants.POS_LOWER_LEFT_TEXT,
+                    false,
+                    TextAnchor.LowerLeft,
+                    FontStyle.Italic
+                );
+            }
+            else
+                TextObjectService.TextLowerLeft = DestroyAndClear(TextObjectService.TextLowerLeft);
+
+            // LowerRight
+            if (ConfigAccessor.TextFieldLowerRight.Enabled)
+            {
+                TextObjectService.TextLowerRight = CreateTextObj(
+                    "InfoPlus_TextLowerRight",
+                    _currentPanel.Find("Below"),
+                    ConfigAccessor.TextFieldLowerRight,
+                    Constants.POS_LOWER_RIGHT_TEXT,
+                    false,
+                    TextAnchor.LowerRight,
+                    FontStyle.Italic
+                );
+            }
+            else
+                TextObjectService.TextLowerRight = DestroyAndClear(TextObjectService.TextLowerRight);
+
+            // ScoreBelow
+            if (ConfigAccessor.TextFieldScoreBelow.Enabled)
+            {
+                var offset = Constants.OFFSET_SCORE_BELOW_TEXT[_scoreStyleType];
+                var position = new Vector3(offset.x, offset.y == 0 ? Constants.POS_SCORE_BELOW_TEXT.y : offset.y, Constants.POS_SCORE_BELOW_TEXT.z);
+
+                TextObjectService.TextScoreBelow = CreateTextObj(
+                    "InfoPlus_TextScoreBelow",
+                    _currentPanel.Find("Score"),
+                    ConfigAccessor.TextFieldScoreBelow,
+                    position,
+                    false,
+                    TextAnchor.UpperLeft
+                );
+            }
+            else
+                TextObjectService.TextScoreBelow = DestroyAndClear(TextObjectService.TextScoreBelow);
+
+            // ScoreRight（Spell UI excluded）
+            if (ConfigAccessor.TextFieldScoreRight.Enabled && MusicInfoUtils.BattleUIType != BattleUIItem.Spell)
+            {
+                var parentTransform = _currentPanel.Find(_imgIconApParentPath);
+                var obj = CreateTextObj(
+                    "InfoPlus_TextScoreRight",
+                    parentTransform,
+                    ConfigAccessor.TextFieldScoreRight,
+                    new(Constants.POS_SCORE_RIGHT_TEXT.x, Constants.OFFSET_SCORE_RIGHT_TEXT[_scoreStyleType], Constants.POS_SCORE_RIGHT_TEXT.z),
+                    true,
+                    TextAnchor.LowerLeft
+                );
+                var rect = obj.GetComponent<RectTransform>();
+                rect.anchorMin = new(1, 1);
+                rect.anchorMax = new(1, 1);
+                rect.pivot = new(1, 1);
+                TextObjectService.TextScoreRight = obj;
+            }
+            else
+                TextObjectService.TextScoreRight = DestroyAndClear(TextObjectService.TextScoreRight);
+
+            // UpperLeft
+            if (ConfigAccessor.TextFieldUpperLeft.Enabled)
+            {
+                TextObjectService.TextUpperLeft = CreateTextObj(
+                    "InfoPlus_TextUpperLeft",
+                    _currentPanel.Find("Up"),
+                    ConfigAccessor.TextFieldUpperLeft,
+                    Constants.POS_UPPER_LEFT_TEXT,
+                    false,
+                    TextAnchor.UpperLeft
+                );
+            }
+            else
+                TextObjectService.TextUpperLeft = DestroyAndClear(TextObjectService.TextUpperLeft);
+
+            // UpperRight
+            if (ConfigAccessor.TextFieldUpperRight.Enabled)
+            {
+                var obj = CreateTextObj(
+                    "InfoPlus_TextUpperRight",
+                    _currentPanel.Find("Up"),
+                    ConfigAccessor.TextFieldUpperRight,
+                    Constants.POS_UPPER_RIGHT_TEXT,
+                    false,
+                    TextAnchor.UpperRight
+                );
+                var text = obj.GetComponent<UnityEngine.UI.Text>();
+                text.lineSpacing = 0.8f;
+                obj.transform.localScale = new(1, 0.95f, 1);
+                TextObjectService.TextUpperRight = obj;
+            }
+            else
+                TextObjectService.TextUpperRight = DestroyAndClear(TextObjectService.TextUpperRight);
+
+            // Refresh texts instantly
+            TextObjectService.UpdateAllText();
+        }
+        catch (Exception ex)
+        {
+            Logger.Error("Apply UI changes failed.");
+            Logger.Error(ex);
+        }
+    }
 
     private GameObject CreateTextObj(
         string objectName,
@@ -330,6 +470,13 @@ public class BattleUIService : IBattleUIService
             position.z);
 
         return obj;
+    }
+
+    private static GameObject DestroyAndClear(GameObject obj)
+    {
+        if (obj != null)
+            Object.Destroy(obj);
+        return null;
     }
 
     [UsedImplicitly] [Inject] public IConfigAccessor ConfigAccessor { get; set; }

@@ -30,6 +30,9 @@ public class RefreshScheduler : IRefreshScheduler
         if (ModServiceConfigurator.Provider == null || ModServiceConfigurator.CurrentScope == null || ConfigAccessor == null)
             return;
 
+        TextDataService?.ApplyPendingConstantsRefresh();
+        BattleUIService?.ApplyPendingConfigChanges();
+
         if (!(GameStatsService?.IsPlayerPlaying ?? false))
             return;
 
@@ -77,5 +80,6 @@ public class RefreshScheduler : IRefreshScheduler
     [UsedImplicitly] [Inject] public IBattleUIService BattleUIService { get; set; }
     [UsedImplicitly] [Inject] public IGameStatsService GameStatsService { get; set; }
     [UsedImplicitly] [Inject] public ITextObjectService TextObjectService { get; set; }
+    [UsedImplicitly] [Inject] public ITextDataService TextDataService { get; set; }
     [UsedImplicitly] [Inject] public ILogger<RefreshScheduler> Logger { get; set; }
 }

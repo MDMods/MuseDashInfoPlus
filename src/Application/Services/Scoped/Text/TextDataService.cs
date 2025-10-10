@@ -5,6 +5,7 @@ using MDIP.Application.DependencyInjection;
 using MDIP.Application.Services.Global.Configuration;
 using MDIP.Application.Services.Global.RuntimeData;
 using MDIP.Application.Services.Scoped.Stats;
+using MDIP.Application.Services.Scoped.UI;
 using MDIP.Core.Domain.Configs;
 using MDIP.Core.Utilities;
 
@@ -17,6 +18,9 @@ public class TextDataService : ITextDataService
     private readonly Dictionary<string, string> _cachedValues = new();
     private readonly Dictionary<string, string> _formattedTexts = new();
     private bool _callbacksRegistered;
+
+    private static int _pendingCacheClear;
+    private static int _pendingConstantsRefresh;
 
     public void UpdateConstants()
     {
@@ -102,6 +106,15 @@ public class TextDataService : ITextDataService
         TryRegisterCallbacks();
     }
 
+    public void ApplyPendingConstantsRefresh()
+    {
+        if (Interlocked.Exchange(ref _pendingCacheClear, 0) == 1)
+            ClearCaches();
+
+        if (Interlocked.Exchange(ref _pendingConstantsRefresh, 0) == 1)
+            UpdateConstants();
+    }
+
     private void TryRegisterCallbacks()
     {
         if (_callbacksRegistered)
@@ -109,14 +122,21 @@ public class TextDataService : ITextDataService
 
         try
         {
-            ConfigService.RegisterUpdateCallback<MainConfigs>(nameof(MainConfigs), _ => ClearCaches());
-            ConfigService.RegisterUpdateCallback<AdvancedConfigs>(nameof(AdvancedConfigs), _ => ClearCaches());
-            ConfigService.RegisterUpdateCallback<TextFieldLowerLeftConfigs>(nameof(TextFieldLowerLeftConfigs), _ => ClearCaches());
-            ConfigService.RegisterUpdateCallback<TextFieldLowerRightConfigs>(nameof(TextFieldLowerRightConfigs), _ => ClearCaches());
-            ConfigService.RegisterUpdateCallback<TextFieldScoreBelowConfigs>(nameof(TextFieldScoreBelowConfigs), _ => ClearCaches());
-            ConfigService.RegisterUpdateCallback<TextFieldScoreRightConfigs>(nameof(TextFieldScoreRightConfigs), _ => ClearCaches());
-            ConfigService.RegisterUpdateCallback<TextFieldUpperLeftConfigs>(nameof(TextFieldUpperLeftConfigs), _ => ClearCaches());
-            ConfigService.RegisterUpdateCallback<TextFieldUpperRightConfigs>(nameof(TextFieldUpperRightConfigs), _ => ClearCaches());
+            void OnConfigChanged<T>(T _)
+            {
+                Interlocked.Exchange(ref _pendingCacheClear, 1);
+                Interlocked.Exchange(ref _pendingConstantsRefresh, 1);
+                BattleUIService.RequestApplyConfigChanges();
+            }
+
+            ConfigService.RegisterUpdateCallback<MainConfigs>(nameof(MainConfigs), OnConfigChanged);
+            ConfigService.RegisterUpdateCallback<AdvancedConfigs>(nameof(AdvancedConfigs), OnConfigChanged);
+            ConfigService.RegisterUpdateCallback<TextFieldLowerLeftConfigs>(nameof(TextFieldLowerLeftConfigs), OnConfigChanged);
+            ConfigService.RegisterUpdateCallback<TextFieldLowerRightConfigs>(nameof(TextFieldLowerRightConfigs), OnConfigChanged);
+            ConfigService.RegisterUpdateCallback<TextFieldScoreBelowConfigs>(nameof(TextFieldScoreBelowConfigs), OnConfigChanged);
+            ConfigService.RegisterUpdateCallback<TextFieldScoreRightConfigs>(nameof(TextFieldScoreRightConfigs), OnConfigChanged);
+            ConfigService.RegisterUpdateCallback<TextFieldUpperLeftConfigs>(nameof(TextFieldUpperLeftConfigs), OnConfigChanged);
+            ConfigService.RegisterUpdateCallback<TextFieldUpperRightConfigs>(nameof(TextFieldUpperRightConfigs), OnConfigChanged);
 
             _callbacksRegistered = true;
         }
