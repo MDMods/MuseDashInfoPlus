@@ -50,6 +50,10 @@ public class UpdateService : IUpdateService
         }
     }
 
+    /// <summary>
+    /// Auto-update: download + SHA-256 verify, move current -> .backup, temp -> new.
+    /// Abort if assembly isn't in Mods; restore backup on failure.
+    /// </summary>
     public async Task<bool> ApplyUpdateAsync(VersionInfo updateInfo)
     {
         ArgumentNullException.ThrowIfNull(updateInfo);

@@ -104,9 +104,15 @@ public class GameStatsService : IGameStatsService
             CurrentGroundSpeed = speed;
     }
 
+    /// <summary>
+    /// Game API accuracy
+    /// </summary>
     public float GetTrueAccuracy()
         => _task.GetAccuracy() * 100f;
 
+    /// <summary>
+    /// Mod calculated accuracy
+    /// </summary>
     public float GetCalculatedAccuracy(int mode = -1)
     {
         var main = ConfigAccessor.Main;
@@ -343,6 +349,10 @@ public class GameStatsService : IGameStatsService
 
             case CountNoteAction.MissMul:
                 var curTick = _stage.realTimeTick;
+
+                // We currently have no reliable patch to detect whether a "Mul" note has actually been missed in real time.
+                // → Therefore, we delay this check until the Mul note ends.
+                // If the note is still not marked as played by then, count it as a miss.
                 MelonCoroutines.Start(CoroutineUtils.Run(() =>
                 {
                     if (_stage == null || _stage.realTimeTick <= curTick)

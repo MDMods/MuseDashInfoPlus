@@ -2,6 +2,12 @@
 
 namespace MDIP.Application.DependencyInjection;
 
+/// <summary>
+/// Scoped resolves only inside an active scope; outside returns null.
+/// Singletons with property injection are re-injected after each CreateScope().
+/// Ctor: pick the public one with all-registrable params; else fail.
+/// Circular deps detected via _resolving.
+/// </summary>
 public sealed class SimpleServiceProvider : IServiceProvider
 {
     public enum ServiceLifetime

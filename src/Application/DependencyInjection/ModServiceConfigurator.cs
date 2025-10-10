@@ -26,6 +26,8 @@ public static class ModServiceConfigurator
 
         var provider = new SimpleServiceProvider();
 
+        // ───────── Module-lifetime services ─────────
+        // Live for the entire mod lifecycle.
         provider.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
         provider.AddSingletonWithPropertyInjection<IConfigService, ConfigService>();
         provider.AddSingletonWithPropertyInjection<IConfigAccessor, ConfigAccessor>();
@@ -35,6 +37,10 @@ public static class ModServiceConfigurator
         provider.AddSingletonWithPropertyInjection<IStatsSaverService, StatsSaverService>();
         provider.AddSingletonWithPropertyInjection<IPreparationScreenService, PreparationScreenService>();
 
+        // ───────── Level-lifetime services ─────────
+        // Active only during one stage/session.
+        // Note: all services are technically singletons;
+        // "scoped" only marks a shorter managed lifetime.
         provider.AddScopedWithPropertyInjection<IGameStatsService, GameStatsService>();
         provider.AddScopedWithPropertyInjection<INoteRecordService, NoteRecordService>();
         provider.AddScopedWithPropertyInjection<INoteEventService, NoteEventService>();
@@ -47,6 +53,11 @@ public static class ModServiceConfigurator
         Provider = provider;
     }
 
+    /// <summary>
+    /// Starts a new "level" scope: dispose old, create new,
+    /// re-inject singleton properties, and refresh static [Inject] targets.
+    /// Scoped services are null until a scope exists.
+    /// </summary>
     public static void CreateGameScope()
     {
         DisposeCurrentScope();
@@ -55,6 +66,9 @@ public static class ModServiceConfigurator
         RefreshStaticInjections();
     }
 
+    /**
+     *
+     */
     public static void DisposeCurrentScope()
     {
         CurrentScope?.Dispose();
