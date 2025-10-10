@@ -24,6 +24,7 @@ public sealed class SimpleServiceProvider : IServiceProvider
     private readonly Dictionary<Type, object> _singletons = new();
     private readonly Dictionary<Type, object> _scopedInstances = new();
     private readonly HashSet<Type> _resolving = [];
+    private int _scopeDepth;
 
     public void AddSingleton(Type serviceType, Type implementationType, bool usePropertyInjection = false)
         => AddService(serviceType, implementationType, ServiceLifetime.Singleton, usePropertyInjection);
@@ -98,6 +99,9 @@ public sealed class SimpleServiceProvider : IServiceProvider
 
     private object GetOrCreateScoped(Type serviceType, ServiceDescriptor descriptor)
     {
+        if (_scopeDepth <= 0)
+            return null;
+
         if (_scopedInstances.TryGetValue(serviceType, out var existing))
             return existing;
 
@@ -195,9 +199,24 @@ public sealed class SimpleServiceProvider : IServiceProvider
         throw new InvalidOperationException($"Unable to resolve constructor for {implementationType}.");
     }
 
-    private sealed class ServiceScope(SimpleServiceProvider provider) : IServiceScope
+    private sealed class ServiceScope : IServiceScope
     {
-        public void Dispose() => provider.ClearScope();
+        private readonly SimpleServiceProvider _provider;
+        private bool _disposed;
+
+        public ServiceScope(SimpleServiceProvider provider)
+        {
+            _provider = provider;
+            Interlocked.Increment(ref _provider._scopeDepth);
+        }
+
+        public void Dispose()
+        {
+            if (_disposed) return;
+            _disposed = true;
+            _provider.ClearScope();
+            Interlocked.Decrement(ref _provider._scopeDepth);
+        }
     }
 }
 

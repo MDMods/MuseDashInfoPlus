@@ -1,4 +1,3 @@
-using Il2CppAssets.Scripts.Database;
 using JetBrains.Annotations;
 using MDIP.Application.DependencyInjection;
 using MDIP.Application.Services.Global.Assets;
@@ -8,7 +7,6 @@ using MDIP.Application.Services.Global.Updates;
 using MDIP.Application.Services.Scoped.Scheduling;
 using MDIP.Core.Domain.Configs;
 using MDIP.Core.Domain.Updates;
-using MDIP.Core.Utilities;
 using MDIP.Presentation.Patches;
 
 namespace MDIP.Presentation;
@@ -79,10 +77,16 @@ public class MDIPMod : MelonMod
     }
 
     public override void OnFixedUpdate()
-        => RefreshScheduler?.OnFixedUpdateTick();
+    {
+        var scheduler = ModServiceConfigurator.Provider?.GetService(typeof(IRefreshScheduler)) as IRefreshScheduler;
+        scheduler?.OnFixedUpdateTick();
+    }
 
     public override void OnLateUpdate()
-        => RefreshScheduler?.OnLateUpdateTick();
+    {
+        var scheduler = ModServiceConfigurator.Provider?.GetService(typeof(IRefreshScheduler)) as IRefreshScheduler;
+        scheduler?.OnLateUpdateTick();
+    }
 
     private void RegisterAndSaveConfig(Type configType, string moduleName)
     {
@@ -180,6 +184,5 @@ public class MDIPMod : MelonMod
     [UsedImplicitly] [Inject] public IConfigService ConfigService { get; set; }
     [UsedImplicitly] [Inject] public IUpdateService UpdateService { get; set; }
     [UsedImplicitly] [Inject] public IFontService FontService { get; set; }
-    [UsedImplicitly] [Inject] public IRefreshScheduler RefreshScheduler { get; set; }
     [UsedImplicitly] [Inject] public ILogger<MDIPMod> Logger { get; set; }
 }
