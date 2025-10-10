@@ -66,9 +66,6 @@ public static class ModServiceConfigurator
         RefreshStaticInjections();
     }
 
-    /**
-     *
-     */
     public static void DisposeCurrentScope()
     {
         CurrentScope?.Dispose();
