@@ -14,6 +14,7 @@ public static class MusicInfoUtils
     public static string CurMusicLevel => CurMusicInfo.GetMusicLevelStringByDiff(CurMusicDiff);
     public static string CurMusicAuthor => CurMusicInfo.author;
     public static string CurMusicLevelDesigner => CurMusicInfo.levelDesigner;
+    public static string CurMusicBpm => CurMusicInfo.bpm;
 
     public static string CurMusicHash => (CurMusicDiff + CurMusicAuthor + CurMusicLevelDesigner + CurMusicInfo.musicName).GetConsistentHash();
 

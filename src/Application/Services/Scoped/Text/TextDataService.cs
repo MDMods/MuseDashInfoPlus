@@ -30,6 +30,7 @@ public class TextDataService : ITextDataService
         UpdateCachedValue("{diff}", MusicInfoUtils.GetDifficultyLabel(main));
         UpdateCachedValue("{level}", MusicInfoUtils.CurMusicLevel);
         UpdateCachedValue("{author}", MusicInfoUtils.CurMusicAuthor);
+        UpdateCachedValue("{bpm}", MusicInfoUtils.CurMusicBpm);
         UpdateCachedValue("{pbGreat}", GameStatsService.History.Great.ToString());
         UpdateCachedValue("{pbMissOther}", GameStatsService.History.MissOther.ToString());
         UpdateCachedValue("{pbMissCollectible}", GameStatsService.History.MissCollectible.ToString());
