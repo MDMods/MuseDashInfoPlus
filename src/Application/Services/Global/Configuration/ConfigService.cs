@@ -11,10 +11,16 @@ public class ConfigService : IConfigService
     private readonly Dictionary<string, ConfigItem> _modules = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, ConfigItem> _pathIndex = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, FileSystemWatcher> _watchers = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, Timer> _debounceTimers = new(StringComparer.OrdinalIgnoreCase);
     private readonly object _syncRoot = new();
 
     private string _configDirectory;
     private bool _watchersActivated;
+
+    private static readonly TimeSpan DebounceDelay = TimeSpan.FromMilliseconds(400);
+    private const int MaxRetryAttempts = 6;
+    private const int InitialRetryDelayMs = 100;
+    private const double RetryBackoffFactor = 1.8;
 
     public void Init()
     {
@@ -29,10 +35,14 @@ public class ConfigService : IConfigService
                 watcher.Dispose();
             }
 
+            foreach (var timer in _debounceTimers.Values)
+                timer.Dispose();
+
             _configDirectory = null;
             _modules.Clear();
             _pathIndex.Clear();
             _watchers.Clear();
+            _debounceTimers.Clear();
             _watchersActivated = false;
         }
     }
@@ -166,8 +176,7 @@ public class ConfigService : IConfigService
         {
             if (_pathIndex.ContainsKey(e.OldFullPath))
             {
-                Logger.Fatal($"Config file renamed from {e.OldName} to {e.Name}. " +
-                             "Config file renaming is not allowed. The module will not be reloaded.");
+                Logger.Fatal($"Config file renamed from {e.OldName} to {e.Name}. Config file renaming is not allowed. The module will not be reloaded.");
             }
             else
             {
@@ -178,29 +187,78 @@ public class ConfigService : IConfigService
 
     private void OnConfigFileChanged(object sender, FileSystemEventArgs e)
     {
-        ConfigItem module;
         lock (_syncRoot)
         {
-            _pathIndex.TryGetValue(e.FullPath, out module);
+            if (!_pathIndex.ContainsKey(e.FullPath))
+                return;
+
+            if (_debounceTimers.TryGetValue(e.FullPath, out var timer))
+                timer.Change(DebounceDelay, Timeout.InfiniteTimeSpan);
+            else
+            {
+                var t = new Timer(static s =>
+                {
+                    var self = (ConfigService)((object[])s)?[0];
+                    var path = (string)((object[])s)?[1];
+                    self?.OnDebouncedConfigChanged(path);
+                }, new object[] { this, e.FullPath }, DebounceDelay, Timeout.InfiniteTimeSpan);
+                _debounceTimers[e.FullPath] = t;
+            }
+        }
+    }
+
+    private void OnDebouncedConfigChanged(string path)
+    {
+        ConfigItem module;
+        string displayName;
+
+        lock (_syncRoot)
+        {
+            if (_debounceTimers.TryGetValue(path, out var timer))
+            {
+                timer.Dispose();
+                _debounceTimers.Remove(path);
+            }
+
+            if (!_pathIndex.TryGetValue(path, out module))
+                return;
+
+            displayName = Path.GetFileName(path);
         }
 
-        if (module == null)
-            return;
+        var attempt = 0;
+        var delay = InitialRetryDelayMs;
 
-        Logger.Info($"Config file changed: {e.Name}");
-        for (var i = 0; i < 3; i++)
+        while (true)
         {
             try
             {
-                Thread.Sleep(100);
                 module.ReloadConfig();
-                Logger.Info($"Reloaded: {e.Name}");
+                Logger.Info($"Reloaded: {displayName}");
                 return;
             }
             catch (IOException)
             {
-                // Ignored - File might be temporary locked
             }
+            catch (UnauthorizedAccessException)
+            {
+            }
+            catch (Exception ex)
+            {
+                Logger.Error($"Error reloading: {displayName}");
+                Logger.Error(ex);
+                return;
+            }
+
+            attempt++;
+            if (attempt > MaxRetryAttempts)
+            {
+                Logger.Error($"Failed to reload after {MaxRetryAttempts} attempts: {displayName}");
+                return;
+            }
+
+            Thread.Sleep(delay);
+            delay = Math.Max(delay + 1, (int)(delay * RetryBackoffFactor));
         }
     }
 
