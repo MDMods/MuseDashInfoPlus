@@ -7,16 +7,13 @@ public class RuntimeSongDataStore: IRuntimeSongDataStore
     private readonly Dictionary<string, SongRuntimeRecord> _songRuntimeRecords = new();
 
     public bool IsFirstTry(string songHash)
-        => _songRuntimeRecords.ContainsKey(songHash);
+        => !_songRuntimeRecords.ContainsKey(songHash);
 
     public SongRuntimeRecord TryGet(string songHash)
         => _songRuntimeRecords.TryGetValue(songHash, out var data) ? data : new(0,0) ;
 
     public void AddOrUpdate(string songHash, SongRuntimeRecord songRecord)
-    {
-        _songRuntimeRecords.Remove(songHash);
-        _songRuntimeRecords.Add(songHash, songRecord);
-    }
+        => _songRuntimeRecords[songHash] = songRecord;
 
     public bool StorePersonalBestAccuracyFromText(string songHash, string text)
     {
@@ -47,7 +44,7 @@ public class RuntimeSongDataStore: IRuntimeSongDataStore
 
         if (_songRuntimeRecords.TryGetValue(songHash, out var record))
         {
-            if (!(record.PersonalBestAccuracy < acc))
+            if (record.PersonalBestAccuracy >= acc)
                 return false;
 
             _songRuntimeRecords[songHash] = record with
@@ -68,7 +65,7 @@ public class RuntimeSongDataStore: IRuntimeSongDataStore
 
         if (_songRuntimeRecords.TryGetValue(songHash, out var record))
         {
-            if (record.PersonalBestScore < score)
+            if (record.PersonalBestScore >= score)
                 return false;
 
             _songRuntimeRecords[songHash] = record with
