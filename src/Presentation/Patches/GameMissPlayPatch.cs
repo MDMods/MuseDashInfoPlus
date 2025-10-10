@@ -10,7 +10,7 @@ internal static class GameMissPlayMissCubePatch
 {
     private static void Postfix(int idx, decimal currentTick)
     {
-        NoteEventService.HandleMissCube(idx, currentTick);
+        NoteEventService?.HandleMissCube(idx, currentTick);
     }
 
     [UsedImplicitly] [Inject] public static INoteEventService NoteEventService { get; set; }

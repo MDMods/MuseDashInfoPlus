@@ -7,18 +7,16 @@ namespace MDIP.Presentation.Patches;
 [HarmonyPatch(typeof(PnlPreparation))]
 internal static class PnlPreparationPatch
 {
-    [HarmonyPatch(nameof(PnlPreparation.OnDiffTglChanged))]
-    [HarmonyPostfix]
+    [HarmonyPatch(nameof(PnlPreparation.OnDiffTglChanged))] [HarmonyPostfix]
     private static void OnDiffTglChangedPostfix(PnlPreparation __instance)
     {
-        PreparationScreenService.OnRecordUpdated(__instance);
+        PreparationScreenService?.OnRecordUpdated(__instance);
     }
 
-    [HarmonyPatch(nameof(PnlPreparation.OnBattleStart))]
-    [HarmonyPrefix]
+    [HarmonyPatch(nameof(PnlPreparation.OnBattleStart))] [HarmonyPrefix]
     private static void OnBattleStartPrefix(PnlPreparation __instance)
     {
-        PreparationScreenService.OnRecordUpdated(__instance);
+        PreparationScreenService?.OnRecordUpdated(__instance);
     }
 
     [UsedImplicitly] [Inject] public static IPreparationScreenService PreparationScreenService { get; set; }

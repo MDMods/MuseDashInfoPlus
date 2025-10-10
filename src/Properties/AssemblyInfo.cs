@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using MDIP;
 using MDIP.Presentation;
 
 [assembly: MelonInfo(typeof(MDIPMod), ModBuildInfo.Name, ModBuildInfo.Version, ModBuildInfo.Author, ModBuildInfo.RepoLink)]

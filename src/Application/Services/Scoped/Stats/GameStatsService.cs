@@ -103,7 +103,8 @@ public class GameStatsService : IGameStatsService
             CurrentGroundSpeed = speed;
     }
 
-    public float GetTrueAccuracy() => _task.GetAccuracy() * 100f;
+    public float GetTrueAccuracy()
+        => _task.GetAccuracy() * 100f;
 
     public float GetCalculatedAccuracy(int mode = -1)
     {
@@ -371,8 +372,11 @@ public class GameStatsService : IGameStatsService
         }
     }
 
-    public MusicData GetMusicDataByIdx(int idx) => _stage.GetMusicDataByIdx(idx);
-    public MusicData GetCurMusicData() => _stage.GetCurMusicData();
+    public MusicData GetMusicDataByIdx(int idx)
+        => _stage.GetMusicDataByIdx(idx);
+
+    public MusicData GetCurMusicData()
+        => _stage.GetCurMusicData();
 
     public void Init()
     {
@@ -462,14 +466,6 @@ public class GameStatsService : IGameStatsService
         {
             Logger.Error(e.ToString());
         }
-
-        // 游戏开始时重置所有内部状态
-        _current = default;
-        _miss = default;
-        CurrentSkySpeed = CurrentSkySpeed == -1 ? 1 : CurrentSkySpeed;
-        CurrentGroundSpeed = CurrentGroundSpeed == -1 ? 1 : CurrentGroundSpeed;
-        _playedNoteIds.Clear();
-        _missedNoteIds.Clear();
     }
 
     private static string FormatSingleStatsGap(int gap, string text, MainConfigs main)

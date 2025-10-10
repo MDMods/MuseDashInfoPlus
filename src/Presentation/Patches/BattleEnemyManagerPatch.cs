@@ -10,7 +10,7 @@ internal static class BattleEnemyManagerSetPlayResultPatch
 {
     private static void Postfix(int idx, byte result, bool isMulStart = false, bool isMulEnd = false, bool isLeft = false)
     {
-        NoteEventService.HandleSetPlayResult(idx, result, isMulStart, isMulEnd, isLeft);
+        NoteEventService?.HandleSetPlayResult(idx, result, isMulStart, isMulEnd, isLeft);
     }
 
     [UsedImplicitly] [Inject] public static INoteEventService NoteEventService { get; set; }

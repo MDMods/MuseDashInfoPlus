@@ -1,5 +1,7 @@
-﻿using System.Security.Cryptography;
+﻿using System.Globalization;
+using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using MDIP.Core.Domain.Enums;
 
 namespace MDIP.Core.Utilities;
@@ -17,7 +19,7 @@ public static class Extensions
     {
         if (string.IsNullOrEmpty(input)) return input;
 
-        var stripped = System.Text.RegularExpressions.Regex.Replace(input, "<.*?>", string.Empty);
+        var stripped = Regex.Replace(input, "<.*?>", string.Empty);
 
         var totalWidth = stripped.CalculateWidth();
         if (totalWidth <= maxWidth) return input;
@@ -80,6 +82,21 @@ public static class Extensions
 
     public static string UnEscapeReturn(this string text) => text.Replace("\\n", "\n");
 
+    public static int CalculateWidth(this string input) => input.Sum(c => IsFullWidth(c) ? 2 : 1);
+
+    public static bool IsFullWidth(this char c)
+        => c >= 0x1100 && (
+            c <= 0x115F ||
+            c == 0x2329 ||
+            c == 0x232A ||
+            c >= 0x2E80 && c <= 0xA4CF && c != 0x303F ||
+            c >= 0xAC00 && c <= 0xD7A3 ||
+            c >= 0xF900 && c <= 0xFAFF ||
+            c >= 0xFE10 && c <= 0xFE19 ||
+            c >= 0xFE30 && c <= 0xFE6F ||
+            c >= 0xFF00 && c <= 0xFF60 ||
+            c >= 0xFFE0 && c <= 0xFFE6);
+
     public static string GetConsistentHash(this string input)
     {
         var bytes = Encoding.UTF8.GetBytes(input);
@@ -88,17 +105,23 @@ public static class Extensions
         return Convert.ToBase64String(hash);
     }
 
-    public static int CalculateWidth(this string input) => input.Sum(c => IsFullWidth(c) ? 2 : 1);
+    public static string SafeFormatDateTime(this DateTime time, string format, string culture)
+    {
+        const string defaultFormat = "h:mm:ss tt";
+        try
+        {
+            if (string.IsNullOrWhiteSpace(format))
+                return time.ToString(defaultFormat, CultureInfo.InvariantCulture);
 
-    public static bool IsFullWidth(this char c)
-        => c >= 0x1100 && (
-            c <= 0x115F ||
-            c == 0x2329 || c == 0x232A ||
-            (c >= 0x2E80 && c <= 0xA4CF && c != 0x303F) ||
-            (c >= 0xAC00 && c <= 0xD7A3) ||
-            (c >= 0xF900 && c <= 0xFAFF) ||
-            (c >= 0xFE10 && c <= 0xFE19) ||
-            (c >= 0xFE30 && c <= 0xFE6F) ||
-            (c >= 0xFF00 && c <= 0xFF60) ||
-            (c >= 0xFFE0 && c <= 0xFFE6));
+            var cultureInfo = string.IsNullOrWhiteSpace(culture)
+                ? CultureInfo.InvariantCulture
+                : new(culture);
+
+            return time.ToString(format, cultureInfo);
+        }
+        catch
+        {
+            return time.ToString(defaultFormat, CultureInfo.InvariantCulture);
+        }
+    }
 }

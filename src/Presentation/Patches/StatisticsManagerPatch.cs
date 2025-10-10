@@ -15,7 +15,7 @@ internal static class StatisticsManagerPatch
         if (!ConfigAccessor.Advanced.OutputNoteRecordsToDesktop)
             return;
 
-        NoteRecordService.AddRecord(GameStatsService.GetCurMusicData(), "OnNoteResult", $"noteResult:{result}");
+        NoteRecordService?.AddRecord(GameStatsService.GetCurMusicData(), "OnNoteResult", $"noteResult:{result}");
     }
 
     [UsedImplicitly] [Inject] public static IConfigAccessor ConfigAccessor { get; set; }

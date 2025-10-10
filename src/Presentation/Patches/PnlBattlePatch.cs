@@ -11,7 +11,7 @@ internal static class PnlBattleGameStartPatch
     private static void Postfix(PnlBattle __instance)
     {
         ModServiceConfigurator.CreateGameScope();
-        BattleUIService.OnGameStart(__instance);
+        BattleUIService?.OnGameStart(__instance);
     }
 
     [UsedImplicitly] [Inject] public static IBattleUIService BattleUIService { get; set; }

@@ -2,7 +2,7 @@
 
 namespace MDIP.Application.Services.Global.RuntimeData;
 
-public class RuntimeSongDataStore: IRuntimeSongDataStore
+public class RuntimeSongDataStore : IRuntimeSongDataStore
 {
     private readonly Dictionary<string, SongRuntimeRecord> _songRuntimeRecords = new();
 
@@ -10,14 +10,14 @@ public class RuntimeSongDataStore: IRuntimeSongDataStore
         => !_songRuntimeRecords.ContainsKey(songHash);
 
     public SongRuntimeRecord TryGet(string songHash)
-        => _songRuntimeRecords.TryGetValue(songHash, out var data) ? data : new(0,0) ;
+        => _songRuntimeRecords.TryGetValue(songHash, out var data) ? data : new(0, 0);
 
     public void AddOrUpdate(string songHash, SongRuntimeRecord songRecord)
         => _songRuntimeRecords[songHash] = songRecord;
 
     public bool StorePersonalBestAccuracyFromText(string songHash, string text)
     {
-        if (string.IsNullOrEmpty(songHash) ||  string.IsNullOrEmpty(text))
+        if (string.IsNullOrEmpty(songHash) || string.IsNullOrEmpty(text))
             return false;
 
         if (float.TryParse(text.TrimEnd(' ', '%'), out var acc) && acc > 0)
@@ -28,7 +28,7 @@ public class RuntimeSongDataStore: IRuntimeSongDataStore
 
     public bool StorePersonalBestScoreFromText(string songHash, string text)
     {
-        if (string.IsNullOrEmpty(songHash) ||  string.IsNullOrEmpty(text))
+        if (string.IsNullOrEmpty(songHash) || string.IsNullOrEmpty(text))
             return false;
 
         if (int.TryParse(text, out var score) && score > 0)
@@ -54,7 +54,7 @@ public class RuntimeSongDataStore: IRuntimeSongDataStore
             return true;
         }
 
-        _songRuntimeRecords.Add(songHash, new(acc, 0) );
+        _songRuntimeRecords.Add(songHash, new(acc, 0));
         return true;
     }
 
@@ -75,7 +75,7 @@ public class RuntimeSongDataStore: IRuntimeSongDataStore
             return true;
         }
 
-        _songRuntimeRecords.Add(songHash, new(0, score)) ;
+        _songRuntimeRecords.Add(songHash, new(0, score));
         return true;
     }
 }

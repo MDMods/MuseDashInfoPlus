@@ -14,10 +14,9 @@ namespace MDIP.Application.DependencyInjection;
 
 public static class ModServiceConfigurator
 {
+    private static readonly HashSet<Type> _staticInjectionTargets = [];
     public static SimpleServiceProvider Provider { get; private set; }
     public static IServiceScope CurrentScope { get; private set; }
-
-    private static readonly HashSet<Type> _staticInjectionTargets = [];
 
     public static void Build()
     {

@@ -13,7 +13,7 @@ internal static class MultHitEnemyControllerPatch
         if (!ConfigAccessor.Advanced.OutputNoteRecordsToDesktop)
             return;
 
-        NoteRecordService.AddRecord(__instance.m_MusicData, "OnControllerMiss", $"m_HasMiss:{__instance.m_HasMiss}");
+        NoteRecordService?.AddRecord(__instance.m_MusicData, "OnControllerMiss", $"m_HasMiss:{__instance.m_HasMiss}");
     }
 
     [UsedImplicitly] [Inject] public static IConfigAccessor ConfigAccessor { get; set; }

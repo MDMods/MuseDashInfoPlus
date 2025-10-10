@@ -4,14 +4,6 @@ namespace MDIP.Application.DependencyInjection;
 
 public sealed class SimpleServiceProvider : IServiceProvider
 {
-    private sealed class ServiceDescriptor(Type serviceType, Type implementationType, ServiceLifetime lifetime, bool usePropertyInjection)
-    {
-        public Type ServiceType { get; } = serviceType;
-        public Type ImplementationType { get; } = implementationType;
-        public ServiceLifetime Lifetime { get; } = lifetime;
-        public bool UsePropertyInjection { get; } = usePropertyInjection;
-    }
-
     public enum ServiceLifetime
     {
         Singleton,
@@ -25,6 +17,20 @@ public sealed class SimpleServiceProvider : IServiceProvider
     private readonly Dictionary<Type, object> _scopedInstances = new();
     private readonly HashSet<Type> _resolving = [];
     private int _scopeDepth;
+
+    public object GetService(Type serviceType)
+    {
+        var descriptor = ResolveDescriptor(serviceType);
+        if (descriptor == null)
+            return null;
+
+        return descriptor.Lifetime switch
+        {
+            ServiceLifetime.Singleton => GetOrCreateSingleton(serviceType, descriptor),
+            ServiceLifetime.Scoped => GetOrCreateScoped(serviceType, descriptor),
+            _ => throw new InvalidOperationException($"Unknown service lifetime: {descriptor.Lifetime}")
+        };
+    }
 
     public void AddSingleton(Type serviceType, Type implementationType, bool usePropertyInjection = false)
         => AddService(serviceType, implementationType, ServiceLifetime.Singleton, usePropertyInjection);
@@ -68,20 +74,6 @@ public sealed class SimpleServiceProvider : IServiceProvider
 
     public object GetRequiredService(Type serviceType)
         => GetService(serviceType) ?? throw new InvalidOperationException($"Service of type {serviceType} is not registered.");
-
-    public object GetService(Type serviceType)
-    {
-        var descriptor = ResolveDescriptor(serviceType);
-        if (descriptor == null)
-            return null;
-
-        return descriptor.Lifetime switch
-        {
-            ServiceLifetime.Singleton => GetOrCreateSingleton(serviceType, descriptor),
-            ServiceLifetime.Scoped => GetOrCreateScoped(serviceType, descriptor),
-            _ => throw new InvalidOperationException($"Unknown service lifetime: {descriptor.Lifetime}")
-        };
-    }
 
     private object GetOrCreateSingleton(Type serviceType, ServiceDescriptor descriptor)
     {
@@ -197,6 +189,14 @@ public sealed class SimpleServiceProvider : IServiceProvider
         }
 
         throw new InvalidOperationException($"Unable to resolve constructor for {implementationType}.");
+    }
+
+    private sealed class ServiceDescriptor(Type serviceType, Type implementationType, ServiceLifetime lifetime, bool usePropertyInjection)
+    {
+        public Type ServiceType { get; } = serviceType;
+        public Type ImplementationType { get; } = implementationType;
+        public ServiceLifetime Lifetime { get; } = lifetime;
+        public bool UsePropertyInjection { get; } = usePropertyInjection;
     }
 
     private sealed class ServiceScope : IServiceScope

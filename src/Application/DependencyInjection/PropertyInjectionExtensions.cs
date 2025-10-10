@@ -3,7 +3,9 @@
 namespace MDIP.Application.DependencyInjection;
 
 [AttributeUsage(AttributeTargets.Property)]
-internal sealed class InjectAttribute : Attribute { }
+internal sealed class InjectAttribute : Attribute
+{
+}
 
 internal static class PropertyInjectionExtensions
 {
@@ -21,7 +23,7 @@ internal static class PropertyInjectionExtensions
     {
         if (instance == null)
             return default!;
-        foreach (var property in GetInjectableProperties(instance.GetType(), includeStatic: false))
+        foreach (var property in GetInjectableProperties(instance.GetType(), false))
         {
             var service = provider.GetService(property.PropertyType);
             if (service != null)
@@ -32,7 +34,7 @@ internal static class PropertyInjectionExtensions
 
     public static void InjectStaticProperties(this SimpleServiceProvider provider, Type type)
     {
-        foreach (var property in GetInjectableProperties(type, includeStatic: true))
+        foreach (var property in GetInjectableProperties(type, true))
         {
             var service = provider.GetService(property.PropertyType);
             if (service != null)
@@ -52,7 +54,7 @@ internal static class PropertyInjectionExtensions
 
     private static bool IsInjectable(PropertyInfo property, bool includeStatic)
     {
-        if (!property.IsDefined(typeof(InjectAttribute), inherit: true))
+        if (!property.IsDefined(typeof(InjectAttribute), true))
             return false;
 
         var setMethod = property.SetMethod;

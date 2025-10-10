@@ -18,14 +18,6 @@ public class TextDataService : ITextDataService
     private readonly Dictionary<string, string> _formattedTexts = new();
     private bool _callbacksRegistered;
 
-    public void EnsureCallbacksRegistered()
-    {
-        if (_callbacksRegistered)
-            return;
-
-        TryRegisterCallbacks();
-    }
-
     public void UpdateConstants()
     {
         EnsureCallbacksRegistered();
@@ -69,7 +61,7 @@ public class TextDataService : ITextDataService
         UpdateCachedValue("{skySpeed}", GameStatsService.CurrentSkySpeed.ToString());
         UpdateCachedValue("{groundSpeed}", GameStatsService.CurrentGroundSpeed.ToString());
         UpdateCachedValue("{rank}", GameStatsService.FormatRank());
-        UpdateCachedValue("{time}", Helper.SafeFormatDateTime(DateTime.Now, main.TimeDisplayFormat, CultureInfo.CurrentCulture.Name));
+        UpdateCachedValue("{time}", DateTime.Now.SafeFormatDateTime(main.TimeDisplayFormat, CultureInfo.CurrentCulture.Name));
 
         if (GameStatsService.History.HasStats)
         {
@@ -99,6 +91,14 @@ public class TextDataService : ITextDataService
         var finalText = result.ToString().Trim().Trim(TrimChars).Trim();
         _formattedTexts[originalText] = finalText;
         return finalText;
+    }
+
+    public void EnsureCallbacksRegistered()
+    {
+        if (_callbacksRegistered)
+            return;
+
+        TryRegisterCallbacks();
     }
 
     private void TryRegisterCallbacks()

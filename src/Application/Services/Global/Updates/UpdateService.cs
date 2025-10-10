@@ -144,8 +144,8 @@ public class UpdateService : IUpdateService
                 throw new InvalidOperationException("Failed to resolve target directory");
 
             if (!string.Equals(currentDir.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar),
-                               targetDir.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar),
-                               StringComparison.OrdinalIgnoreCase))
+                    targetDir.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar),
+                    StringComparison.OrdinalIgnoreCase))
             {
                 throw new InvalidOperationException("Current assembly is not located in the Mods directory");
             }
@@ -198,19 +198,19 @@ public class UpdateService : IUpdateService
         }
     }
 
-    private readonly struct UpdatePaths(string backupPath, string tempPath, string newPath)
-    {
-        public string BackupPath { get; } = backupPath;
-        public string TempPath { get; } = tempPath;
-        public string NewPath { get; } = newPath;
-    }
-
     private static string CalculateFileHash(string filePath)
     {
         using var sha256 = SHA256.Create();
         using var stream = File.OpenRead(filePath);
         var hash = sha256.ComputeHash(stream);
         return Convert.ToHexString(hash).ToLowerInvariant();
+    }
+
+    private readonly struct UpdatePaths(string backupPath, string tempPath, string newPath)
+    {
+        public string BackupPath { get; } = backupPath;
+        public string TempPath { get; } = tempPath;
+        public string NewPath { get; } = newPath;
     }
 
     [UsedImplicitly] [Inject] public ILogger<UpdateService> Logger { get; set; }
