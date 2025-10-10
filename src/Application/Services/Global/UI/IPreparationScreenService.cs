@@ -1,4 +1,4 @@
-﻿namespace MDIP.Application.Services.Scoped.UI;
+﻿namespace MDIP.Application.Services.Global.UI;
 
 public interface IPreparationScreenService
 {

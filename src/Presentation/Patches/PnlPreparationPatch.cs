@@ -1,5 +1,6 @@
 ﻿using JetBrains.Annotations;
 using MDIP.Application.DependencyInjection;
+using MDIP.Application.Services.Global.UI;
 using MDIP.Application.Services.Scoped.UI;
 
 namespace MDIP.Presentation.Patches;
