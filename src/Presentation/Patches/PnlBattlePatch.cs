@@ -1,0 +1,18 @@
+﻿using Il2CppAssets.Scripts.UI.Panels;
+using JetBrains.Annotations;
+using MDIP.Application.DependencyInjection;
+using MDIP.Application.Services.Scoped.UI;
+
+namespace MDIP.Presentation.Patches;
+
+[HarmonyPatch(typeof(PnlBattle), nameof(PnlBattle.GameStart))]
+internal static class PnlBattleGameStartPatch
+{
+    private static void Postfix(PnlBattle __instance)
+    {
+        ModServiceConfigurator.CreateGameScope();
+        BattleUIService.OnGameStart(__instance);
+    }
+
+    [UsedImplicitly] [Inject] public static IBattleUIService BattleUIService { get; set; }
+}

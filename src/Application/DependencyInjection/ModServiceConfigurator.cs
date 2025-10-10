@@ -1,12 +1,13 @@
-﻿using MDIP.Application.Services.Assets;
-using MDIP.Application.Services.Configuration;
-using MDIP.Application.Services.Logging;
-using MDIP.Application.Services.Notes;
-using MDIP.Application.Services.Scheduling;
-using MDIP.Application.Services.Stats;
-using MDIP.Application.Services.Text;
-using MDIP.Application.Services.UI;
-using MDIP.Application.Services.Updates;
+﻿using MDIP.Application.Services.Global.Assets;
+using MDIP.Application.Services.Global.Configuration;
+using MDIP.Application.Services.Global.Logging;
+using MDIP.Application.Services.Global.Stats;
+using MDIP.Application.Services.Global.Updates;
+using MDIP.Application.Services.Scoped.Notes;
+using MDIP.Application.Services.Scoped.Scheduling;
+using MDIP.Application.Services.Scoped.Stats;
+using MDIP.Application.Services.Scoped.Text;
+using MDIP.Application.Services.Scoped.UI;
 
 namespace MDIP.Application.DependencyInjection;
 
