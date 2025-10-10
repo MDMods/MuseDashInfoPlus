@@ -73,7 +73,6 @@ public class MDIPMod : MelonMod
         {
             case "Loading":
                 ModServiceConfigurator.DisposeCurrentScope();
-                RefreshScheduler?.Reset();
                 FontService?.UnloadFonts();
                 break;
         }

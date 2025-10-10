@@ -32,7 +32,7 @@ public class GameStatsService : IGameStatsService
     private TaskStageTarget _task;
     private TotalStats _total;
 
-    public bool IsPlayerPlaying { get; set; }
+    public bool IsPlayerPlaying { get; set; } = true;
     public CurrentStats Current => _current;
     public TotalStats Total => _total;
     public MissStats Miss => _miss;
@@ -468,21 +468,6 @@ public class GameStatsService : IGameStatsService
         _miss = default;
         CurrentSkySpeed = CurrentSkySpeed == -1 ? 1 : CurrentSkySpeed;
         CurrentGroundSpeed = CurrentGroundSpeed == -1 ? 1 : CurrentGroundSpeed;
-        _playedNoteIds.Clear();
-        _missedNoteIds.Clear();
-    }
-
-    public void Reset()
-    {
-        _stage = null;
-        _task = null;
-        _role = null;
-        _current = default;
-        _total = default;
-        _miss = default;
-        _history = default;
-        CurrentSkySpeed = -1;
-        CurrentGroundSpeed = -1;
         _playedNoteIds.Clear();
         _missedNoteIds.Clear();
     }

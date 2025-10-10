@@ -41,5 +41,4 @@ public interface IGameStatsService
     MusicData GetMusicDataByIdx(int idx);
     MusicData GetCurMusicData();
     void Init();
-    void Reset();
 }

@@ -40,9 +40,6 @@ public class BattleUIService : IBattleUIService
         if (_textObjectTemplate != null)
             return;
 
-        GameStatsService.IsPlayerPlaying = true;
-        RefreshScheduler.Reset();
-
         try
         {
             // Make sure fonts loaded
@@ -269,19 +266,6 @@ public class BattleUIService : IBattleUIService
         _previousY = CurrentY;
     }
 
-    public void Reset()
-    {
-        _textObjectTemplate = null;
-        _currentPanel = null;
-        _scoreTransform = null;
-        _previousY = Constants.SCORE_ZOOM_OUT_Y;
-        _isZooming = false;
-        _isZoomingIn = false;
-        _targetScale = 3f;
-        _currentScale = 3f;
-        _zoomProgress = 0f;
-    }
-
     private static float EaseInCubic(float value) => value * value * value;
     private static float EaseOutCubic(float value) => 1f - Mathf.Pow(1f - value, 3f);
 
@@ -353,6 +337,5 @@ public class BattleUIService : IBattleUIService
     [UsedImplicitly] [Inject] public IFontService FontService { get; set; }
     [UsedImplicitly] [Inject] public IGameStatsService GameStatsService { get; set; }
     [UsedImplicitly] [Inject] public ITextDataService TextDataService { get; set; }
-    [UsedImplicitly] [Inject] public IRefreshScheduler RefreshScheduler { get; set; }
     [UsedImplicitly] [Inject] public ILogger<BattleUIService> Logger { get; set; }
 }

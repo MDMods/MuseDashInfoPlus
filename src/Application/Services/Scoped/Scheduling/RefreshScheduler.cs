@@ -1,4 +1,5 @@
-﻿using MDIP.Application.DependencyInjection;
+﻿using JetBrains.Annotations;
+using MDIP.Application.DependencyInjection;
 using MDIP.Application.Services.Global.Configuration;
 using MDIP.Application.Services.Global.Logging;
 using MDIP.Application.Services.Scoped.Stats;
@@ -16,87 +17,48 @@ public class RefreshScheduler : IRefreshScheduler
     private int _dataTriggerCount;
     private int _textTriggerCount;
 
-    private readonly HashSet<string> _missingLogged = [];
-
     public void OnFixedUpdateTick()
     {
         if (ModServiceConfigurator.Provider == null || ModServiceConfigurator.CurrentScope == null)
             return;
 
-        var provider = ModServiceConfigurator.Provider;
-        var battle = provider.GetService(typeof(IBattleUIService)) as IBattleUIService;
-        if (battle == null)
-        {
-            LogMissingOnce(nameof(IBattleUIService));
-            return;
-        }
-
-        battle.CheckAndZoom();
+        BattleUIService?.CheckAndZoom();
     }
 
     public void OnLateUpdateTick()
     {
-        if (ModServiceConfigurator.Provider == null || ModServiceConfigurator.CurrentScope == null)
+        if (ModServiceConfigurator.Provider == null || ModServiceConfigurator.CurrentScope == null || ConfigAccessor == null)
             return;
 
-        var provider = ModServiceConfigurator.Provider;
-        var config = provider.GetService(typeof(IConfigAccessor)) as IConfigAccessor;
-        var stats = provider.GetService(typeof(IGameStatsService)) as IGameStatsService;
-        var textObj = provider.GetService(typeof(ITextObjectService)) as ITextObjectService;
-
-        if (config == null)
-        {
-            LogMissingOnce(nameof(IConfigAccessor));
-            return;
-        }
-        if (stats == null)
-        {
-            LogMissingOnce(nameof(IGameStatsService));
-            return;
-        }
-        if (textObj == null)
-        {
-            LogMissingOnce(nameof(ITextObjectService));
-            return;
-        }
-
-        if (!stats.IsPlayerPlaying)
+        if (!(GameStatsService?.IsPlayerPlaying ?? false))
             return;
 
         var now = NowMs();
 
-        var dataInterval = Math.Max(0, config.Advanced.DataRefreshIntervalMs);
-        var textInterval = config.Advanced.TextRefreshIntervalMs <= 0 ? dataInterval : config.Advanced.TextRefreshIntervalMs;
+        var dataInterval = Math.Max(0, ConfigAccessor.Advanced.DataRefreshIntervalMs);
+        var textInterval = ConfigAccessor.Advanced.TextRefreshIntervalMs <= 0 ? dataInterval : ConfigAccessor.Advanced.TextRefreshIntervalMs;
         if (textInterval < dataInterval) textInterval = dataInterval;
 
         if (now - _lastDataMs >= dataInterval)
         {
             _lastDataMs = now;
-            stats.UpdateCurrentStats();
+            GameStatsService.UpdateCurrentStats();
             _dataTriggerCount++;
         }
 
         if (now - _lastTextMs >= textInterval)
         {
             _lastTextMs = now;
-            textObj.UpdateAllText();
+            TextObjectService?.UpdateAllText();
             _textTriggerCount++;
         }
 
-        if (config.Advanced.DisplayNoteDebuggingData)
+        if (ConfigAccessor.Advanced.DisplayNoteDebuggingData)
             ReportPerSecond();
     }
 
-    public void Reset()
-    {
-        _lastDataMs = 0;
-        _lastTextMs = 0;
-        _dataTriggerCount = 0;
-        _textTriggerCount = 0;
-        _lastReportSecond = -1;
-    }
-
-    private static long NowMs() => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+    private static long NowMs()
+        => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
     private void ReportPerSecond()
     {
@@ -105,21 +67,15 @@ public class RefreshScheduler : IRefreshScheduler
             return;
         _lastReportSecond = nowSec;
 
-        var logger = GetLogger();
-        logger?.Info($"[Scheduler] data:{_dataTriggerCount} text:{_textTriggerCount}");
         _dataTriggerCount = 0;
         _textTriggerCount = 0;
+
+        Logger.Info($"data:{_dataTriggerCount} text:{_textTriggerCount}");
     }
 
-    private void LogMissingOnce(string name)
-    {
-        if (_missingLogged.Add(name))
-            GetLogger()?.Warn($"Service '{name}' not ready; scheduler tick skipped.");
-    }
-
-    private static ILogger<RefreshScheduler> GetLogger()
-    {
-        var provider = ModServiceConfigurator.Provider;
-        return provider?.GetService(typeof(ILogger<RefreshScheduler>)) as ILogger<RefreshScheduler>;
-    }
+    [UsedImplicitly] [Inject] public IConfigAccessor ConfigAccessor { get; set; }
+    [UsedImplicitly] [Inject] public IBattleUIService BattleUIService { get; set; }
+    [UsedImplicitly] [Inject] public IGameStatsService GameStatsService { get; set; }
+    [UsedImplicitly] [Inject] public ITextObjectService TextObjectService { get; set; }
+    [UsedImplicitly] [Inject] public ILogger<RefreshScheduler> Logger { get; set; }
 }

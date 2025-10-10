@@ -17,7 +17,7 @@ public static class ModServiceConfigurator
     public static SimpleServiceProvider Provider { get; private set; }
     public static IServiceScope CurrentScope { get; private set; }
 
-    private static readonly HashSet<Type> _staticInjectionTargets = new();
+    private static readonly HashSet<Type> _staticInjectionTargets = [];
 
     public static void Build()
     {
@@ -35,7 +35,6 @@ public static class ModServiceConfigurator
         provider.AddSingletonWithPropertyInjection<IStatsSaverService, StatsSaverService>();
         provider.AddSingletonWithPropertyInjection<IPreparationScreenService, PreparationScreenService>();
         provider.AddSingletonWithPropertyInjection<IVictoryScreenService, VictoryScreenService>();
-        provider.AddSingletonWithPropertyInjection<IRefreshScheduler, RefreshScheduler>();
 
         provider.AddScopedWithPropertyInjection<IGameStatsService, GameStatsService>();
         provider.AddScopedWithPropertyInjection<INoteRecordService, NoteRecordService>();
@@ -43,6 +42,7 @@ public static class ModServiceConfigurator
         provider.AddScopedWithPropertyInjection<ITextDataService, TextDataService>();
         provider.AddScopedWithPropertyInjection<ITextObjectService, TextObjectService>();
         provider.AddScopedWithPropertyInjection<IBattleUIService, BattleUIService>();
+        provider.AddScopedWithPropertyInjection<IRefreshScheduler, RefreshScheduler>();
 
         Provider = provider;
     }

@@ -6,5 +6,4 @@ public interface IBattleUIService
 {
     void OnGameStart(PnlBattle instance);
     void CheckAndZoom();
-    void Reset();
 }

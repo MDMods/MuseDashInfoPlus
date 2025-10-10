@@ -11,10 +11,7 @@ namespace MDIP.Application.Services.Scoped.Notes;
 public class NoteRecordService : INoteRecordService
 {
     private static readonly string[] First = ["ObjId", "Type", "Double", "LongType"];
-    private Dictionary<int, NoteRecord> _records = new();
-
-    public void Reset()
-        => _records = new();
+    private readonly Dictionary<int, NoteRecord> _records = new();
 
     public void AddRecord(MusicData note, string patchName, string patchInfo)
     {
@@ -91,7 +88,7 @@ public class NoteRecordService : INoteRecordService
         }
 
         File.WriteAllLines(filePath, lines);
-        Logger.Info($"⭐ Excel exported to: {Path.GetFullPath(filePath)}");
+        Logger.Info($"Excel exported to: {Path.GetFullPath(filePath)}");
     }
 
     [UsedImplicitly] [Inject] public IGameStatsService GameStatsService { get; set; }
