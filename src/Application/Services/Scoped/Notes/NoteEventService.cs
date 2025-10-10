@@ -89,6 +89,7 @@ public class NoteEventService : INoteEventService
         }
         catch (Exception ex)
         {
+            Logger.Error("Handle miss note (HandleMissCube) failed.");
             Logger.Error(ex);
         }
     }

@@ -72,6 +72,7 @@ public class VictoryScreenService : IVictoryScreenService
         }
         catch (Exception ex)
         {
+            Logger.Error("Replace results screen miss count failed.");
             Logger.Error(ex);
         }
     }

@@ -101,7 +101,7 @@ public class UpdateService : IUpdateService
                 return true;
         }
 
-        Logger.Error("All download sources failed");
+        Logger.Error("All download sources failed.");
         return false;
     }
 
@@ -193,7 +193,7 @@ public class UpdateService : IUpdateService
         }
         catch (Exception ex)
         {
-            Logger.Warn($"Failed to delete {path}.");
+            Logger.Warn($"Failed to delete {path}");
             Logger.Warn(ex);
         }
     }

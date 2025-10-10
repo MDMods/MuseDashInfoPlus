@@ -221,6 +221,7 @@ public class BattleUIService : IBattleUIService
         }
         catch (Exception ex)
         {
+            Logger.Error("Game objects create failed.");
             Logger.Error(ex);
         }
     }
