@@ -3,6 +3,7 @@ using System.Text;
 using JetBrains.Annotations;
 using MDIP.Application.DependencyInjection;
 using MDIP.Application.Services.Global.Configuration;
+using MDIP.Application.Services.Global.RuntimeData;
 using MDIP.Application.Services.Scoped.Stats;
 using MDIP.Core.Domain.Configs;
 using MDIP.Core.Utilities;
@@ -49,7 +50,7 @@ public class TextDataService : ITextDataService
             UpdateCachedValue("{pbStatsGap}", main.StatsGapTextWhenNoPersonalBest);
         }
 
-        if (!GameStatsService.IsFirstTry)
+        if (!RuntimeSongDataStore.IsFirstTry(GameUtils.MusicHash))
             return;
 
         UpdateCachedValue("{scoreGap}", main.ScoreGapTextWhenNoPersonalBest);
@@ -76,7 +77,7 @@ public class TextDataService : ITextDataService
             UpdateCachedValue("{pbStatsGap}", GameStatsService.FormatPersonalBestStatsGap());
         }
 
-        if (GameStatsService.IsFirstTry)
+        if (RuntimeSongDataStore.IsFirstTry(GameUtils.MusicHash))
             return;
 
         UpdateCachedValue("{scoreGap}", GameStatsService.FormatScoreGap());
@@ -145,4 +146,5 @@ public class TextDataService : ITextDataService
     [UsedImplicitly] [Inject] public IConfigAccessor ConfigAccessor { get; set; }
     [UsedImplicitly] [Inject] public IConfigService ConfigService { get; set; }
     [UsedImplicitly] [Inject] public IGameStatsService GameStatsService { get; set; }
+    [UsedImplicitly] [Inject] public IRuntimeSongDataStore RuntimeSongDataStore { get; set; }
 }

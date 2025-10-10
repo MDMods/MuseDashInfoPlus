@@ -119,10 +119,6 @@
         <PackageReference Include="JetBrains.Annotations" Version="2024.2.0" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Application\Services\Global\" />
-    </ItemGroup>
-
     <Target Name="Copy" AfterTargets="Build" Condition="'$(MD_DIRECTORY)' != ''">
         <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(MD_DIRECTORY)/Mods/" Condition="'$(Configuration)' == 'Debug'" />
         <Message Text="Copied DLL -> $(MD_DIRECTORY)\Mods\$(AssemblyName).dll" Importance="High" />

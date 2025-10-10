@@ -60,7 +60,7 @@ public class RefreshScheduler : IRefreshScheduler
             return;
         }
 
-        if (!stats.IsInGame)
+        if (!stats.IsPlayerPlaying)
             return;
 
         var now = NowMs();

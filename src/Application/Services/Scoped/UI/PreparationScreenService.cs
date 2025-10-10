@@ -1,6 +1,8 @@
 ﻿using JetBrains.Annotations;
 using MDIP.Application.DependencyInjection;
+using MDIP.Application.Services.Global.RuntimeData;
 using MDIP.Application.Services.Scoped.Stats;
+using MDIP.Core.Utilities;
 
 namespace MDIP.Application.Services.Scoped.UI;
 
@@ -11,9 +13,9 @@ public class PreparationScreenService : IPreparationScreenService
         if (instance?.pnlRecord == null)
             return;
 
-        GameStatsService.StoreHighestAccuracyFromText(instance.pnlRecord.txtAccuracy?.m_Text);
-        GameStatsService.StoreHighestScoreFromText(instance.pnlRecord.txtScore?.m_Text);
+        RuntimeSongDataStore.StorePersonalBestAccuracyFromText(GameUtils.MusicHash, instance.pnlRecord.txtAccuracy?.m_Text);
+        RuntimeSongDataStore.StorePersonalBestScoreFromText(GameUtils.MusicHash, instance.pnlRecord.txtScore?.m_Text);
     }
 
-    [UsedImplicitly] [Inject] public IGameStatsService GameStatsService { get; set; }
+    [UsedImplicitly] [Inject] public IRuntimeSongDataStore RuntimeSongDataStore { get; set; }
 }

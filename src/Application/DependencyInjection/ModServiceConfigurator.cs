@@ -1,6 +1,7 @@
 ﻿using MDIP.Application.Services.Global.Assets;
 using MDIP.Application.Services.Global.Configuration;
 using MDIP.Application.Services.Global.Logging;
+using MDIP.Application.Services.Global.RuntimeData;
 using MDIP.Application.Services.Global.Stats;
 using MDIP.Application.Services.Global.Updates;
 using MDIP.Application.Services.Scoped.Notes;
@@ -30,6 +31,7 @@ public static class ModServiceConfigurator
         provider.AddSingletonWithPropertyInjection<IConfigAccessor, ConfigAccessor>();
         provider.AddSingletonWithPropertyInjection<IFontService, FontService>();
         provider.AddSingletonWithPropertyInjection<IUpdateService, UpdateService>();
+        provider.AddSingletonWithPropertyInjection<IRuntimeSongDataStore, RuntimeSongDataStore>();
         provider.AddSingletonWithPropertyInjection<IStatsSaverService, StatsSaverService>();
         provider.AddSingletonWithPropertyInjection<IPreparationScreenService, PreparationScreenService>();
         provider.AddSingletonWithPropertyInjection<IVictoryScreenService, VictoryScreenService>();

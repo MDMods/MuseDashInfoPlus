@@ -10,16 +10,14 @@ public static class GameUtils
 {
     public static BattleUIItem BattleUIType { get; set; }
 
-    public static MusicInfo MusicInfo => GlobalDataBase.s_DbBattleStage.selectedMusicInfo;
-    public static string MusicName => GlobalDataBase.s_DbBattleStage.selectedMusicName;
+    public static MusicInfo MusicInfo => GlobalDataBase.s_DbMusicTag.m_CurSelectedMusicInfo;
+    public static string MusicName => MusicInfo.name;
     public static int MusicDiff => GlobalDataBase.s_DbBattleStage.selectedDifficulty;
     public static string MusicLevel => MusicInfo.GetMusicLevelStringByDiff(MusicDiff);
     public static string MusicAuthor => MusicInfo.author;
+    public static string MusicLevelDesigner => MusicInfo.levelDesigner;
 
-    public static string MusicHash => (GlobalDataBase.s_DbBattleStage.selectedMusicFileName
-                                       + MusicInfo.levelDesigner
-                                       + StageBattleComponent.instance.GetMusicData().Count
-                                       + MusicDiff).GetConsistentHash();
+    public static string MusicHash => (MusicDiff + MusicAuthor + MusicLevelDesigner + MusicInfo.musicName).GetConsistentHash();
 
     public static string GetDifficultyLabel(IGameStatsService statsService, MainConfigs config)
     {

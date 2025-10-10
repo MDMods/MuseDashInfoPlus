@@ -2,6 +2,7 @@
 using MDIP.Application.DependencyInjection;
 using MDIP.Application.Services.Global.Configuration;
 using MDIP.Application.Services.Global.Logging;
+using MDIP.Application.Services.Global.RuntimeData;
 using MDIP.Application.Services.Global.Stats;
 using MDIP.Application.Services.Scoped.Notes;
 using MDIP.Application.Services.Scoped.Stats;
@@ -13,19 +14,17 @@ public class VictoryScreenService : IVictoryScreenService
 {
     public void OnSetDetailInfo(PnlVictory instance)
     {
-        GameStatsService.IsInGame = false;
-        GameStatsService.IsFirstTry = false;
+        GameStatsService.IsPlayerPlaying = false;
+
+        var hash = GameUtils.MusicHash;
 
         var newAcc = (float)Math.Round(GameStatsService.GetCalculatedAccuracy(), 2);
         var newScore = GameStatsService.Current.Score;
 
         var main = ConfigAccessor.Main;
         var newBest = main.PersonalBestCriteria == 2
-            ? newScore >= GameStatsService.StoredHighestScore
-            : newAcc >= GameStatsService.StoredHighestAccuracy;
-
-        GameStatsService.StoreHighestAccuracy(newAcc);
-        GameStatsService.StoreHighestScore(newScore);
+            ? RuntimeSongDataStore.StorePersonalBestScore(hash, newScore)
+            : RuntimeSongDataStore.StorePersonalBestAccuracy(hash, newAcc);
 
         if (newBest)
         {
@@ -80,5 +79,6 @@ public class VictoryScreenService : IVictoryScreenService
     [UsedImplicitly] [Inject] public IGameStatsService GameStatsService { get; set; }
     [UsedImplicitly] [Inject] public INoteRecordService NoteRecordService { get; set; }
     [UsedImplicitly] [Inject] public IStatsSaverService StatsSaverService { get; set; }
+    [UsedImplicitly] [Inject] public IRuntimeSongDataStore RuntimeSongDataStore { get; set; }
     [UsedImplicitly] [Inject] public ILogger<VictoryScreenService> Logger { get; set; }
 }

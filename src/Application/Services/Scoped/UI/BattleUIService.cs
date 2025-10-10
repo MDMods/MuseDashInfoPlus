@@ -40,7 +40,7 @@ public class BattleUIService : IBattleUIService
         if (_textObjectTemplate != null)
             return;
 
-        GameStatsService.IsInGame = true;
+        GameStatsService.IsPlayerPlaying = true;
         RefreshScheduler.Reset();
 
         try

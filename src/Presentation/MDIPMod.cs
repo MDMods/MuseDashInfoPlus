@@ -1,3 +1,4 @@
+using Il2CppAssets.Scripts.Database;
 using JetBrains.Annotations;
 using MDIP.Application.DependencyInjection;
 using MDIP.Application.Services.Global.Assets;
@@ -7,6 +8,7 @@ using MDIP.Application.Services.Global.Updates;
 using MDIP.Application.Services.Scoped.Scheduling;
 using MDIP.Core.Domain.Configs;
 using MDIP.Core.Domain.Updates;
+using MDIP.Core.Utilities;
 using MDIP.Presentation.Patches;
 
 namespace MDIP.Presentation;

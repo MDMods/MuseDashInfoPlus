@@ -6,8 +6,7 @@ namespace MDIP.Application.Services.Scoped.Stats;
 
 public interface IGameStatsService
 {
-    bool IsInGame { get; set; }
-    bool IsFirstTry { get; set; }
+    bool IsPlayerPlaying { get; set; }
     CurrentStats Current { get; }
     TotalStats Total { get; }
     MissStats Miss { get; }
@@ -20,8 +19,6 @@ public interface IGameStatsService
     float AccuracyCalculationRest { get; }
     int CurrentSkySpeed { get; set; }
     int CurrentGroundSpeed { get; set; }
-    float StoredHighestAccuracy { get; set; }
-    int StoredHighestScore { get; set; }
     bool IsAvailable { get; }
     bool IsAllPerfect { get; }
     bool IsTruePerfect { get; }
@@ -43,10 +40,6 @@ public interface IGameStatsService
     void CountMul(short oid, int result, float time);
     MusicData GetMusicDataByIdx(int idx);
     MusicData GetCurMusicData();
-    void StoreHighestAccuracy(float acc, bool force = false);
-    void StoreHighestScore(int score, bool force = false);
-    void StoreHighestAccuracyFromText(string text);
-    void StoreHighestScoreFromText(string text);
     void Init();
-    void Reset(bool includeStoredData = false);
+    void Reset();
 }

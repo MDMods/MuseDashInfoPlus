@@ -6,6 +6,7 @@ using JetBrains.Annotations;
 using MDIP.Application.DependencyInjection;
 using MDIP.Application.Services.Global.Configuration;
 using MDIP.Application.Services.Global.Logging;
+using MDIP.Application.Services.Global.RuntimeData;
 using MDIP.Application.Services.Global.Stats;
 using MDIP.Core.Domain.Configs;
 using MDIP.Core.Domain.Enums;
@@ -31,16 +32,13 @@ public class GameStatsService : IGameStatsService
     private TaskStageTarget _task;
     private TotalStats _total;
 
-    public bool IsInGame { get; set; }
-    public bool IsFirstTry { get; set; } = true;
+    public bool IsPlayerPlaying { get; set; }
     public CurrentStats Current => _current;
     public TotalStats Total => _total;
     public MissStats Miss => _miss;
     public HistoryStats History => _history;
     public int CurrentSkySpeed { get; set; } = -1;
     public int CurrentGroundSpeed { get; set; } = -1;
-    public float StoredHighestAccuracy { get; set; }
-    public int StoredHighestScore { get; set; }
 
     public int MissCountHittable => _miss.Monster + _miss.Long + _miss.Mul;
     public int MissCountCollectible => _miss.Energy + _miss.Music + _miss.RedPoint + _miss.Ghost;
@@ -49,7 +47,7 @@ public class GameStatsService : IGameStatsService
     public float AccuracyCalculationCounted => _current.Perfect + _current.Great / 2f + _current.Block + _current.Music + _current.Energy + _current.RedPoint;
     public float AccuracyCalculationRest => Math.Max(0, GetAccuracyRest());
     public bool IsAvailable => _stage != null && _task != null && _role != null;
-    public bool IsAllPerfect => IsInGame && _current.Great + MissCount < 1;
+    public bool IsAllPerfect => IsPlayerPlaying && _current.Great + MissCount < 1;
     public bool IsTruePerfect => IsAllPerfect && _current.Early + _current.Late < 1;
 
     public float GetAccuracyRest() => AccuracyCalculationTotal - _current.Perfect - _current.Great - _current.Block - _current.Music - _current.Energy - _current.RedPoint - MissCount - _miss.LongPair;
@@ -376,50 +374,15 @@ public class GameStatsService : IGameStatsService
     public MusicData GetMusicDataByIdx(int idx) => _stage.GetMusicDataByIdx(idx);
     public MusicData GetCurMusicData() => _stage.GetCurMusicData();
 
-    public void StoreHighestAccuracy(float acc, bool force = false)
-    {
-        StoredHighestAccuracy = force ? acc : Math.Max(StoredHighestAccuracy, acc);
-    }
-
-    public void StoreHighestScore(int score, bool force = false)
-    {
-        StoredHighestScore = force ? score : Math.Max(StoredHighestScore, score);
-    }
-
-    public void StoreHighestAccuracyFromText(string text)
-    {
-        if (string.IsNullOrEmpty(text))
-            return;
-
-        IsFirstTry = text == "-";
-
-        if (float.TryParse(text.TrimEnd(' ', '%'), out var x) && x > 0)
-            StoreHighestAccuracy(x, true);
-        else
-            StoredHighestAccuracy = 0;
-    }
-
-    public void StoreHighestScoreFromText(string text)
-    {
-        if (string.IsNullOrEmpty(text))
-            return;
-
-        IsFirstTry = text == "-";
-
-        if (int.TryParse(text, out var x) && x >= 1)
-            StoreHighestScore(x, true);
-        else
-            StoredHighestScore = 0;
-    }
-
     public void Init()
     {
         _stage = StageBattleComponent.instance;
         _task = TaskStageTarget.instance;
         _role = BattleRoleAttributeComponent.instance;
 
-        _history.Score = Math.Max(BattleHelper.GetCurrentMusicHighScore(), StoredHighestScore);
-        _history.Accuracy = StoredHighestAccuracy;
+        var record = RuntimeSongDataStore.TryGet(GameUtils.MusicHash);
+        _history.Score = Math.Max(BattleHelper.GetCurrentMusicHighScore(), record.PersonalBestScore);
+        _history.Accuracy = record.PersonalBestAccuracy;
 
         Logger.Info($"Playing: {GameUtils.MusicName}");
         Logger.Info($"Hash: {GameUtils.MusicHash}");
@@ -509,7 +472,7 @@ public class GameStatsService : IGameStatsService
         _missedNoteIds.Clear();
     }
 
-    public void Reset(bool includeStoredData = false)
+    public void Reset()
     {
         _stage = null;
         _task = null;
@@ -518,14 +481,6 @@ public class GameStatsService : IGameStatsService
         _total = default;
         _miss = default;
         _history = default;
-
-        if (includeStoredData)
-        {
-            IsFirstTry = true;
-            StoredHighestAccuracy = 0;
-            StoredHighestScore = 0;
-        }
-
         CurrentSkySpeed = -1;
         CurrentGroundSpeed = -1;
         _playedNoteIds.Clear();
@@ -544,5 +499,6 @@ public class GameStatsService : IGameStatsService
 
     [UsedImplicitly] [Inject] public IConfigAccessor ConfigAccessor { get; set; }
     [UsedImplicitly] [Inject] public IStatsSaverService StatsSaverService { get; set; }
+    [UsedImplicitly] [Inject] public IRuntimeSongDataStore RuntimeSongDataStore { get; set; }
     [UsedImplicitly] [Inject] public ILogger<GameStatsService> Logger { get; set; }
 }
