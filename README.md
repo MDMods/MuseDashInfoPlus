@@ -62,6 +62,7 @@ In text configuration files, you'll find entries like `text: '{overview} / {stat
 - `{diff}`: Chart difficulty (numeric)
 - `{level}`: Chart difficulty (text)
 - `{author}`: Chart author
+- `{bpm}`: Chart BPM (fixed data, not real-time BPM)
 - `{overview}`: TP/AP indicator, shows current accuracy if below 100%
 - `{stats}`: Miss/Great/Early/Late counts
 - `{pbStats}`: Personal best Miss/Great/Early/Late counts
@@ -73,6 +74,7 @@ In text configuration files, you'll find entries like `text: '{overview} / {stat
 - `{pbLate}`: Personal best Late count
 - `{skySpeed}`: Current sky speed
 - `{groundSpeed}`: Current ground speed
+- `{time}`: System local time
 
 Note: Rich text is supported for some configuration entries. For example:
 `<size=40><color=#e1bb8a>{total}</color></size>`. If you're unfamiliar with rich text, please google it. For line breaks, use `\n`.

@@ -60,6 +60,7 @@ Info+ 是一個高度客製化的 MuseDash 遊戲模組，用於顯示額外的�
 - `{diff}`：譜面難度（數字）
 - `{level}`：譜面難度（文字）
 - `{author}`：譜面作者
+- `{bpm}`：譜面 BPM（固定資料，非即時 BPM）
 - `{overview}`：TP / AP 指示，若當前準確率低於 100%，則改為顯示當前準確率
 - `{stats}`：Miss / Great / Early / Late 等資料
 - `{pbStats}`：個人最佳記錄下的 Miss / Great / Early / Late 等資料
@@ -71,6 +72,7 @@ Info+ 是一個高度客製化的 MuseDash 遊戲模組，用於顯示額外的�
 - `{pbLate}`：個人最佳記錄下的 Late 計數
 - `{skySpeed}`：當前天空速度
 - `{groundSpeed}`：當前地面速度
+- `{time}`：系統本地時間
 
 提示：若設定項提示支援富文字，代表該設定項將會依照您填入的富文字產生對應文字。例：`<size=40><color=#e1bb8a>{total}</color></size>` 。如果您不知道什麼是富文字，請自行搜尋；如果您需要換行，使用 `\n` 。
 
