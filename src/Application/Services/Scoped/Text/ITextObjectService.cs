@@ -1,6 +1,6 @@
 ﻿namespace MDIP.Application.Services.Scoped.Text;
 
-public interface ITextObjectService
+public interface ITextObjectService : IDisposable
 {
     GameObject TextLowerLeft { get; set; }
     GameObject TextLowerRight { get; set; }
@@ -9,5 +9,4 @@ public interface ITextObjectService
     GameObject TextUpperLeft { get; set; }
     GameObject TextUpperRight { get; set; }
     void UpdateAllText();
-    void Reset();
 }

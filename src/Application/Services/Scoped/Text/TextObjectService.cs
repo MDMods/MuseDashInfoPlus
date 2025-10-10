@@ -8,6 +8,8 @@ namespace MDIP.Application.Services.Scoped.Text;
 
 public class TextObjectService : ITextObjectService
 {
+    private bool _disposed;
+
     public GameObject TextLowerLeft { get; set; }
     public GameObject TextLowerRight { get; set; }
     public GameObject TextScoreBelow { get; set; }
@@ -38,14 +40,28 @@ public class TextObjectService : ITextObjectService
             SetText(TextUpperRight, ConfigAccessor.TextFieldUpperRight.Text?.UnEscapeReturn());
     }
 
-    public void Reset()
+    public void Dispose()
     {
-        TextLowerLeft = DestroyAndClear(TextLowerLeft);
-        TextLowerRight = DestroyAndClear(TextLowerRight);
-        TextScoreBelow = DestroyAndClear(TextScoreBelow);
-        TextScoreRight = DestroyAndClear(TextScoreRight);
-        TextUpperLeft = DestroyAndClear(TextUpperLeft);
-        TextUpperRight = DestroyAndClear(TextUpperRight);
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (_disposed)
+            return;
+
+        if (disposing)
+        {
+            TextLowerLeft = DestroyAndClear(TextLowerLeft);
+            TextLowerRight = DestroyAndClear(TextLowerRight);
+            TextScoreBelow = DestroyAndClear(TextScoreBelow);
+            TextScoreRight = DestroyAndClear(TextScoreRight);
+            TextUpperLeft = DestroyAndClear(TextUpperLeft);
+            TextUpperRight = DestroyAndClear(TextUpperRight);
+        }
+
+        _disposed = true;
     }
 
     private void SetText(GameObject obj, string text)
