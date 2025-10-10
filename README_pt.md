@@ -25,11 +25,11 @@ Todos os elementos de dados podem ser livremente personalizados em termos de vis
 
 ## Prévias
 
-![Prévia 1](Static/Preview1.webp)
+![Prévia 1](static/Preview1.webp)
 
-![Prévia 2](Static/Preview2.webp)
+![Prévia 2](static/Preview2.webp)
 
-![Prévia 3](Static/Preview3.webp)
+![Prévia 3](static/Preview3.webp)
 
 ## Configuração
 

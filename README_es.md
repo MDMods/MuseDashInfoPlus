@@ -25,11 +25,11 @@ Todos los elementos de datos pueden personalizarse libremente en términos de vi
 
 ## Vistas previas
 
-![Vista previa 1](Static/Preview1.webp)
+![Vista previa 1](static/Preview1.webp)
 
-![Vista previa 2](Static/Preview2.webp)
+![Vista previa 2](static/Preview2.webp)
 
-![Vista previa 3](Static/Preview3.webp)
+![Vista previa 3](static/Preview3.webp)
 
 ## Configuración
 

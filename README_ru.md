@@ -25,11 +25,11 @@ Info+ — это высоконастраиваемый мод для игры M
 
 ## Превью
 
-![Превью 1](Static/Preview1.webp)
+![Превью 1](static/Preview1.webp)
 
-![Превью 2](Static/Preview2.webp)
+![Превью 2](static/Preview2.webp)
 
-![Превью 3](Static/Preview3.webp)
+![Превью 3](static/Preview3.webp)
 
 ## Конфигурация
 

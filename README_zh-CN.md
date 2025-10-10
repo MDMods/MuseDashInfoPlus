@@ -23,11 +23,11 @@ Info+ 是一个高度客制化的 MuseDash 游戏模组，用于显示额外的�
 
 ## 预览
 
-![预览1](Static/Preview1.webp)
+![预览1](static/Preview1.webp)
 
-![预览2](Static/Preview2.webp)
+![预览2](static/Preview2.webp)
 
-![预览3](Static/Preview3.webp)
+![预览3](static/Preview3.webp)
 
 ## 配置
 
@@ -60,6 +60,7 @@ Info+ 是一个高度客制化的 MuseDash 游戏模组，用于显示额外的�
 - `{diff}`：谱面难度（数字）
 - `{level}`：谱面难度（文本）
 - `{author}`：谱面作者
+- `{bpm}`：谱面 BPM（固定数据，非实时 BPM）
 - `{overview}`：TP / AP 指示，若当前准确率低于 100%，则改为显示当前准确率
 - `{stats}`：Miss / Great / Early / Late 等数据
 - `{pbStats}`：个人最佳记录下的 Miss / Great / Early / Late 等数据
@@ -71,6 +72,7 @@ Info+ 是一个高度客制化的 MuseDash 游戏模组，用于显示额外的�
 - `{pbLate}`：个人最佳记录下的 Late 计数
 - `{skySpeed}`：当前天空速度
 - `{groundSpeed}`：当前地面速度
+- `{time}`：系统本地时间
 
 提示：若配置项提示支持富文本，代表该配置项将会依照您填入的富文本生成对应文本。例：`<size=40><color=#e1bb8a>{total}</color></size>` 。如果您不知道什么是富文本，请自行搜索；如果您需要换行，使用 `\n` 。
 

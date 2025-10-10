@@ -25,11 +25,11 @@ Info+は、ゲーム内の追加情報を表示する、高度にカスタマイ
 
 ## プレビュー
 
-![プレビュー1](Static/Preview1.webp)
+![プレビュー1](static/Preview1.webp)
 
-![プレビュー2](Static/Preview2.webp)
+![プレビュー2](static/Preview2.webp)
 
-![プレビュー3](Static/Preview3.webp)
+![プレビュー3](static/Preview3.webp)
 
 ## 設定
 

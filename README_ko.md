@@ -25,11 +25,11 @@ Info+는 게임 내 추가 정보를 표시하는 고도로 커스터마이징 �
 
 ## 미리보기
 
-![미리보기 1](Static/Preview1.webp)
+![미리보기 1](static/Preview1.webp)
 
-![미리보기 2](Static/Preview2.webp)
+![미리보기 2](static/Preview2.webp)
 
-![미리보기 3](Static/Preview3.webp)
+![미리보기 3](static/Preview3.webp)
 
 ## 설정
 

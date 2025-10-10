@@ -23,11 +23,11 @@ All data elements can be freely customized in terms of visibility, position, siz
 
 ## Previews
 
-![Preview 1](Static/Preview1.webp)
+![Preview 1](static/Preview1.webp)
 
-![Preview 2](Static/Preview2.webp)
+![Preview 2](static/Preview2.webp)
 
-![Preview 3](Static/Preview3.webp)
+![Preview 3](static/Preview3.webp)
 
 ## Configuration
 

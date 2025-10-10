@@ -25,11 +25,11 @@ Alle Datenelemente können in Bezug auf Sichtbarkeit, Position, Größe, Farbe, 
 
 ## Vorschauen
 
-![Vorschau 1](Static/Preview1.webp)
+![Vorschau 1](static/Preview1.webp)
 
-![Vorschau 2](Static/Preview2.webp)
+![Vorschau 2](static/Preview2.webp)
 
-![Vorschau 3](Static/Preview3.webp)
+![Vorschau 3](static/Preview3.webp)
 
 ## Konfiguration
 

@@ -23,11 +23,11 @@ Info+ 是一個高度客製化的 MuseDash 遊戲模組，用於顯示額外的�
 
 ## 預覽
 
-![預覽1](Static/Preview1.webp)
+![預覽1](static/Preview1.webp)
 
-![預覽2](Static/Preview2.webp)
+![預覽2](static/Preview2.webp)
 
-![預覽3](Static/Preview3.webp)
+![預覽3](static/Preview3.webp)
 
 ## 設定
 

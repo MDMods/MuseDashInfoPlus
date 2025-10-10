@@ -25,11 +25,11 @@ Tous les éléments de données peuvent être librement personnalisés en termes
 
 ## Aperçus
 
-![Aperçu 1](Static/Preview1.webp)
+![Aperçu 1](static/Preview1.webp)
 
-![Aperçu 2](Static/Preview2.webp)
+![Aperçu 2](static/Preview2.webp)
 
-![Aperçu 3](Static/Preview3.webp)
+![Aperçu 3](static/Preview3.webp)
 
 ## Configuration
 
