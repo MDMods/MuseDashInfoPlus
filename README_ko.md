@@ -63,6 +63,7 @@ Info+는 게임 내 추가 정보를 표시하는 고도로 커스터마이징 �
 - `{diff}`: 차트 난이도 (숫자)
 - `{level}`: 차트 난이도 (텍스트)
 - `{author}`: 차트 제작자
+- `{bpm}`: 차트 BPM (고정 데이터, 실시간 BPM 아님)
 - `{overview}`: TP/AP 표시기, 100% 미만일 경우 현재 정확도 표시
 - `{stats}`: Miss/Great/Early/Late 카운트
 - `{pbStats}`: 개인 최고 Miss/Great/Early/Late 카운트
@@ -74,6 +75,7 @@ Info+는 게임 내 추가 정보를 표시하는 고도로 커스터마이징 �
 - `{pbLate}`: 개인 최고 Late 카운트
 - `{skySpeed}`: 현재 하늘 속도
 - `{groundSpeed}`: 현재 지상 속도
+- `{time}`: 시스템 로컬 시간
 
 참고: 일부 설정 항목에서는 리치 텍스트가 지원됩니다. 예:
 `<size=40><color=#e1bb8a>{total}</color></size>`. 리치 텍스트에 익숙하지 않은 경우 검색하시기 바랍니다. 줄 바꿈에는 `\n`을 사용하세요.

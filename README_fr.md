@@ -64,6 +64,7 @@ espaces réservés `{dataName}` seront remplacés selon les règles suivantes. C
 - `{diff}` : Difficulté du chart (numérique)
 - `{level}` : Difficulté du chart (texte)
 - `{author}` : Auteur du chart
+- `{bpm}` : BPM du chart (données fixes, pas de BPM en temps réel)
 - `{overview}` : Indicateur TP/AP, affiche la précision actuelle si inférieure à 100%
 - `{stats}` : Compteurs Miss/Great/Early/Late
 - `{pbStats}` : Compteurs Miss/Great/Early/Late du record personnel
@@ -75,6 +76,7 @@ espaces réservés `{dataName}` seront remplacés selon les règles suivantes. C
 - `{pbLate}` : Compteur Late du record personnel
 - `{skySpeed}` : Vitesse ciel actuelle
 - `{groundSpeed}` : Vitesse sol actuelle
+- `{time}` : Heure locale du système
 
 Note : Le texte riche est pris en charge pour certaines entrées de configuration. Par exemple :
 `<size=40><color=#e1bb8a>{total}</color></size>`. Si vous n'êtes pas familier avec le texte riche, veuillez le rechercher. Pour les sauts de ligne, utilisez `\n`.

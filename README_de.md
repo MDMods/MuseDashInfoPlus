@@ -64,6 +64,7 @@ In Textkonfigurationsdateien finden Sie Einträge wie `text: '{overview} / {stat
 - `{diff}`: Chart-Schwierigkeit (numerisch)
 - `{level}`: Chart-Schwierigkeit (Text)
 - `{author}`: Chart-Autor
+- `{bpm}`: Chart-BPM (feste Daten, nicht Echtzeit-BPM)
 - `{overview}`: TP/AP-Indikator, zeigt aktuelle Genauigkeit, wenn unter 100%
 - `{stats}`: Miss/Great/Early/Late-Zählungen
 - `{pbStats}`: Persönliche Rekord Miss/Great/Early/Late-Zählungen
@@ -75,6 +76,7 @@ In Textkonfigurationsdateien finden Sie Einträge wie `text: '{overview} / {stat
 - `{pbLate}`: Persönliche Rekord Late-Zählung
 - `{skySpeed}`: Aktuelle Himmel-Geschwindigkeit
 - `{groundSpeed}`: Aktuelle Boden-Geschwindigkeit
+- `{time}`: Systemzeit
 
 Hinweis: Rich Text wird für einige Konfigurationseinträge unterstützt. Zum Beispiel:
 `<size=40><color=#e1bb8a>{total}</color></size>`. Wenn Sie mit Rich Text nicht vertraut sind, suchen Sie bitte danach. Für Zeilenumbrüche verwenden Sie `\n`.

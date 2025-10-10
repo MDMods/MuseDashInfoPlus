@@ -64,6 +64,7 @@ marcadores `{dataName}` se reemplazarán según las siguientes reglas. Estos pue
 - `{diff}`: Dificultad del chart (numérica)
 - `{level}`: Dificultad del chart (texto)
 - `{author}`: Autor del chart
+- `{bpm}`: BPM del chart (datos fijos, no BPM en tiempo real)
 - `{overview}`: Indicador TP/AP, muestra la precisión actual si está por debajo del 100%
 - `{stats}`: Contadores Miss/Great/Early/Late
 - `{pbStats}`: Contadores Miss/Great/Early/Late del récord personal
@@ -75,6 +76,7 @@ marcadores `{dataName}` se reemplazarán según las siguientes reglas. Estos pue
 - `{pbLate}`: Conteo Late del récord personal
 - `{skySpeed}`: Velocidad cielo actual
 - `{groundSpeed}`: Velocidad suelo actual
+- `{time}`: Hora local del sistema
 
 Nota: El texto enriquecido es compatible con algunas entradas de configuración. Por ejemplo:
 `<size=40><color=#e1bb8a>{total}</color></size>`. Si no está familiarizado con el texto enriquecido, búsquelo. Para saltos de línea, use `\n`.
