@@ -3,6 +3,7 @@ using MDIP.Application.DependencyInjection;
 using MDIP.Application.Services.Global.Configuration;
 using MDIP.Application.Services.Global.Input;
 using MDIP.Application.Services.Global.Logging;
+using MDIP.Application.Services.Global.Text;
 using MDIP.Application.Services.Scoped.Stats;
 using MDIP.Application.Services.Scoped.Text;
 using MDIP.Application.Services.Scoped.UI;

@@ -1,4 +1,5 @@
-﻿using MDIP.Core.Domain.Records;
+﻿using System.Globalization;
+using MDIP.Core.Domain.Records;
 
 namespace MDIP.Application.Services.Global.RuntimeData;
 
@@ -20,7 +21,8 @@ public class RuntimeSongDataStore : IRuntimeSongDataStore
         if (string.IsNullOrEmpty(songHash) || string.IsNullOrEmpty(text))
             return false;
 
-        if (float.TryParse(text.TrimEnd(' ', '%'), out var acc) && acc > 0)
+        var trimmed = text.TrimEnd(' ', '%');
+        if (TryParseAccuracy(trimmed, out var acc) && acc > 0)
             return StorePersonalBestAccuracy(songHash, acc);
 
         return false;
@@ -78,4 +80,7 @@ public class RuntimeSongDataStore : IRuntimeSongDataStore
         _songRuntimeRecords.Add(songHash, new(0, score));
         return true;
     }
+
+    private static bool TryParseAccuracy(string text, out float value)
+        => float.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out value) || float.TryParse(text, NumberStyles.Float, CultureInfo.CurrentCulture, out value);
 }

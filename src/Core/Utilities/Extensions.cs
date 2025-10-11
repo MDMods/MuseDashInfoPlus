@@ -8,7 +8,11 @@ namespace MDIP.Core.Utilities;
 
 public static class Extensions
 {
-    public static bool IsRegularNote(this NoteType noteType) => Enum.IsDefined(typeof(NoteType), noteType);
+    public static bool IsRegularNote(this NoteType noteType)
+    {
+        var value = (int)noteType;
+        return value is >= (int)NoteType.Monster and <= (int)NoteType.Mul;
+    }
 
     public static Color ToColor(this string color)
         => ColorUtility.TryParseHtmlString(color, out var result) ? result : Color.white;

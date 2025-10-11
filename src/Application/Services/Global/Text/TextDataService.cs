@@ -2,24 +2,26 @@ using System.Globalization;
 using JetBrains.Annotations;
 using MDIP.Application.DependencyInjection;
 using MDIP.Application.Services.Global.Configuration;
+using MDIP.Application.Services.Global.Logging;
 using MDIP.Application.Services.Global.RuntimeData;
 using MDIP.Application.Services.Scoped.Stats;
 using MDIP.Application.Services.Scoped.UI;
 using MDIP.Core.Domain.Configs;
 using MDIP.Core.Utilities;
 
-namespace MDIP.Application.Services.Scoped.Text;
+namespace MDIP.Application.Services.Global.Text;
 
 public class TextDataService : ITextDataService
 {
     private static readonly char[] TrimChars = ['|', '\\', '-', '/', '~', '_', '=', '+'];
 
+    private int _pendingCacheClear;
+    private int _pendingConstantsRefresh;
+    private int _globalCallbacksState;
+
     private readonly Dictionary<string, string> _cachedValues = new();
     private readonly Dictionary<string, string> _formattedTexts = new();
     private bool _callbacksRegistered;
-
-    private static int _pendingCacheClear;
-    private static int _pendingConstantsRefresh;
 
     public void UpdateConstants()
     {
@@ -122,30 +124,59 @@ public class TextDataService : ITextDataService
         if (_callbacksRegistered)
             return;
 
+        if (Volatile.Read(ref _globalCallbacksState) == 1)
+        {
+            _callbacksRegistered = true;
+            return;
+        }
+
+        if (ConfigService == null)
+        {
+            Logger?.Warn("ConfigService not available; deferring callback registration.");
+            return;
+        }
+
+        if (Interlocked.CompareExchange(ref _globalCallbacksState, -1, 0) != 0)
+            return;
+
         try
         {
-            void OnConfigChanged<T>(T _)
-            {
-                Interlocked.Exchange(ref _pendingCacheClear, 1);
-                Interlocked.Exchange(ref _pendingConstantsRefresh, 1);
-                BattleUIService.RequestApplyConfigChanges();
-            }
+            ConfigService.RegisterUpdateCallback<MainConfigs>(nameof(MainConfigs), HandleConfigChanged);
+            ConfigService.RegisterUpdateCallback<AdvancedConfigs>(nameof(AdvancedConfigs), HandleConfigChanged);
+            ConfigService.RegisterUpdateCallback<TextFieldLowerLeftConfigs>(nameof(TextFieldLowerLeftConfigs), HandleConfigChanged);
+            ConfigService.RegisterUpdateCallback<TextFieldLowerRightConfigs>(nameof(TextFieldLowerRightConfigs), HandleConfigChanged);
+            ConfigService.RegisterUpdateCallback<TextFieldScoreBelowConfigs>(nameof(TextFieldScoreBelowConfigs), HandleConfigChanged);
+            ConfigService.RegisterUpdateCallback<TextFieldScoreRightConfigs>(nameof(TextFieldScoreRightConfigs), HandleConfigChanged);
+            ConfigService.RegisterUpdateCallback<TextFieldUpperLeftConfigs>(nameof(TextFieldUpperLeftConfigs), HandleConfigChanged);
+            ConfigService.RegisterUpdateCallback<TextFieldUpperRightConfigs>(nameof(TextFieldUpperRightConfigs), HandleConfigChanged);
 
-            ConfigService.RegisterUpdateCallback<MainConfigs>(nameof(MainConfigs), OnConfigChanged);
-            ConfigService.RegisterUpdateCallback<AdvancedConfigs>(nameof(AdvancedConfigs), OnConfigChanged);
-            ConfigService.RegisterUpdateCallback<TextFieldLowerLeftConfigs>(nameof(TextFieldLowerLeftConfigs), OnConfigChanged);
-            ConfigService.RegisterUpdateCallback<TextFieldLowerRightConfigs>(nameof(TextFieldLowerRightConfigs), OnConfigChanged);
-            ConfigService.RegisterUpdateCallback<TextFieldScoreBelowConfigs>(nameof(TextFieldScoreBelowConfigs), OnConfigChanged);
-            ConfigService.RegisterUpdateCallback<TextFieldScoreRightConfigs>(nameof(TextFieldScoreRightConfigs), OnConfigChanged);
-            ConfigService.RegisterUpdateCallback<TextFieldUpperLeftConfigs>(nameof(TextFieldUpperLeftConfigs), OnConfigChanged);
-            ConfigService.RegisterUpdateCallback<TextFieldUpperRightConfigs>(nameof(TextFieldUpperRightConfigs), OnConfigChanged);
-
+            Volatile.Write(ref _globalCallbacksState, 1);
             _callbacksRegistered = true;
         }
-        catch (InvalidOperationException)
+        catch (InvalidOperationException ex)
         {
-            // Keep _callbacksRegistered false, wait for next invoke
+            Logger?.Warn("Config modules not ready yet; will retry callback registration.");
+            Logger?.Warn(ex);
+            Volatile.Write(ref _globalCallbacksState, 0);
         }
+        catch (Exception ex)
+        {
+            Logger?.Error("Failed to register configuration update callbacks.");
+            Logger?.Error(ex);
+            Volatile.Write(ref _globalCallbacksState, 0);
+        }
+    }
+
+    private void HandleConfigChanged<T>(T _) where T : class
+        => HandleConfigChangedCore();
+
+    private void HandleConfigChangedCore()
+    {
+        Interlocked.Exchange(ref _pendingCacheClear, 1);
+        Interlocked.Exchange(ref _pendingConstantsRefresh, 1);
+
+        var battleUiService = ModServiceConfigurator.Provider?.GetService(typeof(IBattleUIService)) as IBattleUIService;
+        battleUiService?.QueueApplyConfigChanges();
     }
 
     private void UpdateCachedValue(string key, string value)
@@ -170,4 +201,5 @@ public class TextDataService : ITextDataService
     [UsedImplicitly] [Inject] public IConfigService ConfigService { get; set; }
     [UsedImplicitly] [Inject] public IGameStatsService GameStatsService { get; set; }
     [UsedImplicitly] [Inject] public IRuntimeSongDataStore RuntimeSongDataStore { get; set; }
+    [UsedImplicitly] [Inject] public ILogger<TextDataService> Logger { get; set; }
 }

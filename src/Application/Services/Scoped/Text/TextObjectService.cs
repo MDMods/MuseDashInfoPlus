@@ -1,6 +1,7 @@
 using JetBrains.Annotations;
 using MDIP.Application.DependencyInjection;
 using MDIP.Application.Services.Global.Configuration;
+using MDIP.Application.Services.Global.Text;
 using MDIP.Core.Utilities;
 using Object = UnityEngine.Object;
 

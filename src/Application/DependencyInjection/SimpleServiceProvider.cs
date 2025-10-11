@@ -20,10 +20,17 @@ public sealed class SimpleServiceProvider : IServiceProvider
     private readonly Dictionary<Type, ServiceDescriptor> _implementationDescriptors = new();
     private readonly List<ServiceDescriptor> _openGenericDescriptors = [];
     private readonly Dictionary<Type, object> _singletons = new();
-    private readonly Dictionary<Type, object> _scopedInstances = new();
     private readonly HashSet<Type> _resolving = [];
     private readonly List<object> _propertyInjectedSingletons = [];
-    private int _scopeDepth;
+    private readonly object _scopeLock = new();
+
+    private ScopeState _activeScope;
+
+    private ScopeState ActiveScope
+    {
+        get => Volatile.Read(ref _activeScope);
+        set => Volatile.Write(ref _activeScope, value);
+    }
 
     public object GetService(Type serviceType)
     {
@@ -65,22 +72,26 @@ public sealed class SimpleServiceProvider : IServiceProvider
             throw new InvalidOperationException("Generic implementation type requires a matching generic service type.");
     }
 
-    public IServiceScope CreateScope() => new ServiceScope(this);
-
-    public void ClearScope()
+    public IServiceScope CreateScope()
     {
-        foreach (var instance in _scopedInstances.Values)
+        lock (_scopeLock)
         {
-            if (instance is IDisposable disposable)
-                disposable.Dispose();
+            if (ActiveScope != null)
+                throw new InvalidOperationException("A scoped lifetime is already active. Dispose the current scope before creating a new one.");
+
+            var state = new ScopeState();
+            ActiveScope = state;
+            return new ServiceScope(this, state);
         }
-        _scopedInstances.Clear();
     }
 
     public void RefreshSingletonPropertyInjections()
     {
-        foreach (var instance in _propertyInjectedSingletons)
-            this.InjectProperties(instance);
+        lock (_scopeLock)
+        {
+            foreach (var instance in _propertyInjectedSingletons)
+                this.InjectProperties(instance);
+        }
     }
 
     public T GetRequiredService<T>() where T : class => (T)GetRequiredService(typeof(T));
@@ -90,36 +101,31 @@ public sealed class SimpleServiceProvider : IServiceProvider
 
     private object GetOrCreateSingleton(Type serviceType, ServiceDescriptor descriptor)
     {
-        if (_singletons.TryGetValue(serviceType, out var existing))
-            return existing;
+        lock (_scopeLock)
+        {
+            if (_singletons.TryGetValue(serviceType, out var existing))
+                return existing;
 
-        var instance = CreateInstance(serviceType, descriptor);
-        _singletons[serviceType] = instance;
+            var instance = CreateInstance(serviceType, descriptor);
+            _singletons[serviceType] = instance;
 
-        if (serviceType != descriptor.ImplementationType)
-            _singletons.TryAdd(descriptor.ImplementationType, instance);
+            if (serviceType != descriptor.ImplementationType)
+                _singletons.TryAdd(descriptor.ImplementationType, instance);
 
-        if (descriptor.UsePropertyInjection)
-            _propertyInjectedSingletons.Add(instance);
+            if (descriptor.UsePropertyInjection)
+                _propertyInjectedSingletons.Add(instance);
 
-        return instance;
+            return instance;
+        }
     }
 
     private object GetOrCreateScoped(Type serviceType, ServiceDescriptor descriptor)
     {
-        if (_scopeDepth <= 0)
+        var scope = ActiveScope;
+        if (scope == null || scope.IsDisposed)
             return null;
 
-        if (_scopedInstances.TryGetValue(serviceType, out var existing))
-            return existing;
-
-        var instance = CreateInstance(serviceType, descriptor);
-        _scopedInstances[serviceType] = instance;
-
-        if (serviceType != descriptor.ImplementationType)
-            _scopedInstances.TryAdd(descriptor.ImplementationType, instance);
-
-        return instance;
+        return scope.GetOrCreate(serviceType, descriptor, this);
     }
 
     private object CreateInstance(Type serviceType, ServiceDescriptor descriptor)
@@ -207,6 +213,23 @@ public sealed class SimpleServiceProvider : IServiceProvider
         throw new InvalidOperationException($"Unable to resolve constructor for {implementationType}.");
     }
 
+    private void CloseScope(ScopeState scopeState)
+    {
+        if (scopeState == null)
+            return;
+
+        lock (_scopeLock)
+        {
+            var current = ActiveScope;
+            if (!ReferenceEquals(current, scopeState))
+                return;
+
+            ActiveScope = null;
+        }
+
+        scopeState.DisposeAll();
+    }
+
     private sealed class ServiceDescriptor(Type serviceType, Type implementationType, ServiceLifetime lifetime, bool usePropertyInjection)
     {
         public Type ServiceType { get; } = serviceType;
@@ -215,23 +238,80 @@ public sealed class SimpleServiceProvider : IServiceProvider
         public bool UsePropertyInjection { get; } = usePropertyInjection;
     }
 
-    private sealed class ServiceScope : IServiceScope
+    private sealed class ServiceScope(SimpleServiceProvider provider, ScopeState state) : IServiceScope
     {
-        private readonly SimpleServiceProvider _provider;
-        private bool _disposed;
-
-        public ServiceScope(SimpleServiceProvider provider)
-        {
-            _provider = provider;
-            Interlocked.Increment(ref _provider._scopeDepth);
-        }
+        private int _disposed;
 
         public void Dispose()
         {
-            if (_disposed) return;
-            _disposed = true;
-            _provider.ClearScope();
-            Interlocked.Decrement(ref _provider._scopeDepth);
+            if (Interlocked.Exchange(ref _disposed, 1) == 1)
+                return;
+
+            provider.CloseScope(state);
+        }
+    }
+
+    private sealed class ScopeState
+    {
+        private readonly object _sync = new();
+        private readonly Dictionary<Type, object> _instances = new();
+        private bool _disposed;
+
+        public bool IsDisposed => Volatile.Read(ref _disposed);
+
+        public object GetOrCreate(Type serviceType, ServiceDescriptor descriptor, SimpleServiceProvider provider)
+        {
+            object existing;
+            lock (_sync)
+            {
+                if (_disposed)
+                    return null;
+
+                if (_instances.TryGetValue(serviceType, out existing))
+                    return existing;
+            }
+
+            var instance = provider.CreateInstance(serviceType, descriptor);
+
+            lock (_sync)
+            {
+                if (_disposed)
+                {
+                    if (instance is IDisposable disposable)
+                        disposable.Dispose();
+                    return null;
+                }
+
+                if (_instances.TryGetValue(serviceType, out existing))
+                    return existing;
+
+                _instances[serviceType] = instance;
+                if (serviceType != descriptor.ImplementationType)
+                    _instances[descriptor.ImplementationType] = instance;
+
+                return instance;
+            }
+        }
+
+        public void DisposeAll()
+        {
+            List<object> instancesToDispose;
+
+            lock (_sync)
+            {
+                if (_disposed)
+                    return;
+
+                instancesToDispose = _instances.Values.Distinct().ToList();
+                _instances.Clear();
+                Volatile.Write(ref _disposed, true);
+            }
+
+            foreach (var instance in instancesToDispose)
+            {
+                if (instance is IDisposable disposable)
+                    disposable.Dispose();
+            }
         }
     }
 }

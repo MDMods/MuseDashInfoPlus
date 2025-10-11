@@ -4,6 +4,7 @@ using MDIP.Application.DependencyInjection;
 using MDIP.Application.Services.Global.Assets;
 using MDIP.Application.Services.Global.Configuration;
 using MDIP.Application.Services.Global.Logging;
+using MDIP.Application.Services.Global.Text;
 using MDIP.Application.Services.Scoped.Stats;
 using MDIP.Application.Services.Scoped.Text;
 using MDIP.Core.Constants;
@@ -19,6 +20,8 @@ namespace MDIP.Application.Services.Scoped.UI;
 // ReSharper disable StringLiteralTypo
 public class BattleUIService : IBattleUIService
 {
+    private bool _disposed;
+
     public bool NativeZoomInCompleted { get; private set; }
     public bool DesiredUiVisible { get; private set; }
 
@@ -27,6 +30,7 @@ public class BattleUIService : IBattleUIService
     private const float AutoShowDelaySeconds = 2f;
 
     private readonly List<TextFieldBinding> _textFieldBindings = [];
+    private int _pendingApplyRequests;
 
     private Transform _currentPanel;
     private Transform _scoreTransform;
@@ -51,8 +55,6 @@ public class BattleUIService : IBattleUIService
     private ScoreStyleType _scoreStyleType = ScoreStyleType.Unknown;
 
     private float CurrentY => _scoreTransform != null ? _scoreTransform.localPosition.y : Constants.SCORE_ZOOM_OUT_Y;
-
-    private static int _pendingApplyRequests;
 
     public void OnGameStart(PnlBattle instance)
     {
@@ -173,9 +175,7 @@ public class BattleUIService : IBattleUIService
         if (!_allowNativeZoomFollow)
         {
             if (NativeZoomInCompleted && Time.time >= _autoShowEnableTime)
-            {
                 EnableFollowAndStart();
-            }
             else
             {
                 ForceHide();
@@ -219,6 +219,14 @@ public class BattleUIService : IBattleUIService
         _previousY = CurrentY;
     }
 
+    public void QueueApplyConfigChanges()
+    {
+        if (_isShutdown)
+            return;
+
+        Interlocked.Increment(ref _pendingApplyRequests);
+    }
+
     public void ApplyPendingConfigChanges()
     {
         if (_isShutdown || !_isInitialized)
@@ -232,9 +240,6 @@ public class BattleUIService : IBattleUIService
 
         OnConfigsUpdated();
     }
-
-    public static void RequestApplyConfigChanges()
-        => Interlocked.Increment(ref _pendingApplyRequests);
 
     public void SetDesiredUiVisible(bool visible)
     {
@@ -251,6 +256,23 @@ public class BattleUIService : IBattleUIService
             else
                 _allowNativeZoomFollow = false;
         }
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (_disposed)
+            return;
+
+        if (disposing)
+            Teardown();
+
+        _disposed = true;
     }
 
     private void EnableFollowAndStart()

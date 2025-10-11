@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Collections;
+using System.Reflection;
 using MDIP.Core.Domain.Configs;
 
 namespace MDIP.Core.Infrastructure.Configuration;
@@ -42,7 +43,7 @@ public static class ConfigVersionControl
                     var migratedValue = migrateMethod?.Invoke(null, new[] { oldValue, newValue });
                     property.SetValue(migratedConfig, migratedValue);
                 }
-                else if (typeof(IEnumerable<object>).IsAssignableFrom(property.PropertyType))
+                else if (typeof(IEnumerable).IsAssignableFrom(property.PropertyType))
                     property.SetValue(migratedConfig, oldValue);
                 else
                 {

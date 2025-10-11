@@ -32,14 +32,19 @@ public class GameStatsService : IGameStatsService
     private TaskStageTarget _task;
     private TotalStats _total;
 
-    public bool IsPlayerPlaying { get; set; } = true;
-    public string PlayingMusicHash { get; set; } = "null";
+    public GameStatsService()
+    {
+        ClearState();
+    }
+
+    public bool IsPlayerPlaying { get; set; }
+    public string PlayingMusicHash { get; set; }
     public CurrentStats Current => _current;
     public TotalStats Total => _total;
     public MissStats Miss => _miss;
     public HistoryStats History => _history;
-    public int CurrentSkySpeed { get; set; } = -1;
-    public int CurrentGroundSpeed { get; set; } = -1;
+    public int CurrentSkySpeed { get; set; }
+    public int CurrentGroundSpeed { get; set; }
 
     public int MissCountHittable => _miss.Monster + _miss.Long + _miss.Mul;
     public int MissCountCollectible => _miss.Energy + _miss.Music + _miss.RedPoint + _miss.Ghost;
@@ -104,15 +109,9 @@ public class GameStatsService : IGameStatsService
             CurrentGroundSpeed = speed;
     }
 
-    /// <summary>
-    /// Game API accuracy
-    /// </summary>
     public float GetTrueAccuracy()
         => _task.GetAccuracy() * 100f;
 
-    /// <summary>
-    /// Mod calculated accuracy
-    /// </summary>
     public float GetCalculatedAccuracy(int mode = -1)
     {
         var main = ConfigAccessor.Main;
@@ -350,9 +349,6 @@ public class GameStatsService : IGameStatsService
             case CountNoteAction.MissMul:
                 var curTick = _stage.realTimeTick;
 
-                // We currently have no reliable patch to detect whether a "Mul" note has actually been missed in real time.
-                // → Therefore, we delay this check until the Mul note ends.
-                // If the note is still not marked as played by then, count it as a miss.
                 MelonCoroutines.Start(CoroutineUtils.Run(() =>
                 {
                     if (_stage == null || _stage.realTimeTick <= curTick)
@@ -391,6 +387,8 @@ public class GameStatsService : IGameStatsService
 
     public void Init()
     {
+        ClearState();
+
         _stage = StageBattleComponent.instance;
         _task = TaskStageTarget.instance;
         _role = BattleRoleAttributeComponent.instance;
@@ -479,6 +477,23 @@ public class GameStatsService : IGameStatsService
         {
             Logger.Error(e.ToString());
         }
+    }
+
+    private void ClearState()
+    {
+        _missedNoteIds.Clear();
+        _playedNoteIds.Clear();
+        _current = new();
+        _history = new();
+        _miss = new();
+        _total = new();
+        _stage = null;
+        _task = null;
+        _role = null;
+        IsPlayerPlaying = true;
+        PlayingMusicHash = "null";
+        CurrentSkySpeed = -1;
+        CurrentGroundSpeed = -1;
     }
 
     private static string FormatSingleStatsGap(int gap, string text, MainConfigs main)

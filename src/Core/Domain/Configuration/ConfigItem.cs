@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using MDIP.Core.Domain.Attributes;
 using MDIP.Core.Domain.Configs;
 using MDIP.Core.Infrastructure.Configuration;
@@ -9,60 +10,102 @@ namespace MDIP.Core.Domain.Configuration;
 
 public class ConfigItem(string name, string configPath)
 {
+    private sealed class CallbackGroup
+    {
+        public List<Action<object>> Actions { get; } = [];
+        public HashSet<string> Keys { get; } = new(StringComparer.Ordinal);
+    }
+
     private readonly Dictionary<Type, object> _configCache = new();
-    private readonly Dictionary<Type, Action<object>> _updateCallbacks = new();
+    private readonly Dictionary<Type, CallbackGroup> _updateCallbacks = new();
+    private readonly object _lock = new();
 
     public string ConfigPath { get; } = configPath;
 
     public T GetConfig<T>() where T : ConfigBase, new()
     {
         var type = typeof(T);
-        if (_configCache.TryGetValue(type, out var cached))
-            return (T)cached;
-        var config = LoadConfig<T>();
-        _configCache[type] = config;
-        return config;
+        lock (_lock)
+        {
+            if (_configCache.TryGetValue(type, out var cached))
+                return (T)cached;
+            var config = LoadConfigInternal<T>();
+            _configCache[type] = config;
+            return config;
+        }
     }
 
     public void SaveConfig<T>(T config) where T : ConfigBase
     {
-        config.LastModified = DateTime.Now;
-        var comments = GetConfigComments<T>();
-        var yaml = YamlParser.Serialize(config);
-        var lines = yaml.Split(Environment.NewLine);
-        yaml = string.Empty;
-        foreach (var line in lines)
+        lock (_lock)
         {
-            yaml += line + Environment.NewLine;
-            if (!line.StartsWith("version:") && !line.StartsWith("lastModified:"))
-                yaml += Environment.NewLine;
+            config.LastModified = DateTime.Now;
+            var comments = GetConfigComments<T>();
+            var yaml = YamlParser.Serialize(config);
+            var lines = yaml.Split(Environment.NewLine);
+            yaml = string.Empty;
+            foreach (var line in lines)
+            {
+                yaml += line + Environment.NewLine;
+                if (!line.StartsWith("version:") && !line.StartsWith("lastModified:"))
+                    yaml += Environment.NewLine;
+            }
+
+            if (comments is { Count: > 0 })
+                yaml = ConfigCommentFormatter.AddCommentsToYaml(yaml, comments);
+
+            File.WriteAllText(ConfigPath, yaml);
+            _configCache[typeof(T)] = config;
         }
-
-        if (comments is { Count: > 0 })
-            yaml = ConfigCommentFormatter.AddCommentsToYaml(yaml, comments);
-
-        File.WriteAllText(ConfigPath, yaml);
-        _configCache[typeof(T)] = config;
     }
 
     public void RegisterUpdateCallback<T>(Action<T> callback) where T : class
     {
         if (callback == null)
             return;
-        _updateCallbacks[typeof(T)] = obj => callback((T)obj);
+
+        var type = typeof(T);
+        lock (_lock)
+        {
+            if (!_updateCallbacks.TryGetValue(type, out var group))
+            {
+                group = new();
+                _updateCallbacks[type] = group;
+            }
+
+            var key = GetCallbackKey(callback);
+            if (!group.Keys.Add(key))
+                return;
+
+            group.Actions.Add(obj => callback((T)obj));
+        }
     }
 
     public void ReloadConfig()
     {
-        foreach (var type in _configCache.Keys.ToArray())
+        List<(Type type, object config, List<Action<object>> callbacks)> updates = new();
+
+        lock (_lock)
         {
-            var method = GetType().GetMethod(nameof(LoadConfig), BindingFlags.Instance | BindingFlags.NonPublic)?.MakeGenericMethod(type);
-            var newConfig = method?.Invoke(this, null);
-            if (newConfig == null)
-                continue;
-            _configCache[type] = newConfig;
-            if (_updateCallbacks.TryGetValue(type, out var callback))
-                callback(newConfig);
+            var methodInfo = GetType().GetMethod(nameof(LoadConfigInternal), BindingFlags.Instance | BindingFlags.NonPublic);
+            foreach (var type in _configCache.Keys.ToArray())
+            {
+                var method = methodInfo?.MakeGenericMethod(type);
+                var newConfig = method?.Invoke(this, null);
+                if (newConfig == null)
+                    continue;
+
+                _configCache[type] = newConfig;
+
+                if (_updateCallbacks.TryGetValue(type, out var group) && group.Actions.Count > 0)
+                    updates.Add((type, newConfig, group.Actions.ToList()));
+            }
+        }
+
+        foreach (var update in updates)
+        {
+            foreach (var callback in update.callbacks)
+                callback(update.config);
         }
     }
 
@@ -76,7 +119,7 @@ public class ConfigItem(string name, string configPath)
         return Path.Combine(directory, $"{fileName}.v{version}{extension}");
     }
 
-    private T LoadConfig<T>() where T : ConfigBase, new()
+    private T LoadConfigInternal<T>() where T : ConfigBase, new()
     {
         if (!File.Exists(ConfigPath))
             return CreateAndSaveDefault<T>();
@@ -147,4 +190,12 @@ public class ConfigItem(string name, string configPath)
     }
 
     private static string ToCamelCase(string str) => char.ToLowerInvariant(str[0]) + str[1..];
+
+    private static string GetCallbackKey(Delegate callback)
+    {
+        var method = callback.Method;
+        var target = callback.Target;
+        var targetId = target != null ? RuntimeHelpers.GetHashCode(target) : 0;
+        return $"{method.DeclaringType?.FullName}|{method.Name}|{targetId}";
+    }
 }

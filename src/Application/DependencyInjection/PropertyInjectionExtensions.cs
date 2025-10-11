@@ -26,8 +26,7 @@ internal static class PropertyInjectionExtensions
         foreach (var property in GetInjectableProperties(instance.GetType(), false))
         {
             var service = provider.GetService(property.PropertyType);
-            if (service != null)
-                property.SetValue(instance, service);
+            property.SetValue(instance, service);
         }
         return instance;
     }
@@ -37,8 +36,7 @@ internal static class PropertyInjectionExtensions
         foreach (var property in GetInjectableProperties(type, true))
         {
             var service = provider.GetService(property.PropertyType);
-            if (service != null)
-                property.SetValue(null, service);
+            property.SetValue(null, service);
         }
     }
 

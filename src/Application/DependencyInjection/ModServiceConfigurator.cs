@@ -6,6 +6,7 @@ using MDIP.Application.Services.Global.Stats;
 using MDIP.Application.Services.Global.UI;
 using MDIP.Application.Services.Global.Updates;
 using MDIP.Application.Services.Global.Input;
+using MDIP.Application.Services.Global.Text;
 using MDIP.Application.Services.Scoped.Notes;
 using MDIP.Application.Services.Scoped.Scheduling;
 using MDIP.Application.Services.Scoped.Stats;
@@ -38,6 +39,7 @@ public static class ModServiceConfigurator
         provider.AddSingletonWithPropertyInjection<IStatsSaverService, StatsSaverService>();
         provider.AddSingletonWithPropertyInjection<IPreparationScreenService, PreparationScreenService>();
         provider.AddSingletonWithPropertyInjection<IHotkeyService, HotkeyService>();
+        provider.AddSingletonWithPropertyInjection<ITextDataService, TextDataService>();
 
         // ───────── Level-lifetime services ─────────
         // Active only during one stage/session.
@@ -46,7 +48,6 @@ public static class ModServiceConfigurator
         provider.AddScopedWithPropertyInjection<IGameStatsService, GameStatsService>();
         provider.AddScopedWithPropertyInjection<INoteRecordService, NoteRecordService>();
         provider.AddScopedWithPropertyInjection<INoteEventService, NoteEventService>();
-        provider.AddScopedWithPropertyInjection<ITextDataService, TextDataService>();
         provider.AddScopedWithPropertyInjection<ITextObjectService, TextObjectService>();
         provider.AddScopedWithPropertyInjection<IVictoryScreenService, VictoryScreenService>();
         provider.AddScopedWithPropertyInjection<IBattleUIService, BattleUIService>();
@@ -67,6 +68,12 @@ public static class ModServiceConfigurator
     {
         CurrentScope?.Dispose();
         CurrentScope = null;
+
+        if (Provider == null)
+            return;
+
+        Provider.RefreshSingletonPropertyInjections();
+        RefreshStaticInjections();
     }
 
     public static void Inject(object instance)

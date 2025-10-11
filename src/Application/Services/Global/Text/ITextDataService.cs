@@ -1,4 +1,4 @@
-﻿namespace MDIP.Application.Services.Scoped.Text;
+﻿namespace MDIP.Application.Services.Global.Text;
 
 public interface ITextDataService
 {
