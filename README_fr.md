@@ -18,6 +18,7 @@ Tous les éléments de données peuvent être librement personnalisés en termes
 
 ## Notes importantes
 
+- ⌨️ **Touche de basculement de l'interface** : Appuyez sur **F10** pour basculer l'affichage de toute l'interface en jeu. Si l'interface disparaît accidentellement, appuyez à nouveau sur **F10** pour la restaurer. Cette touche peut être modifiée dans `MainConfigs.yml`
 - Les compteurs Miss/Great/Early/Late des records personnels ne sont pas stockés dans le jeu de base et ne peuvent être sauvegardés que lorsque Info+ est installé. Vous devez obtenir au moins un record personnel avec Info+ installé pour que l'écart des statistiques du record personnel fonctionne
 - Si vous avez chargé le mod [SongDesc](https://github.com/mdmods/songdesc), les informations sur les charts seront désactivées par défaut. Utilisez la configuration pour les réactiver
 - Certaines données peuvent ne pas fonctionner correctement pour les charts Touhou Danmaku en raison de problèmes de compatibilité
@@ -46,17 +47,6 @@ Tous les fichiers de configuration sont **générés automatiquement au premier 
 - `TextFieldUpperLeftConfigs.yml` : Configuration du texte sous le label "SCORE" (position fixe par rapport au label)
 - `TextFieldUpperRightConfigs.yml` : Configuration du texte en haut à droite de l'écran
 - `AdvancedConfigs.yml` : Pour les utilisateurs avancés uniquement - ne modifiez pas sauf si vous comprenez les paramètres
-
-### Basculement de la visibilité de l'interface
-
-Ce mod inclut une touche de raccourci pour basculer la visibilité de l'interface de jeu (tous les affichages Info+). La touche de raccourci par défaut est **F10**.
-
-**Options de configuration dans MainConfigs.yml :**
-- `EnableUiToggleHotkey` : Activer ou désactiver la touche de raccourci de basculement de l'interface (par défaut : true)
-- `UiToggleHotkey` : La touche de raccourci pour basculer la visibilité de l'interface (par défaut : "F10")
-- `UiVisibleByDefault` : Si l'interface est visible par défaut au démarrage d'un niveau (par défaut : true)
-
-**Important :** Si vous masquez accidentellement l'interface et ne pouvez pas la restaurer, appuyez sur **F10** (ou votre touche de raccourci configurée) pour la réafficher. Cette fonctionnalité peut être utile pour prendre des captures d'écran ou enregistrer sans éléments d'interface.
 
 ### Espaces réservés de données
 

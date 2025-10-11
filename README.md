@@ -16,6 +16,7 @@ All data elements can be freely customized in terms of visibility, position, siz
 
 ## Important Notes
 
+- ⌨️ **UI Toggle Hotkey**: Press **F10** to toggle visibility of all in-game UI. If the UI disappears accidentally, press **F10** again to restore it. This hotkey can be changed in `MainConfigs.yml`
 - The Miss/Great/Early/Late counts of personal best records are not stored in the base game, and can only be saved when Info+ is installed. You need to achieve at least one personal best score with Info+ installed for the personal best stats gap to work
 - If you loaded [SongDesc](https://github.com/mdmods/songdesc) mod, Chart Info will be disabled by default, use configuration to re-enable
 - Some data may not function properly for Touhou Danmaku charts due to compatibility issues
@@ -44,17 +45,6 @@ All configuration files are **automatically generated upon first launch**. After
 - `TextFieldUpperLeftConfigs.yml`: Text configuration for area below the "SCORE" label (position remains fixed relative to label)
 - `TextFieldUpperRightConfigs.yml`: Text configuration for upper-right screen area
 - `AdvancedConfigs.yml`: For advanced users only - do not modify unless you understand the parameters
-
-### UI Visibility Toggle
-
-This mod includes a hotkey to toggle the visibility of the game UI (all Info+ displays). The default hotkey is **F10**.
-
-**Configuration options in MainConfigs.yml:**
-- `EnableUiToggleHotkey`: Enable or disable the UI toggle hotkey (default: true)
-- `UiToggleHotkey`: The hotkey for toggling UI visibility (default: "F10")
-- `UiVisibleByDefault`: Whether the UI is visible by default when starting a level (default: true)
-
-**Important:** If you accidentally hide the UI and can't restore it, press **F10** (or your configured hotkey) to toggle it back on. This feature can be useful for taking screenshots or recording without UI elements.
 
 ### Data Placeholders
 

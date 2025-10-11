@@ -18,6 +18,7 @@ Todos los elementos de datos pueden personalizarse libremente en términos de vi
 
 ## Notas importantes
 
+- ⌨️ **Tecla de alternancia de interfaz**: Presione **F10** para alternar la visualización de toda la interfaz del juego. Si la interfaz desaparece accidentalmente, presione **F10** nuevamente para restaurarla. Esta tecla se puede cambiar en `MainConfigs.yml`
 - Los contadores Miss/Great/Early/Late de los récords personales no se almacenan en el juego base y solo pueden guardarse cuando Info+ está instalado. Necesita lograr al menos un récord personal con Info+ instalado para que funcione la diferencia de estadísticas del récord personal
 - Si cargó el mod [SongDesc](https://github.com/mdmods/songdesc), la información del chart estará deshabilitada por defecto. Use la configuración para volver a habilitarla
 - Algunos datos pueden no funcionar correctamente para charts Touhou Danmaku debido a problemas de compatibilidad
@@ -46,17 +47,6 @@ Todos los archivos de configuración se **generan automáticamente en el primer 
 - `TextFieldUpperLeftConfigs.yml`: Configuración de texto para el área debajo de la etiqueta "SCORE" (posición permanece fija relativa a la etiqueta)
 - `TextFieldUpperRightConfigs.yml`: Configuración de texto para el área superior derecha de la pantalla
 - `AdvancedConfigs.yml`: Solo para usuarios avanzados - no modifique a menos que comprenda los parámetros
-
-### Alternar visibilidad de la interfaz
-
-Este mod incluye una tecla de acceso rápido para alternar la visibilidad de la interfaz del juego (todas las pantallas de Info+). La tecla de acceso rápido predeterminada es **F10**.
-
-**Opciones de configuración en MainConfigs.yml:**
-- `EnableUiToggleHotkey`: Habilitar o deshabilitar la tecla de acceso rápido para alternar la interfaz (predeterminado: true)
-- `UiToggleHotkey`: La tecla de acceso rápido para alternar la visibilidad de la interfaz (predeterminado: "F10")
-- `UiVisibleByDefault`: Si la interfaz es visible por defecto al iniciar un nivel (predeterminado: true)
-
-**Importante:** Si oculta accidentalmente la interfaz y no puede restaurarla, presione **F10** (o su tecla de acceso rápido configurada) para volver a activarla. Esta función puede ser útil para tomar capturas de pantalla o grabar sin elementos de interfaz.
 
 ### Marcadores de datos
 

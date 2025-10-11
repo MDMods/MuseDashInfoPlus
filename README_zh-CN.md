@@ -16,6 +16,7 @@ Info+ 是一个高度客制化的 MuseDash 游戏模组，用于显示额外的�
 
 ## 注意事项
 
+- ⌨️ **UI 显隐快捷键**：按 **F10** 可切换所有游戏内 UI 的显示。如果 UI 意外消失，再次按 **F10** 即可恢复。该快捷键可在 `MainConfigs.yml` 中更改
 - 历史最佳记录下的 Miss/Great/Early/Late 数据并没有保存在任何地方，因此只能由 Info+ 来保存。您必须在安装 Info+ 的情况下拿到至少一次最佳成绩才能使历史最佳记录的数据差值生效
 - 若您加载了 [SongDesc](https://github.com/MDMods/SongDesc) 模组，谱面信息将默认隐藏
 - 东方特殊谱面由于不受支持将导致部分数据无法正常工作
@@ -43,17 +44,6 @@ Info+ 是一个高度客制化的 MuseDash 游戏模组，用于显示额外的�
 - `TextFieldUpperLeftConfigs.yml` 为 ”得分“ 字样下方的文本配置文件，无论场景如何，该文本总会位于 ”得分“ 字样的下方
 - `TextFieldUpperRightConfigs.yml` 为屏幕右上角的文本配置文件
 - `AdvancedConfigs.yml` 仅供高级玩家使用，若您不知道里面的配置有何含义，请不要更改
-
-### UI 显隐切换
-
-本模组包含一个用于切换游戏 UI（所有 Info+ 显示）可见性的快捷键。默认快捷键是 **F10**。
-
-**MainConfigs.yml 中的配置选项：**
-- `EnableUiToggleHotkey`：启用或禁用 UI 显隐切换快捷键（默认：true）
-- `UiToggleHotkey`：用于切换 UI 可见性的快捷键（默认："F10"）
-- `UiVisibleByDefault`：关卡开始时 UI 是否默认可见（默认：true）
-
-**重要提示：** 如果您不小心隐藏了 UI 而无法恢复，请按 **F10**（或您配置的快捷键）来切换显示。此功能可用于在截图或录制时隐藏 UI 元素。
 
 ### 数据占位符
 

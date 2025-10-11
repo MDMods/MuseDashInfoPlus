@@ -18,6 +18,7 @@ Todos os elementos de dados podem ser livremente personalizados em termos de vis
 
 ## Notas importantes
 
+- ⌨️ **Tecla de alternância da interface**: Pressione **F10** para alternar a exibição de toda a interface do jogo. Se a interface desaparecer acidentalmente, pressione **F10** novamente para restaurá-la. Esta tecla pode ser alterada em `MainConfigs.yml`
 - As contagens Miss/Great/Early/Late dos recordes pessoais não são armazenadas no jogo base e só podem ser salvas quando o Info+ está instalado. Você precisa alcançar pelo menos um recorde pessoal com o Info+ instalado para que a diferença de estatísticas do recorde pessoal funcione
 - Se você carregou o mod [SongDesc](https://github.com/mdmods/songdesc), as informações do chart serão desativadas por padrão. Use a configuração para reativá-las
 - Alguns dados podem não funcionar corretamente para charts Touhou Danmaku devido a problemas de compatibilidade
@@ -46,17 +47,6 @@ Todos os arquivos de configuração são **gerados automaticamente na primeira e
 - `TextFieldUpperLeftConfigs.yml`: Configuração de texto para a área abaixo do rótulo "SCORE" (posição permanece fixa em relação ao rótulo)
 - `TextFieldUpperRightConfigs.yml`: Configuração de texto para a área superior direita da tela
 - `AdvancedConfigs.yml`: Apenas para usuários avançados - não modifique a menos que entenda os parâmetros
-
-### Alternância de visibilidade da interface
-
-Este mod inclui uma tecla de atalho para alternar a visibilidade da interface do jogo (todas as exibições do Info+). A tecla de atalho padrão é **F10**.
-
-**Opções de configuração em MainConfigs.yml:**
-- `EnableUiToggleHotkey`: Ativar ou desativar a tecla de atalho de alternância da interface (padrão: true)
-- `UiToggleHotkey`: A tecla de atalho para alternar a visibilidade da interface (padrão: "F10")
-- `UiVisibleByDefault`: Se a interface é visível por padrão ao iniciar um nível (padrão: true)
-
-**Importante:** Se você acidentalmente ocultar a interface e não conseguir restaurá-la, pressione **F10** (ou sua tecla de atalho configurada) para ativá-la novamente. Este recurso pode ser útil para tirar capturas de tela ou gravar sem elementos de interface.
 
 ### Marcadores de dados
 

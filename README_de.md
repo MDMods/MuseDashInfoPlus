@@ -18,6 +18,7 @@ Alle Datenelemente können in Bezug auf Sichtbarkeit, Position, Größe, Farbe, 
 
 ## Wichtige Hinweise
 
+- ⌨️ **UI-Umschalt-Hotkey**: Drücken Sie **F10**, um die Anzeige aller In-Game-UI umzuschalten. Wenn die UI versehentlich verschwindet, drücken Sie erneut **F10**, um sie wiederherzustellen. Dieser Hotkey kann in `MainConfigs.yml` geändert werden
 - Die Miss/Great/Early/Late-Zählungen persönlicher Rekorde werden nicht im Basisspiel gespeichert und können nur gespeichert werden, wenn Info+ installiert ist. Sie müssen mit installiertem Info+ mindestens einen persönlichen Rekord erzielen, damit die persönliche Rekord-Statistikdifferenz funktioniert
 - Wenn Sie den [SongDesc](https://github.com/mdmods/songdesc) Mod geladen haben, werden Chart-Informationen standardmäßig deaktiviert. Verwenden Sie die Konfiguration, um sie wieder zu aktivieren
 - Einige Daten funktionieren möglicherweise nicht richtig für Touhou Danmaku-Charts aufgrund von Kompatibilitätsproblemen
@@ -46,17 +47,6 @@ Alle Konfigurationsdateien werden **beim ersten Start automatisch generiert**. N
 - `TextFieldUpperLeftConfigs.yml`: Textkonfiguration für den Bereich unter dem "SCORE"-Label (Position bleibt relativ zum Label fixiert)
 - `TextFieldUpperRightConfigs.yml`: Textkonfiguration für den oberen rechten Bildschirmbereich
 - `AdvancedConfigs.yml`: Nur für fortgeschrittene Benutzer - nicht ändern, es sei denn, Sie verstehen die Parameter
-
-### UI-Sichtbarkeitsumschaltung
-
-Dieser Mod enthält eine Tastenkombination zum Umschalten der Sichtbarkeit der Spiel-UI (alle Info+-Anzeigen). Die Standard-Tastenkombination ist **F10**.
-
-**Konfigurationsoptionen in MainConfigs.yml:**
-- `EnableUiToggleHotkey`: UI-Umschalt-Hotkey aktivieren oder deaktivieren (Standard: true)
-- `UiToggleHotkey`: Die Tastenkombination zum Umschalten der UI-Sichtbarkeit (Standard: "F10")
-- `UiVisibleByDefault`: Ob die UI beim Start eines Levels standardmäßig sichtbar ist (Standard: true)
-
-**Wichtig:** Wenn Sie versehentlich die UI ausblenden und nicht wiederherstellen können, drücken Sie **F10** (oder Ihre konfigurierte Tastenkombination), um sie wieder einzuschalten. Diese Funktion kann nützlich sein, um Screenshots zu machen oder ohne UI-Elemente aufzunehmen.
 
 ### Daten-Platzhalter
 
