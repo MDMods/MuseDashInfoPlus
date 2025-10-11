@@ -36,7 +36,7 @@ Tous les éléments de données peuvent être librement personnalisés en termes
 Les fichiers de configuration sont organisés par catégorie et stockés dans le répertoire
 `.\MuseDash\UserData\Info+\`. Toutes les entrées de configuration incluent des commentaires. Veuillez comprendre l'objectif de chaque paramètre avant d'effectuer des modifications.
 
-Tous les fichiers de configuration sont **générés automatiquement au premier lancement**. Après avoir modifié la configuration, **enregistrez le fichier pour qu'il prenne effet** (si vous êtes dans le jeu, il prendra effet dans la prochaine partie).
+Tous les fichiers de configuration sont **générés automatiquement au premier lancement**. Après avoir modifié la configuration, **enregistrez le fichier et les modifications prendront effet immédiatement**.
 
 - `MainConfigs.yml` : Fichier de configuration principal
 - `TextFieldLowerLeftConfigs.yml` : Configuration du texte en bas à gauche de l'écran

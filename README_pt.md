@@ -36,7 +36,7 @@ Todos os elementos de dados podem ser livremente personalizados em termos de vis
 Os arquivos de configuração são organizados por categoria e armazenados no diretório
 `.\MuseDash\UserData\Info+\`. Todas as entradas de configuração incluem comentários. Por favor, entenda o propósito de cada configuração antes de fazer modificações.
 
-Todos os arquivos de configuração são **gerados automaticamente na primeira execução**. Após modificar a configuração, **salve o arquivo para que tenha efeito** (se você estiver no jogo, terá efeito no próximo jogo).
+Todos os arquivos de configuração são **gerados automaticamente na primeira execução**. Após modificar a configuração, **salve o arquivo e as alterações terão efeito imediatamente**.
 
 - `MainConfigs.yml`: Arquivo de configuração principal
 - `TextFieldLowerLeftConfigs.yml`: Configuração de texto para a área inferior esquerda da tela
