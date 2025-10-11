@@ -1,5 +1,4 @@
 using System.Globalization;
-using System.Text;
 using JetBrains.Annotations;
 using MDIP.Application.DependencyInjection;
 using MDIP.Application.Services.Global.Configuration;
@@ -89,11 +88,14 @@ public class TextDataService : ITextDataService
         if (_formattedTexts.TryGetValue(originalText, out var formatted))
             return formatted;
 
-        var result = new StringBuilder(originalText);
-        foreach (var pair in _cachedValues.Where(pair => result.ToString().Contains(pair.Key)))
-            result.Replace(pair.Key, pair.Value);
+        var text = originalText;
+        foreach (var (key, value) in _cachedValues)
+        {
+            if (text.Contains(key))
+                text = text.Replace(key, value ?? string.Empty, StringComparison.Ordinal);
+        }
 
-        var finalText = result.ToString().Trim().Trim(TrimChars).Trim();
+        var finalText = text.Trim().Trim(TrimChars).Trim();
         _formattedTexts[originalText] = finalText;
         return finalText;
     }
