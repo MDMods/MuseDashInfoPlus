@@ -70,10 +70,10 @@ public class RefreshScheduler : IRefreshScheduler
             return;
         _lastReportSecond = nowSec;
 
+        Logger.Info($"Trigger counts: data({_dataTriggerCount}) text({_textTriggerCount})");
+
         _dataTriggerCount = 0;
         _textTriggerCount = 0;
-
-        Logger.Info($"Trigger counts: data({_dataTriggerCount}) text({_textTriggerCount})");
     }
 
     [UsedImplicitly] [Inject] public IConfigAccessor ConfigAccessor { get; set; }
