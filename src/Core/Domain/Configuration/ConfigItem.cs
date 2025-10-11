@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using MDIP.Core.Domain.Attributes;
 using MDIP.Core.Domain.Configs;
 using MDIP.Core.Infrastructure.Configuration;
@@ -135,8 +136,18 @@ public class ConfigItem(string name, string configPath)
 
             File.Copy(ConfigPath, GetBackupPath(oldConfig.Version), true);
             var oldConfigIncompatible = oldVersion < Version.Parse("2.3.0") && name is not "MainConfigs" and not "AdvancedConfigs";
-            if (oldConfigIncompatible)
-                Melon<MDIPMod>.Logger.Warning($"[{nameof(ConfigItem)}] {name} will be restored to default because the configs before 2.3.0 are no longer compatible");
+            switch (oldConfigIncompatible)
+            {
+                case true:
+                    Melon<MDIPMod>.Logger.Warning($"[{nameof(ConfigItem)}] {name} will be restored to default because the configs before 2.3.0 are no longer compatible");
+                    break;
+                // Minimal-change: when version < 3.0.0 and not incompatible, swap {level} <-> {diff} (case-insensitive) and lower-case the result
+                case false when oldVersion < Version.Parse("3.0.0"):
+                    NormalizePlaceholdersForDirectStringProps(oldConfig);
+                    Melon<MDIPMod>.Logger.Warning($"[{nameof(ConfigItem)}] {name}: Detected version < 3.0.0. Swapped placeholders in Text fields: {{level}} ↔ {{diff}} (case-insensitive), normalized to lower-case. Backup saved to ‘Backups’.");
+                    break;
+            }
+
             var finalConfig = oldConfigIncompatible ? newConfig : ConfigVersionControl.MigrateConfig(oldConfig, newConfig);
             SaveConfig(finalConfig);
             return finalConfig;
@@ -182,6 +193,7 @@ public class ConfigItem(string name, string configPath)
             var ifaceProp = iface.GetProperty(property.Name);
             if (ifaceProp == null)
                 continue;
+
             zh ??= ifaceProp.GetCustomAttribute<ConfigCommentZhAttribute>();
             en ??= ifaceProp.GetCustomAttribute<ConfigCommentEnAttribute>();
         }
@@ -197,5 +209,40 @@ public class ConfigItem(string name, string configPath)
         var target = callback.Target;
         var targetId = target != null ? RuntimeHelpers.GetHashCode(target) : 0;
         return $"{method.DeclaringType?.FullName}|{method.Name}|{targetId}";
+    }
+
+    private static void NormalizePlaceholdersForDirectStringProps(object obj)
+    {
+        if (obj == null)
+            return;
+
+        var type = obj.GetType();
+        var props = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+        foreach (var p in props)
+        {
+            if (!p.CanRead || !p.CanWrite)
+                continue;
+            if (p.PropertyType != typeof(string))
+                continue;
+
+            var val = (string)p.GetValue(obj);
+            if (string.IsNullOrEmpty(val))
+                continue;
+
+            var normalized = SwapLevelAndDiffPlaceholders(val);
+            if (!ReferenceEquals(val, normalized))
+                p.SetValue(obj, normalized);
+        }
+    }
+
+    // Case-insensitive swap of {level} and {diff}, result forced to lower-case.
+    private static string SwapLevelAndDiffPlaceholders(string input)
+    {
+        if (string.IsNullOrEmpty(input)) return input;
+
+        var s = Regex.Replace(input, @"\{level\}", "{__tmp_level__}", RegexOptions.IgnoreCase);
+        s = Regex.Replace(s, @"\{diff\}", "{level}", RegexOptions.IgnoreCase);
+        s = s.Replace("{__tmp_level__}", "{diff}");
+        return s.ToLowerInvariant();
     }
 }

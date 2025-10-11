@@ -5,7 +5,7 @@ namespace MDIP.Core.Domain.Configs;
 public class TextFieldUpperRightConfigs : ConfigBase, ITextConfig
 {
     public bool Enabled { get; set; } = !MDIPMod.IsSongDescLoaded;
-    public string Text { get; set; } = "{song}\\n<size=27>{diff} - Level {level}</size>";
+    public string Text { get; set; } = "{song}\\n<size=27>{level} - Level {diff}</size>";
     public float OffsetX { get; set; } = 0;
     public float OffsetY { get; set; } = 0;
     public string Font { get; set; } = "Normal";
