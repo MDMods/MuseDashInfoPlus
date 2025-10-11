@@ -18,6 +18,7 @@ Todos os elementos de dados podem ser livremente personalizados em termos de vis
 
 ## Notas importantes
 
+- ⌨️ **Tecla de alternância da interface**: Pressione **F10** para alternar a exibição de toda a interface do jogo. Se a interface desaparecer acidentalmente, pressione **F10** novamente para restaurá-la. Esta tecla pode ser alterada em `MainConfigs.yml`
 - As contagens Miss/Great/Early/Late dos recordes pessoais não são armazenadas no jogo base e só podem ser salvas quando o Info+ está instalado. Você precisa alcançar pelo menos um recorde pessoal com o Info+ instalado para que a diferença de estatísticas do recorde pessoal funcione
 - Se você carregou o mod [SongDesc](https://github.com/mdmods/songdesc), as informações do chart serão desativadas por padrão. Use a configuração para reativá-las
 - Alguns dados podem não funcionar corretamente para charts Touhou Danmaku devido a problemas de compatibilidade

@@ -18,6 +18,7 @@ Alle Datenelemente können in Bezug auf Sichtbarkeit, Position, Größe, Farbe, 
 
 ## Wichtige Hinweise
 
+- ⌨️ **UI-Umschalt-Hotkey**: Drücken Sie **F10**, um die Anzeige aller In-Game-UI umzuschalten. Wenn die UI versehentlich verschwindet, drücken Sie erneut **F10**, um sie wiederherzustellen. Dieser Hotkey kann in `MainConfigs.yml` geändert werden
 - Die Miss/Great/Early/Late-Zählungen persönlicher Rekorde werden nicht im Basisspiel gespeichert und können nur gespeichert werden, wenn Info+ installiert ist. Sie müssen mit installiertem Info+ mindestens einen persönlichen Rekord erzielen, damit die persönliche Rekord-Statistikdifferenz funktioniert
 - Wenn Sie den [SongDesc](https://github.com/mdmods/songdesc) Mod geladen haben, werden Chart-Informationen standardmäßig deaktiviert. Verwenden Sie die Konfiguration, um sie wieder zu aktivieren
 - Einige Daten funktionieren möglicherweise nicht richtig für Touhou Danmaku-Charts aufgrund von Kompatibilitätsproblemen

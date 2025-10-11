@@ -16,6 +16,7 @@ All data elements can be freely customized in terms of visibility, position, siz
 
 ## Important Notes
 
+- ⌨️ **UI Toggle Hotkey**: Press **F10** to toggle visibility of all in-game UI. If the UI disappears accidentally, press **F10** again to restore it. This hotkey can be changed in `MainConfigs.yml`
 - The Miss/Great/Early/Late counts of personal best records are not stored in the base game, and can only be saved when Info+ is installed. You need to achieve at least one personal best score with Info+ installed for the personal best stats gap to work
 - If you loaded [SongDesc](https://github.com/mdmods/songdesc) mod, Chart Info will be disabled by default, use configuration to re-enable
 - Some data may not function properly for Touhou Danmaku charts due to compatibility issues
