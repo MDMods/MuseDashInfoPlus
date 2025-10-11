@@ -1,3 +1,4 @@
+using System.Text;
 using Il2CppGameLogic;
 using JetBrains.Annotations;
 using MDIP.Application.DependencyInjection;
@@ -53,42 +54,76 @@ public class NoteRecordService : INoteRecordService
 
     public void ExportToCsv(string filePath)
     {
-        var patchNames = _records.Values.SelectMany(r => r.PatchInfosDic.Keys).Distinct().ToList();
+        var patchNames = _records.Values
+            .SelectMany(r => r.PatchInfosDic.Keys)
+            .Distinct()
+            .ToList();
+
         var lines = new List<string>();
+
         var header = First.Concat(patchNames).ToList();
-        lines.Add(string.Join(",", header));
+        lines.Add(string.Join(",", header.Select(ToCsvCell)));
 
         foreach (var kvp in _records.OrderBy(x => x.Key))
         {
             var record = kvp.Value;
+
             var row = new List<string>
             {
-                record.Oid.ToString(),
-                record.Type.ToString(),
-                record.DoubleId.ToString(),
-                record.LongType
+                ToCsvCell(record.Oid.ToString()),
+                ToCsvCell(record.Type.ToString()),
+                ToCsvCell(record.DoubleId.ToString()),
+                ToCsvCell(record.LongType)
             };
 
             foreach (var name in patchNames)
             {
                 if (record.PatchInfosDic.TryGetValue(name, out var infos))
                 {
-                    row.Add(infos.Count switch
+                    var cell = infos.Count switch
                     {
                         0 => "Empty",
                         1 => infos[0],
                         _ => string.Join(" | ", infos.Select((info, index) => $"({index + 1}) {info}"))
-                    });
+                    };
+
+                    row.Add(ToCsvCell(cell));
                 }
                 else
-                    row.Add("-");
+                {
+                    row.Add(ToCsvCell("-"));
+                }
             }
 
             lines.Add(string.Join(",", row));
         }
 
-        File.WriteAllLines(filePath, lines);
+        WriteAllLinesUtf8WithBom(filePath, lines);
         Logger.Info($"Excel exported to: {Path.GetFullPath(filePath)}");
+    }
+
+    private static string ToCsvCell(string value)
+    {
+        value ??= string.Empty;
+
+        var requiresQuotes =
+            value.Contains(',') ||
+            value.Contains('"') ||
+            value.Contains('\n') ||
+            value.Contains('\r');
+
+        if (!requiresQuotes)
+            return value;
+
+        var escaped = value.Replace("\"", "\"\"");
+        return $"\"{escaped}\"";
+    }
+
+    private static void WriteAllLinesUtf8WithBom(string path, IEnumerable<string> lines)
+    {
+        var content = string.Join(Environment.NewLine, lines);
+        var utf8Bom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: true); // UTF8 with BOM
+        File.WriteAllText(path, content, utf8Bom);
     }
 
     [UsedImplicitly] [Inject] public IGameStatsService GameStatsService { get; set; }
