@@ -2,7 +2,7 @@
 
 namespace MDIP.Application.Services.Global.RuntimeData;
 
-public interface IRuntimeSongDataStore
+public interface IRuntimeDataStore
 {
     bool IsFirstTry(string songHash);
     SongRuntimeRecord TryGet(string songHash);

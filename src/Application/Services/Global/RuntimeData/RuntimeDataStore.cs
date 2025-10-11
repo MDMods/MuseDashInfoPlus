@@ -3,7 +3,7 @@ using MDIP.Core.Domain.Records;
 
 namespace MDIP.Application.Services.Global.RuntimeData;
 
-public class RuntimeSongDataStore : IRuntimeSongDataStore
+public class RuntimeDataStore : IRuntimeDataStore
 {
     private readonly Dictionary<string, SongRuntimeRecord> _songRuntimeRecords = new();
 

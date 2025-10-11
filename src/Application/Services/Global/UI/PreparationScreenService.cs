@@ -13,9 +13,9 @@ public class PreparationScreenService : IPreparationScreenService
         if (instance?.pnlRecord == null)
             return;
 
-        RuntimeSongDataStore.StorePersonalBestAccuracyFromText(MusicInfoUtils.CurMusicHash, instance.pnlRecord.txtAccuracy?.m_Text);
-        RuntimeSongDataStore.StorePersonalBestScoreFromText(MusicInfoUtils.CurMusicHash, instance.pnlRecord.txtScore?.m_Text);
+        RuntimeDataStore.StorePersonalBestAccuracyFromText(MusicInfoUtils.CurMusicHash, instance.pnlRecord.txtAccuracy?.m_Text);
+        RuntimeDataStore.StorePersonalBestScoreFromText(MusicInfoUtils.CurMusicHash, instance.pnlRecord.txtScore?.m_Text);
     }
 
-    [UsedImplicitly] [Inject] public IRuntimeSongDataStore RuntimeSongDataStore { get; set; }
+    [UsedImplicitly] [Inject] public IRuntimeDataStore RuntimeDataStore { get; set; }
 }

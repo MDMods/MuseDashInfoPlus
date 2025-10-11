@@ -144,7 +144,6 @@ public class ConfigItem(string name, string configPath)
                 // Minimal-change: when version < 3.0.0 and not incompatible, swap {level} <-> {diff} (case-insensitive) and lower-case the result
                 case false when oldVersion < Version.Parse("3.0.0"):
                     NormalizePlaceholdersForDirectStringProps(oldConfig);
-                    Melon<MDIPMod>.Logger.Warning($"[{nameof(ConfigItem)}] {name}: Detected version < 3.0.0. Swapped placeholders in Text fields: {{level}} ↔ {{diff}} (case-insensitive), normalized to lower-case. Backup saved to ‘Backups’.");
                     break;
             }
 

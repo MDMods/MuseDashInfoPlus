@@ -35,7 +35,7 @@ public static class ModServiceConfigurator
         provider.AddSingletonWithPropertyInjection<IConfigAccessor, ConfigAccessor>();
         provider.AddSingletonWithPropertyInjection<IFontService, FontService>();
         provider.AddSingletonWithPropertyInjection<IUpdateService, UpdateService>();
-        provider.AddSingletonWithPropertyInjection<IRuntimeSongDataStore, RuntimeSongDataStore>();
+        provider.AddSingletonWithPropertyInjection<IRuntimeDataStore, RuntimeDataStore>();
         provider.AddSingletonWithPropertyInjection<IStatsSaverService, StatsSaverService>();
         provider.AddSingletonWithPropertyInjection<IPreparationScreenService, PreparationScreenService>();
         provider.AddSingletonWithPropertyInjection<IHotkeyService, HotkeyService>();

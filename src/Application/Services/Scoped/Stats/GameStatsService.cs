@@ -395,7 +395,7 @@ public class GameStatsService : IGameStatsService
 
         PlayingMusicHash = MusicInfoUtils.CurMusicHash;
 
-        var record = RuntimeSongDataStore.TryGet(PlayingMusicHash);
+        var record = RuntimeDataStore.TryGet(PlayingMusicHash);
         _history.Score = Math.Max(BattleHelper.GetCurrentMusicHighScore(), record.PersonalBestScore);
         _history.Accuracy = record.PersonalBestAccuracy;
 
@@ -508,6 +508,6 @@ public class GameStatsService : IGameStatsService
 
     [UsedImplicitly] [Inject] public IConfigAccessor ConfigAccessor { get; set; }
     [UsedImplicitly] [Inject] public IStatsSaverService StatsSaverService { get; set; }
-    [UsedImplicitly] [Inject] public IRuntimeSongDataStore RuntimeSongDataStore { get; set; }
+    [UsedImplicitly] [Inject] public IRuntimeDataStore RuntimeDataStore { get; set; }
     [UsedImplicitly] [Inject] public ILogger<GameStatsService> Logger { get; set; }
 }

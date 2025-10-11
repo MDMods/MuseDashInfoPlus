@@ -23,8 +23,8 @@ public class VictoryScreenService : IVictoryScreenService
         var newAcc = (float)trueAccuracy;
         var newScore = GameStatsService.Current.Score;
 
-        var accBest = RuntimeSongDataStore.StorePersonalBestAccuracy(hash, newAcc);
-        var scoreBest = RuntimeSongDataStore.StorePersonalBestScore(hash, newScore);
+        var accBest = RuntimeDataStore.StorePersonalBestAccuracy(hash, newAcc);
+        var scoreBest = RuntimeDataStore.StorePersonalBestScore(hash, newScore);
 
         var mainConfig = ConfigAccessor.Main;
         var newBest = mainConfig.PersonalBestCriteria == 2 ? scoreBest : accBest;
@@ -91,6 +91,6 @@ public class VictoryScreenService : IVictoryScreenService
     [UsedImplicitly] [Inject] public IGameStatsService GameStatsService { get; set; }
     [UsedImplicitly] [Inject] public INoteRecordService NoteRecordService { get; set; }
     [UsedImplicitly] [Inject] public IStatsSaverService StatsSaverService { get; set; }
-    [UsedImplicitly] [Inject] public IRuntimeSongDataStore RuntimeSongDataStore { get; set; }
+    [UsedImplicitly] [Inject] public IRuntimeDataStore RuntimeDataStore { get; set; }
     [UsedImplicitly] [Inject] public ILogger<VictoryScreenService> Logger { get; set; }
 }

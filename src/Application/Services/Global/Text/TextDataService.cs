@@ -48,7 +48,7 @@ public class TextDataService : ITextDataService
             UpdateCachedValue("{pbStatsGap}", main.StatsGapTextWhenNoPersonalBest);
         }
 
-        if (!RuntimeSongDataStore.IsFirstTry(MusicInfoUtils.CurMusicHash))
+        if (!RuntimeDataStore.IsFirstTry(MusicInfoUtils.CurMusicHash))
             return;
 
         UpdateCachedValue("{scoreGap}", main.ScoreGapTextWhenNoPersonalBest);
@@ -75,7 +75,7 @@ public class TextDataService : ITextDataService
             UpdateCachedValue("{pbStatsGap}", GameStatsService.FormatPersonalBestStatsGap());
         }
 
-        if (RuntimeSongDataStore.IsFirstTry(MusicInfoUtils.CurMusicHash))
+        if (RuntimeDataStore.IsFirstTry(MusicInfoUtils.CurMusicHash))
             return;
 
         UpdateCachedValue("{scoreGap}", GameStatsService.FormatScoreGap());
@@ -200,6 +200,6 @@ public class TextDataService : ITextDataService
     [UsedImplicitly] [Inject] public IConfigAccessor ConfigAccessor { get; set; }
     [UsedImplicitly] [Inject] public IConfigService ConfigService { get; set; }
     [UsedImplicitly] [Inject] public IGameStatsService GameStatsService { get; set; }
-    [UsedImplicitly] [Inject] public IRuntimeSongDataStore RuntimeSongDataStore { get; set; }
+    [UsedImplicitly] [Inject] public IRuntimeDataStore RuntimeDataStore { get; set; }
     [UsedImplicitly] [Inject] public ILogger<TextDataService> Logger { get; set; }
 }
