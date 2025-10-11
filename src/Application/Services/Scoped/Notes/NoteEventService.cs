@@ -17,6 +17,7 @@ public class NoteEventService : INoteEventService
         var type = (NoteType)note.noteData.type;
         var oid = note.objId;
 
+
         if (ConfigAccessor.Advanced.OutputNoteRecordsToDesktop)
             NoteRecordService.AddRecord(note, "SetPlayResult", $"setResult:{result}");
 

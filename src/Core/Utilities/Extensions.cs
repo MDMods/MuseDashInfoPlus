@@ -97,6 +97,20 @@ public static class Extensions
             c >= 0xFF00 && c <= 0xFF60 ||
             c >= 0xFFE0 && c <= 0xFFE6);
 
+    public static string ToSafeFileName(this string input, char replacement = '_')
+    {
+        if (string.IsNullOrEmpty(input))
+            return "InfoPlus";
+
+        var invalid = Path.GetInvalidFileNameChars();
+        var builder = new StringBuilder(input.Length);
+
+        foreach (var ch in input)
+            builder.Append(invalid.Contains(ch) ? replacement : ch);
+
+        return builder.ToString().Trim();
+    }
+
     public static string GetConsistentHash(this string input)
     {
         var bytes = Encoding.UTF8.GetBytes(input);

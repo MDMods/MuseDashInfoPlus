@@ -48,9 +48,12 @@ public class VictoryScreenService : IVictoryScreenService
         if (ConfigAccessor.Advanced.OutputNoteRecordsToDesktop)
         {
             var folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Info+ Note Records");
-            if (!Directory.Exists(folder))
-                Directory.CreateDirectory(folder);
-            NoteRecordService.ExportToCsv(Path.Combine(folder, $"{MusicInfoUtils.CurMusicName}.csv"));
+            Directory.CreateDirectory(folder);
+
+            var fileName = $"{MusicInfoUtils.CurMusicName.ToSafeFileName()}_{DateTime.Now:yyyyMMdd_HHmmss}.csv";
+            var fullPath = Path.Combine(folder, fileName);
+
+            NoteRecordService.ExportToCsv(fullPath);
         }
 
         if (!mainConfig.ReplaceResultsScreenMissCount)
