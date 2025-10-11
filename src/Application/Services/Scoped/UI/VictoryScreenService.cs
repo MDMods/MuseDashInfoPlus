@@ -7,6 +7,7 @@ using MDIP.Application.Services.Global.Stats;
 using MDIP.Application.Services.Scoped.Notes;
 using MDIP.Application.Services.Scoped.Stats;
 using MDIP.Core.Utilities;
+using MDIP.Presentation;
 
 namespace MDIP.Application.Services.Scoped.UI;
 
@@ -47,7 +48,7 @@ public class VictoryScreenService : IVictoryScreenService
 
         if (ConfigAccessor.Advanced.OutputNoteRecordsToDesktop)
         {
-            var folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Info+ Note Records");
+            var folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), $"{ModBuildInfo.Name}_Note_Records");
             Directory.CreateDirectory(folder);
 
             var fileName = $"{MusicInfoUtils.CurMusicName.ToSafeFileName()}_{DateTime.Now:yyyyMMdd_HHmmss}.csv";
