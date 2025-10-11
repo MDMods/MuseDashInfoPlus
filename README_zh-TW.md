@@ -44,6 +44,17 @@ Info+ 是一個高度客製化的 MuseDash 遊戲模組，用於顯示額外的�
 - `TextFieldUpperRightConfigs.yml` 為螢幕右上角的文字設定檔案
 - `AdvancedConfigs.yml` 僅供進階玩家使用，若您不知道裡面的設定有何含義，請不要更改
 
+### UI 顯隱切換
+
+本模組包含一個用於切換遊戲 UI（所有 Info+ 顯示）可見性的快捷鍵。預設快捷鍵是 **F10**。
+
+**MainConfigs.yml 中的設定選項：**
+- `EnableUiToggleHotkey`：啟用或停用 UI 顯隱切換快捷鍵（預設：true）
+- `UiToggleHotkey`：用於切換 UI 可見性的快捷鍵（預設："F10"）
+- `UiVisibleByDefault`：關卡開始時 UI 是否預設可見（預設：true）
+
+**重要提示：** 如果您不小心隱藏了 UI 而無法恢復，請按 **F10**（或您設定的快捷鍵）來切換顯示。此功能可用於在截圖或錄製時隱藏 UI 元素。
+
 ### 資料佔位符
 
 您會在文字設定檔案中看到類似 `text: '{overview} / {stats}'` 這樣的設定項。`{dataName}` 將會按照下述的規則替換，您可以隨意搭配使用。

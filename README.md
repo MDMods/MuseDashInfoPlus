@@ -45,6 +45,17 @@ All configuration files are **automatically generated upon first launch**. After
 - `TextFieldUpperRightConfigs.yml`: Text configuration for upper-right screen area
 - `AdvancedConfigs.yml`: For advanced users only - do not modify unless you understand the parameters
 
+### UI Visibility Toggle
+
+This mod includes a hotkey to toggle the visibility of the game UI (all Info+ displays). The default hotkey is **F10**.
+
+**Configuration options in MainConfigs.yml:**
+- `EnableUiToggleHotkey`: Enable or disable the UI toggle hotkey (default: true)
+- `UiToggleHotkey`: The hotkey for toggling UI visibility (default: "F10")
+- `UiVisibleByDefault`: Whether the UI is visible by default when starting a level (default: true)
+
+**Important:** If you accidentally hide the UI and can't restore it, press **F10** (or your configured hotkey) to toggle it back on. This feature can be useful for taking screenshots or recording without UI elements.
+
 ### Data Placeholders
 
 In text configuration files, you'll find entries like `text: '{overview} / {stats}'`. The

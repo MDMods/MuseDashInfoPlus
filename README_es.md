@@ -47,6 +47,17 @@ Todos los archivos de configuración se **generan automáticamente en el primer 
 - `TextFieldUpperRightConfigs.yml`: Configuración de texto para el área superior derecha de la pantalla
 - `AdvancedConfigs.yml`: Solo para usuarios avanzados - no modifique a menos que comprenda los parámetros
 
+### Alternar visibilidad de la interfaz
+
+Este mod incluye una tecla de acceso rápido para alternar la visibilidad de la interfaz del juego (todas las pantallas de Info+). La tecla de acceso rápido predeterminada es **F10**.
+
+**Opciones de configuración en MainConfigs.yml:**
+- `EnableUiToggleHotkey`: Habilitar o deshabilitar la tecla de acceso rápido para alternar la interfaz (predeterminado: true)
+- `UiToggleHotkey`: La tecla de acceso rápido para alternar la visibilidad de la interfaz (predeterminado: "F10")
+- `UiVisibleByDefault`: Si la interfaz es visible por defecto al iniciar un nivel (predeterminado: true)
+
+**Importante:** Si oculta accidentalmente la interfaz y no puede restaurarla, presione **F10** (o su tecla de acceso rápido configurada) para volver a activarla. Esta función puede ser útil para tomar capturas de pantalla o grabar sin elementos de interfaz.
+
 ### Marcadores de datos
 
 En los archivos de configuración de texto, encontrará entradas como `text: '{overview} / {stats}'`. Los

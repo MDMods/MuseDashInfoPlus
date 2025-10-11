@@ -47,6 +47,17 @@ Alle Konfigurationsdateien werden **beim ersten Start automatisch generiert**. N
 - `TextFieldUpperRightConfigs.yml`: Textkonfiguration für den oberen rechten Bildschirmbereich
 - `AdvancedConfigs.yml`: Nur für fortgeschrittene Benutzer - nicht ändern, es sei denn, Sie verstehen die Parameter
 
+### UI-Sichtbarkeitsumschaltung
+
+Dieser Mod enthält eine Tastenkombination zum Umschalten der Sichtbarkeit der Spiel-UI (alle Info+-Anzeigen). Die Standard-Tastenkombination ist **F10**.
+
+**Konfigurationsoptionen in MainConfigs.yml:**
+- `EnableUiToggleHotkey`: UI-Umschalt-Hotkey aktivieren oder deaktivieren (Standard: true)
+- `UiToggleHotkey`: Die Tastenkombination zum Umschalten der UI-Sichtbarkeit (Standard: "F10")
+- `UiVisibleByDefault`: Ob die UI beim Start eines Levels standardmäßig sichtbar ist (Standard: true)
+
+**Wichtig:** Wenn Sie versehentlich die UI ausblenden und nicht wiederherstellen können, drücken Sie **F10** (oder Ihre konfigurierte Tastenkombination), um sie wieder einzuschalten. Diese Funktion kann nützlich sein, um Screenshots zu machen oder ohne UI-Elemente aufzunehmen.
+
 ### Daten-Platzhalter
 
 In Textkonfigurationsdateien finden Sie Einträge wie `text: '{overview} / {stats}'`. Die

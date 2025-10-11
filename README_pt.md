@@ -47,6 +47,17 @@ Todos os arquivos de configuração são **gerados automaticamente na primeira e
 - `TextFieldUpperRightConfigs.yml`: Configuração de texto para a área superior direita da tela
 - `AdvancedConfigs.yml`: Apenas para usuários avançados - não modifique a menos que entenda os parâmetros
 
+### Alternância de visibilidade da interface
+
+Este mod inclui uma tecla de atalho para alternar a visibilidade da interface do jogo (todas as exibições do Info+). A tecla de atalho padrão é **F10**.
+
+**Opções de configuração em MainConfigs.yml:**
+- `EnableUiToggleHotkey`: Ativar ou desativar a tecla de atalho de alternância da interface (padrão: true)
+- `UiToggleHotkey`: A tecla de atalho para alternar a visibilidade da interface (padrão: "F10")
+- `UiVisibleByDefault`: Se a interface é visível por padrão ao iniciar um nível (padrão: true)
+
+**Importante:** Se você acidentalmente ocultar a interface e não conseguir restaurá-la, pressione **F10** (ou sua tecla de atalho configurada) para ativá-la novamente. Este recurso pode ser útil para tirar capturas de tela ou gravar sem elementos de interface.
+
 ### Marcadores de dados
 
 Nos arquivos de configuração de texto, você encontrará entradas como `text: '{overview} / {stats}'`. Os

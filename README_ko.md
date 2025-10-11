@@ -46,6 +46,17 @@ Info+는 게임 내 추가 정보를 표시하는 고도로 커스터마이징 �
 - `TextFieldUpperRightConfigs.yml`: 화면 우상단 텍스트 설정
 - `AdvancedConfigs.yml`: 고급 사용자 전용 - 매개변수를 이해하지 못하는 경우 수정하지 마세요
 
+### UI 표시 전환
+
+이 모드에는 게임 UI(모든 Info+ 디스플레이)의 표시를 전환하는 단축키가 포함되어 있습니다. 기본 단축키는 **F10**입니다.
+
+**MainConfigs.yml의 설정 옵션:**
+- `EnableUiToggleHotkey`: UI 전환 단축키를 활성화 또는 비활성화 (기본값: true)
+- `UiToggleHotkey`: UI 표시를 전환하는 단축키 (기본값: "F10")
+- `UiVisibleByDefault`: 레벨 시작 시 UI가 기본적으로 표시되는지 여부 (기본값: true)
+
+**중요:** 실수로 UI를 숨겼고 복원할 수 없는 경우, **F10**(또는 설정한 단축키)를 눌러 다시 표시할 수 있습니다. 이 기능은 UI 요소 없이 스크린샷을 찍거나 녹화하는 데 유용합니다.
+
 ### 데이터 플레이스홀더
 
 텍스트 설정 파일에는 `text: '{overview} / {stats}'`와 같은 항목이 있습니다.
