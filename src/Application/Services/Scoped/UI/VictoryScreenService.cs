@@ -18,7 +18,8 @@ public class VictoryScreenService : IVictoryScreenService
 
         var hash = GameStatsService.PlayingMusicHash;
 
-        var newAcc = (float)Math.Round(GameStatsService.GetTrueAccuracy(), 2);
+        var trueAccuracy = Math.Round(GameStatsService.GetTrueAccuracy(), 2);
+        var newAcc = (float)trueAccuracy;
         var newScore = GameStatsService.Current.Score;
 
         var accBest = RuntimeSongDataStore.StorePersonalBestAccuracy(hash, newAcc);
@@ -29,7 +30,7 @@ public class VictoryScreenService : IVictoryScreenService
 
         if (newBest)
         {
-            StatsSaverService.SetStats(MusicInfoUtils.CurMusicHash,
+            StatsSaverService.SetStats(hash,
                 new()
                 {
                     Great = GameStatsService.Current.Great,
@@ -40,9 +41,8 @@ public class VictoryScreenService : IVictoryScreenService
                 });
         }
 
-        var trueAcc = Math.Round(GameStatsService.GetTrueAccuracy(), 2);
         var calcAcc = Math.Round(GameStatsService.GetCalculatedAccuracy(), 2);
-        if (GameStatsService.AccuracyCalculationRest != 0 || Math.Abs(trueAcc - calcAcc) > 0.0001f)
+        if (GameStatsService.AccuracyCalculationRest != 0 || Math.Abs(trueAccuracy - calcAcc) > 0.0001)
             GameStatsService.OutputCurrentNoteDebuggingData(false);
 
         if (ConfigAccessor.Advanced.OutputNoteRecordsToDesktop)
