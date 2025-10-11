@@ -118,16 +118,9 @@ public class GameStatsService : IGameStatsService
         if (mode < 1)
             mode = main.AccuracyDisplayMode;
 
-        float acc;
-        if (mode == 2)
-        {
-            var denominator = AccuracyCalculationTotal - AccuracyCalculationRest;
-            acc = denominator > 0 ? AccuracyCalculationCounted / denominator : 0f;
-        }
-        else
-        {
-            acc = AccuracyCalculationTotal > 0 ? (AccuracyCalculationCounted + AccuracyCalculationRest) / AccuracyCalculationTotal : 0f;
-        }
+        var acc = mode == 2
+            ? AccuracyCalculationCounted / (AccuracyCalculationTotal - AccuracyCalculationRest)
+            : (AccuracyCalculationCounted + AccuracyCalculationRest) / AccuracyCalculationTotal;
 
         var rounded = MathF.Round(acc / Precision) * Precision;
         return (acc < rounded && _specialValues.Contains(rounded) ? rounded - Precision : rounded) * 100f;
