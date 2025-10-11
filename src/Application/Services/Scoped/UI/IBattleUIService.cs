@@ -10,6 +10,5 @@ public interface IBattleUIService : IDisposable
     void QueueApplyConfigChanges();
     void ApplyPendingConfigChanges();
     bool NativeZoomInCompleted { get; }
-    bool DesiredUiVisible { get; }
     void SetDesiredUiVisible(bool visible);
 }

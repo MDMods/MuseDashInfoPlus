@@ -6,6 +6,16 @@ namespace MDIP.Application.Services.Global.RuntimeData;
 public class RuntimeDataStore : IRuntimeDataStore
 {
     private readonly Dictionary<string, SongRuntimeRecord> _songRuntimeRecords = new();
+    private bool DesiredUiVisible { get; set; }
+
+    public bool GetOrSetDesiredUiVisible()
+        => DesiredUiVisible;
+
+    public bool GetOrSetDesiredUiVisible(bool desiredUiVisible)
+    {
+        DesiredUiVisible = desiredUiVisible;
+        return DesiredUiVisible;
+    }
 
     public bool IsFirstTry(string songHash)
         => !_songRuntimeRecords.ContainsKey(songHash);

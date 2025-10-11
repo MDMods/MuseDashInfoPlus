@@ -4,6 +4,7 @@ using MDIP.Application.DependencyInjection;
 using MDIP.Application.Services.Global.Assets;
 using MDIP.Application.Services.Global.Configuration;
 using MDIP.Application.Services.Global.Logging;
+using MDIP.Application.Services.Global.RuntimeData;
 using MDIP.Application.Services.Global.Text;
 using MDIP.Application.Services.Scoped.Stats;
 using MDIP.Application.Services.Scoped.Text;
@@ -17,13 +18,11 @@ using Object = UnityEngine.Object;
 
 namespace MDIP.Application.Services.Scoped.UI;
 
-// ReSharper disable StringLiteralTypo
 public class BattleUIService : IBattleUIService
 {
     private bool _disposed;
 
     public bool NativeZoomInCompleted { get; private set; }
-    public bool DesiredUiVisible { get; private set; }
 
     private const float ZoomSpeed = 2f;
     private const float SignificantYChange = 10f;
@@ -143,7 +142,6 @@ public class BattleUIService : IBattleUIService
 
             NativeZoomInCompleted = false;
             _allowNativeZoomFollow = false;
-            DesiredUiVisible = ConfigAccessor.Main.UiVisibleByDefault;
             _autoShowEnableTime = Time.time + AutoShowDelaySeconds;
 
             _isInitialized = true;
@@ -165,7 +163,7 @@ public class BattleUIService : IBattleUIService
                 NativeZoomInCompleted = true;
         }
 
-        if (!DesiredUiVisible)
+        if (!RuntimeDataStore.GetOrSetDesiredUiVisible())
         {
             ForceHide();
             _previousY = CurrentY;
@@ -243,7 +241,7 @@ public class BattleUIService : IBattleUIService
 
     public void SetDesiredUiVisible(bool visible)
     {
-        DesiredUiVisible = visible;
+        RuntimeDataStore.GetOrSetDesiredUiVisible(visible);
         if (!visible)
         {
             _allowNativeZoomFollow = false;
@@ -293,9 +291,7 @@ public class BattleUIService : IBattleUIService
         {
             RefreshTextFields(true, true);
 
-            DesiredUiVisible = ConfigAccessor.Main.UiVisibleByDefault;
-            if (!DesiredUiVisible)
-                ForceHide();
+            SetDesiredUiVisible(ConfigAccessor.Main.UiVisibleByDefault);
         }
         catch (Exception ex)
         {
@@ -787,7 +783,6 @@ public class BattleUIService : IBattleUIService
         _isInitialized = false;
         NativeZoomInCompleted = false;
         _allowNativeZoomFollow = false;
-        DesiredUiVisible = true;
 
         MusicInfoUtils.BattleUIType = BattleUIItem.Unknown;
 
@@ -857,5 +852,6 @@ public class BattleUIService : IBattleUIService
     [UsedImplicitly] [Inject] public IFontService FontService { get; set; }
     [UsedImplicitly] [Inject] public IGameStatsService GameStatsService { get; set; }
     [UsedImplicitly] [Inject] public ITextDataService TextDataService { get; set; }
+    [UsedImplicitly] [Inject] public IRuntimeDataStore RuntimeDataStore { get; set; }
     [UsedImplicitly] [Inject] public ILogger<BattleUIService> Logger { get; set; }
 }

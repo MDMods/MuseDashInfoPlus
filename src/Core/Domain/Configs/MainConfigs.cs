@@ -152,7 +152,7 @@ public class MainConfigs : ConfigBase
     [ConfigCommentEn("UI visibility toggle hotkey (single or combination, e.g., F10 or Ctrl+Shift+U)")]
     public string UiToggleHotkey { get; set; } = "F10";
 
-    [ConfigCommentZh("默认显示UI（仅影响关卡开始后是否在短暂延迟后自动显示）")]
-    [ConfigCommentEn("Show UI by default (controls whether to auto-show a few seconds after battle start)")]
+    [ConfigCommentZh("默认显示UI（决定每次启动游戏后是否默认显示 UI）")]
+    [ConfigCommentEn("Show UI by default (controls whether the UI should be displayed by default each time the game is launched)")]
     public bool UiVisibleByDefault { get; set; } = true;
 }

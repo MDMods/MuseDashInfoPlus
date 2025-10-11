@@ -2,6 +2,7 @@
 using MDIP.Application.DependencyInjection;
 using MDIP.Application.Services.Global.Configuration;
 using MDIP.Application.Services.Global.Logging;
+using MDIP.Application.Services.Global.RuntimeData;
 
 namespace MDIP.Application.Services.Global.Input;
 
@@ -47,6 +48,8 @@ public class HotkeyService : IHotkeyService
         {
             if (_initialized)
                 return;
+
+            RuntimeDataStore.GetOrSetDesiredUiVisible(ConfigAccessor.Main.UiVisibleByDefault);
 
             try
             {
@@ -223,5 +226,6 @@ public class HotkeyService : IHotkeyService
 
     [UsedImplicitly] [Inject] public IConfigAccessor ConfigAccessor { get; set; }
     [UsedImplicitly] [Inject] public IConfigService ConfigService { get; set; }
+    [UsedImplicitly] [Inject] public IRuntimeDataStore RuntimeDataStore { get; set; }
     [UsedImplicitly] [Inject] public ILogger<HotkeyService> Logger { get; set; }
 }

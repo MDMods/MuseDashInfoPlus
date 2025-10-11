@@ -3,6 +3,7 @@ using MDIP.Application.DependencyInjection;
 using MDIP.Application.Services.Global.Configuration;
 using MDIP.Application.Services.Global.Input;
 using MDIP.Application.Services.Global.Logging;
+using MDIP.Application.Services.Global.RuntimeData;
 using MDIP.Application.Services.Global.Text;
 using MDIP.Application.Services.Scoped.Stats;
 using MDIP.Application.Services.Scoped.Text;
@@ -41,7 +42,7 @@ public class RefreshScheduler : IRefreshScheduler
             (BattleUIService?.NativeZoomInCompleted ?? false))
         {
             if (HotkeyService?.CheckToggleTriggered() ?? false)
-                BattleUIService?.SetDesiredUiVisible(!(BattleUIService?.DesiredUiVisible ?? true));
+                BattleUIService?.SetDesiredUiVisible(!(RuntimeDataStore?.GetOrSetDesiredUiVisible() ?? true));
         }
 
         if (!(GameStatsService?.IsPlayerPlaying ?? false))
@@ -93,5 +94,6 @@ public class RefreshScheduler : IRefreshScheduler
     [UsedImplicitly] [Inject] public ITextObjectService TextObjectService { get; set; }
     [UsedImplicitly] [Inject] public ITextDataService TextDataService { get; set; }
     [UsedImplicitly] [Inject] public IHotkeyService HotkeyService { get; set; }
+    [UsedImplicitly] [Inject] public IRuntimeDataStore RuntimeDataStore { get; set; }
     [UsedImplicitly] [Inject] public ILogger<RefreshScheduler> Logger { get; set; }
 }

@@ -4,6 +4,8 @@ namespace MDIP.Application.Services.Global.RuntimeData;
 
 public interface IRuntimeDataStore
 {
+    bool GetOrSetDesiredUiVisible();
+    bool GetOrSetDesiredUiVisible(bool desiredUiVisible);
     bool IsFirstTry(string songHash);
     SongRuntimeRecord TryGet(string songHash);
     void AddOrUpdate(string songHash, SongRuntimeRecord songRecord);
