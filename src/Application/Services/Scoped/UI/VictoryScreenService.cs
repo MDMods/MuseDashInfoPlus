@@ -69,9 +69,15 @@ public class VictoryScreenService : IVictoryScreenService
             if (pnlVictory == null)
                 throw new NullReferenceException("PnlVictory container not found.");
 
-            pnlVictory.Find("PnlVictory_3D/DetailInfo/Other/TxtMiss/TxtValue")
-                .gameObject.GetComponent<UnityEngine.UI.Text>()
-                .text = (GameStatsService.MissCountHittable + GameStatsService.Miss.Block).ToString();
+            var missValueTransform = pnlVictory.Find("PnlVictory_3D/DetailInfo/Other/TxtMiss/TxtValue");
+            if (missValueTransform == null)
+                throw new NullReferenceException("Miss value text transform not found.");
+
+            var textComponent = missValueTransform.gameObject.GetComponent<UnityEngine.UI.Text>();
+            if (textComponent == null)
+                throw new NullReferenceException("Text component not found on miss value object.");
+
+            textComponent.text = (GameStatsService.MissCountHittable + GameStatsService.Miss.Block).ToString();
         }
         catch (Exception ex)
         {
