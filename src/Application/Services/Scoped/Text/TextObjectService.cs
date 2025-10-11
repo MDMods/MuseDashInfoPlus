@@ -19,6 +19,8 @@ public class TextObjectService : ITextObjectService
 
     public void UpdateAllText()
     {
+        if (TextDataService == null || ConfigAccessor == null) return;
+
         TextDataService.UpdateVariables();
 
         if (TextLowerLeft != null && ConfigAccessor.TextFieldLowerLeft.Enabled)
