@@ -36,7 +36,7 @@ Alle Datenelemente können in Bezug auf Sichtbarkeit, Position, Größe, Farbe, 
 Konfigurationsdateien sind nach Kategorien organisiert und im Verzeichnis
 `.\MuseDash\UserData\Info+\` gespeichert. Alle Konfigurationseinträge enthalten Kommentare. Bitte verstehen Sie den Zweck jeder Einstellung, bevor Sie Änderungen vornehmen.
 
-Alle Konfigurationsdateien werden **beim ersten Start automatisch generiert**. Nach dem Ändern der Konfiguration **speichern Sie die Datei, damit sie wirksam wird** (wenn Sie im Spiel sind, wird sie im nächsten Spiel wirksam).
+Alle Konfigurationsdateien werden **beim ersten Start automatisch generiert**. Nach dem Ändern der Konfiguration **speichern Sie die Datei und die Änderungen werden sofort wirksam**.
 
 - `MainConfigs.yml`: Primäre Konfigurationsdatei
 - `TextFieldLowerLeftConfigs.yml`: Textkonfiguration für den unteren linken Bildschirmbereich
