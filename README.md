@@ -16,6 +16,7 @@ All data elements can be freely customized in terms of visibility, position, siz
 
 ## Important Notes
 
+- ⌨️ **UI Toggle Hotkey**: Press **F10** to toggle visibility of all in-game UI. If the UI disappears accidentally, press **F10** again to restore it. This hotkey can be changed in `MainConfigs.yml`
 - The Miss/Great/Early/Late counts of personal best records are not stored in the base game, and can only be saved when Info+ is installed. You need to achieve at least one personal best score with Info+ installed for the personal best stats gap to work
 - If you loaded [SongDesc](https://github.com/mdmods/songdesc) mod, Chart Info will be disabled by default, use configuration to re-enable
 - Some data may not function properly for Touhou Danmaku charts due to compatibility issues
@@ -23,18 +24,18 @@ All data elements can be freely customized in terms of visibility, position, siz
 
 ## Previews
 
-![Preview 1](Static/Preview1.webp)
+![Preview 1](static/Preview1.webp)
 
-![Preview 2](Static/Preview2.webp)
+![Preview 2](static/Preview2.webp)
 
-![Preview 3](Static/Preview3.webp)
+![Preview 3](static/Preview3.webp)
 
 ## Configuration
 
 Configuration files are organized by category and stored in the
 `.\MuseDash\UserData\Info+\` directory. All configuration entries include comments. Please understand the purpose of each setting before making modifications.
 
-All configuration files are **automatically generated upon first launch**. After modifying the configuration, **save the file for it to take effect** (if you are in the game, it will take effect in the next game).
+All configuration files are **automatically generated upon first launch**. After modifying the configuration, **save the file and changes will take effect immediately**.
 
 - `MainConfigs.yml`: Primary configuration file
 - `TextFieldLowerLeftConfigs.yml`: Text configuration for lower-left screen area
@@ -62,6 +63,7 @@ In text configuration files, you'll find entries like `text: '{overview} / {stat
 - `{diff}`: Chart difficulty (numeric)
 - `{level}`: Chart difficulty (text)
 - `{author}`: Chart author
+- `{bpm}`: Chart BPM (fixed data, not real-time BPM)
 - `{overview}`: TP/AP indicator, shows current accuracy if below 100%
 - `{stats}`: Miss/Great/Early/Late counts
 - `{pbStats}`: Personal best Miss/Great/Early/Late counts
@@ -73,6 +75,7 @@ In text configuration files, you'll find entries like `text: '{overview} / {stat
 - `{pbLate}`: Personal best Late count
 - `{skySpeed}`: Current sky speed
 - `{groundSpeed}`: Current ground speed
+- `{time}`: System local time
 
 Note: Rich text is supported for some configuration entries. For example:
 `<size=40><color=#e1bb8a>{total}</color></size>`. If you're unfamiliar with rich text, please google it. For line breaks, use `\n`.

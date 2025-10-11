@@ -16,6 +16,7 @@ Info+ 是一个高度客制化的 MuseDash 游戏模组，用于显示额外的�
 
 ## 注意事项
 
+- ⌨️ **UI 显隐快捷键**：按 **F10** 可切换所有游戏内 UI 的显示。如果 UI 意外消失，再次按 **F10** 即可恢复。该快捷键可在 `MainConfigs.yml` 中更改
 - 历史最佳记录下的 Miss/Great/Early/Late 数据并没有保存在任何地方，因此只能由 Info+ 来保存。您必须在安装 Info+ 的情况下拿到至少一次最佳成绩才能使历史最佳记录的数据差值生效
 - 若您加载了 [SongDesc](https://github.com/MDMods/SongDesc) 模组，谱面信息将默认隐藏
 - 东方特殊谱面由于不受支持将导致部分数据无法正常工作
@@ -23,17 +24,17 @@ Info+ 是一个高度客制化的 MuseDash 游戏模组，用于显示额外的�
 
 ## 预览
 
-![预览1](Static/Preview1.webp)
+![预览1](static/Preview1.webp)
 
-![预览2](Static/Preview2.webp)
+![预览2](static/Preview2.webp)
 
-![预览3](Static/Preview3.webp)
+![预览3](static/Preview3.webp)
 
 ## 配置
 
 该模组的配置文件按照类别分开储存于不同文件，您可以在 `.\MuseDash\UserData\Info+\` 目录中找到它们，文件内的所有配置项都包含了注释，请明确配置项实际作用后更改。
 
-所有配置文件会在**首次启动后自动生成**，修改配置后**保存文件即可立即生效**（如果您在游戏中，那么下一局游戏生效）。
+所有配置文件会在**首次启动后自动生成**，修改配置后**保存文件即可立即生效**。
 
 - `MainConfigs.yml` 为主要配置文件
 - `TextFieldLowerLeftConfigs.yml` 为屏幕左下角的文本配置文件
@@ -60,6 +61,7 @@ Info+ 是一个高度客制化的 MuseDash 游戏模组，用于显示额外的�
 - `{diff}`：谱面难度（数字）
 - `{level}`：谱面难度（文本）
 - `{author}`：谱面作者
+- `{bpm}`：谱面 BPM（固定数据，非实时 BPM）
 - `{overview}`：TP / AP 指示，若当前准确率低于 100%，则改为显示当前准确率
 - `{stats}`：Miss / Great / Early / Late 等数据
 - `{pbStats}`：个人最佳记录下的 Miss / Great / Early / Late 等数据
@@ -71,6 +73,7 @@ Info+ 是一个高度客制化的 MuseDash 游戏模组，用于显示额外的�
 - `{pbLate}`：个人最佳记录下的 Late 计数
 - `{skySpeed}`：当前天空速度
 - `{groundSpeed}`：当前地面速度
+- `{time}`：系统本地时间
 
 提示：若配置项提示支持富文本，代表该配置项将会依照您填入的富文本生成对应文本。例：`<size=40><color=#e1bb8a>{total}</color></size>` 。如果您不知道什么是富文本，请自行搜索；如果您需要换行，使用 `\n` 。
 
