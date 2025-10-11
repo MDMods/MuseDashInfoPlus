@@ -1,6 +1,7 @@
 ﻿using JetBrains.Annotations;
 using MDIP.Application.DependencyInjection;
 using MDIP.Application.Services.Global.Configuration;
+using MDIP.Application.Services.Global.Input;
 using MDIP.Application.Services.Global.Logging;
 using MDIP.Application.Services.Scoped.Stats;
 using MDIP.Application.Services.Scoped.Text;
@@ -32,6 +33,15 @@ public class RefreshScheduler : IRefreshScheduler
 
         TextDataService?.ApplyPendingConstantsRefresh();
         BattleUIService?.ApplyPendingConfigChanges();
+
+        // Hotkey polling: only when in-level and native zoom-in completed
+        if (ConfigAccessor.Main.EnableUiToggleHotkey &&
+            (GameStatsService?.IsPlayerPlaying ?? false) &&
+            (BattleUIService?.NativeZoomInCompleted ?? false))
+        {
+            if (HotkeyService?.CheckToggleTriggered() ?? false)
+                BattleUIService?.SetDesiredUiVisible(!(BattleUIService?.DesiredUiVisible ?? true));
+        }
 
         if (!(GameStatsService?.IsPlayerPlaying ?? false))
             return;
@@ -81,5 +91,6 @@ public class RefreshScheduler : IRefreshScheduler
     [UsedImplicitly] [Inject] public IGameStatsService GameStatsService { get; set; }
     [UsedImplicitly] [Inject] public ITextObjectService TextObjectService { get; set; }
     [UsedImplicitly] [Inject] public ITextDataService TextDataService { get; set; }
+    [UsedImplicitly] [Inject] public IHotkeyService HotkeyService { get; set; }
     [UsedImplicitly] [Inject] public ILogger<RefreshScheduler> Logger { get; set; }
 }

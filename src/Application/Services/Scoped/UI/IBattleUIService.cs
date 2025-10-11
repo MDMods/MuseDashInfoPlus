@@ -7,4 +7,7 @@ public interface IBattleUIService
     void OnGameStart(PnlBattle instance);
     void CheckAndZoom();
     void ApplyPendingConfigChanges();
+    bool NativeZoomInCompleted { get; }
+    bool DesiredUiVisible { get; }
+    void SetDesiredUiVisible(bool visible);
 }

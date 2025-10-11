@@ -19,8 +19,12 @@ namespace MDIP.Application.Services.Scoped.UI;
 // ReSharper disable StringLiteralTypo
 public class BattleUIService : IBattleUIService
 {
+    public bool NativeZoomInCompleted { get; private set; }
+    public bool DesiredUiVisible { get; private set; }
+
     private const float ZoomSpeed = 2f;
     private const float SignificantYChange = 10f;
+    private const float AutoShowDelaySeconds = 2f;
 
     private readonly List<TextFieldBinding> _textFieldBindings = [];
 
@@ -40,6 +44,9 @@ public class BattleUIService : IBattleUIService
     private bool _isZoomingIn;
     private bool _isShutdown;
     private bool _isInitialized;
+
+    private bool _allowNativeZoomFollow;
+    private float _autoShowEnableTime;
 
     private ScoreStyleType _scoreStyleType = ScoreStyleType.Unknown;
 
@@ -132,6 +139,11 @@ public class BattleUIService : IBattleUIService
             _isZoomingIn = false;
             _zoomProgress = 0f;
 
+            NativeZoomInCompleted = false;
+            _allowNativeZoomFollow = false;
+            DesiredUiVisible = ConfigAccessor.Main.UiVisibleByDefault;
+            _autoShowEnableTime = Time.time + AutoShowDelaySeconds;
+
             _isInitialized = true;
         }
         catch (Exception ex)
@@ -144,6 +156,33 @@ public class BattleUIService : IBattleUIService
     {
         if (_isShutdown || !_isInitialized || _currentPanel == null || _scoreTransform == null)
             return;
+
+        if (!NativeZoomInCompleted)
+        {
+            if (CurrentY <= Constants.SCORE_ZOOM_IN_Y + 2f)
+                NativeZoomInCompleted = true;
+        }
+
+        if (!DesiredUiVisible)
+        {
+            ForceHide();
+            _previousY = CurrentY;
+            return;
+        }
+
+        if (!_allowNativeZoomFollow)
+        {
+            if (NativeZoomInCompleted && Time.time >= _autoShowEnableTime)
+            {
+                EnableFollowAndStart();
+            }
+            else
+            {
+                ForceHide();
+                _previousY = CurrentY;
+                return;
+            }
+        }
 
         if (Mathf.Abs(_currentScale - _currentPanel.localScale.y) > 0.01f)
         {
@@ -197,6 +236,32 @@ public class BattleUIService : IBattleUIService
     public static void RequestApplyConfigChanges()
         => Interlocked.Increment(ref _pendingApplyRequests);
 
+    public void SetDesiredUiVisible(bool visible)
+    {
+        DesiredUiVisible = visible;
+        if (!visible)
+        {
+            _allowNativeZoomFollow = false;
+            ForceHide();
+        }
+        else
+        {
+            if (NativeZoomInCompleted)
+                EnableFollowAndStart();
+            else
+                _allowNativeZoomFollow = false;
+        }
+    }
+
+    private void EnableFollowAndStart()
+    {
+        _allowNativeZoomFollow = true;
+        _isZooming = true;
+        _isZoomingIn = true;
+        _zoomProgress = 0f;
+        _targetScale = 1f;
+    }
+
     private void OnConfigsUpdated()
     {
         if (_isShutdown || !_isInitialized || _currentPanel == null || _textObjectTemplate == null)
@@ -205,6 +270,10 @@ public class BattleUIService : IBattleUIService
         try
         {
             RefreshTextFields(true, true);
+
+            DesiredUiVisible = ConfigAccessor.Main.UiVisibleByDefault;
+            if (!DesiredUiVisible)
+                ForceHide();
         }
         catch (Exception ex)
         {
@@ -272,6 +341,16 @@ public class BattleUIService : IBattleUIService
 
         if (triggerTextRefresh && !_isShutdown)
             TextObjectService.UpdateAllText();
+    }
+
+    private void ForceHide()
+    {
+        if (_currentPanel != null)
+            _currentPanel.localScale = new(1f, 3f, 1f);
+        _currentScale = 3f;
+        _targetScale = 3f;
+        _isZooming = false;
+        _isZoomingIn = false;
     }
 
     private GameObject CreateTextObj(
@@ -684,6 +763,9 @@ public class BattleUIService : IBattleUIService
         _isZooming = false;
         _isZoomingIn = false;
         _isInitialized = false;
+        NativeZoomInCompleted = false;
+        _allowNativeZoomFollow = false;
+        DesiredUiVisible = true;
 
         MusicInfoUtils.BattleUIType = BattleUIItem.Unknown;
 

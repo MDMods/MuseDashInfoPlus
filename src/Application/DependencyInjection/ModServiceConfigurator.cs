@@ -5,6 +5,7 @@ using MDIP.Application.Services.Global.RuntimeData;
 using MDIP.Application.Services.Global.Stats;
 using MDIP.Application.Services.Global.UI;
 using MDIP.Application.Services.Global.Updates;
+using MDIP.Application.Services.Global.Input;
 using MDIP.Application.Services.Scoped.Notes;
 using MDIP.Application.Services.Scoped.Scheduling;
 using MDIP.Application.Services.Scoped.Stats;
@@ -36,6 +37,7 @@ public static class ModServiceConfigurator
         provider.AddSingletonWithPropertyInjection<IRuntimeSongDataStore, RuntimeSongDataStore>();
         provider.AddSingletonWithPropertyInjection<IStatsSaverService, StatsSaverService>();
         provider.AddSingletonWithPropertyInjection<IPreparationScreenService, PreparationScreenService>();
+        provider.AddSingletonWithPropertyInjection<IHotkeyService, HotkeyService>();
 
         // ───────── Level-lifetime services ─────────
         // Active only during one stage/session.
@@ -53,11 +55,6 @@ public static class ModServiceConfigurator
         Provider = provider;
     }
 
-    /// <summary>
-    /// Starts a new "level" scope: dispose old, create new,
-    /// re-inject singleton properties, and refresh static [Inject] targets.
-    /// Scoped services are null until a scope exists.
-    /// </summary>
     public static void CreateGameScope()
     {
         DisposeCurrentScope();

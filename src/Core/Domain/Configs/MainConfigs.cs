@@ -143,4 +143,16 @@ public class MainConfigs : ConfigBase
     [ConfigCommentZh("以模组计算的 Miss 数替代结算页面的 Miss 数")]
     [ConfigCommentEn("Show mod-calculated misses instead of game's default count on results screen")]
     public bool ReplaceResultsScreenMissCount { get; set; } = false;
+
+    [ConfigCommentZh("启用UI显隐切换快捷键")]
+    [ConfigCommentEn("Enable UI visibility toggle hotkey")]
+    public bool EnableUiToggleHotkey { get; set; } = true;
+
+    [ConfigCommentZh("UI显隐切换快捷键（支持单键或组合键，示例：F10 或 Ctrl+Shift+U）")]
+    [ConfigCommentEn("UI visibility toggle hotkey (single or combination, e.g., F10 or Ctrl+Shift+U)")]
+    public string UiToggleHotkey { get; set; } = "F10";
+
+    [ConfigCommentZh("默认显示UI（仅影响关卡开始后是否在短暂延迟后自动显示）")]
+    [ConfigCommentEn("Show UI by default (controls whether to auto-show a few seconds after battle start)")]
+    public bool UiVisibleByDefault { get; set; } = true;
 }
