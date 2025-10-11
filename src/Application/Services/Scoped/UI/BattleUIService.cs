@@ -386,7 +386,7 @@ public class BattleUIService : IBattleUIService
         if (fitter != null)
             Object.Destroy(fitter);
 
-        if (!skipRectReset || existing == null)
+        if (!skipRectReset)
         {
             var rectTransform = obj.GetComponent<RectTransform>();
             if (rectTransform == null)
