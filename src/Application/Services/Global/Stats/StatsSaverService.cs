@@ -69,6 +69,10 @@ public class StatsSaverService : IStatsSaverService
     {
         try
         {
+            var directory = Path.GetDirectoryName(Constants.STATS_DATA_FILE);
+            if (!string.IsNullOrEmpty(directory))
+                Directory.CreateDirectory(directory);
+
             var jsonString = JsonSerializer.Serialize(_statsDict);
             File.WriteAllText(Constants.STATS_DATA_FILE, jsonString);
         }
