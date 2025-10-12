@@ -442,12 +442,12 @@ public class BattleUIService : IBattleUIService
             return null;
         }
 
-        text.font = config.Font switch
+        text.font = config.Font.Trim().ToLower().Replace(" ", "") switch
         {
-            "Snaps Taste" => FontService.GetFont(FontType.SnapsTaste) ?? text.font,
-            "Lato" => FontService.GetFont(FontType.LatoRegular) ?? text.font,
-            "Luckiest Guy" => FontService.GetFont(FontType.LuckiestGuy) ?? text.font,
-            "Normal" => FontService.GetFont(FontType.Normal) ?? text.font,
+            "snapstaste" => FontService.GetFont(FontType.SnapsTaste) ?? text.font,
+            "lato" => FontService.GetFont(FontType.LatoRegular) ?? text.font,
+            "luckiestguy" => FontService.GetFont(FontType.LuckiestGuy) ?? text.font,
+            "normal" => FontService.GetFont(FontType.Normal) ?? text.font,
             _ => text.font
         };
 

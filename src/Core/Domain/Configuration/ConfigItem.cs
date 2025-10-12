@@ -135,19 +135,26 @@ public class ConfigItem(string name, string configPath)
                 return oldConfig;
 
             File.Copy(ConfigPath, GetBackupPath(oldConfig.Version), true);
-            var oldConfigIncompatible = oldVersion < Version.Parse("2.3.0") && name is not "MainConfigs" and not "AdvancedConfigs";
-            switch (oldConfigIncompatible)
+
+            if (oldVersion < Version.Parse("2.3.0"))
             {
-                case true:
-                    Melon<MDIPMod>.Logger.Warning($"[{nameof(ConfigItem)}] {name} will be restored to default because the configs before 2.3.0 are no longer compatible");
-                    break;
-                // Minimal-change: when version < 3.0.0 and not incompatible, swap {level} <-> {diff} (case-insensitive) and lower-case the result
-                case false when oldVersion < Version.Parse("3.0.0"):
-                    NormalizePlaceholdersForDirectStringProps(oldConfig);
-                    break;
+                Melon<MDIPMod>.Logger.Warning($"[{nameof(ConfigItem)}] {name} will be restored to default because the configs before 2.3.0 are no longer compatible");
+                SaveConfig(newConfig);
+                return newConfig;
             }
 
-            var finalConfig = oldConfigIncompatible ? newConfig : ConfigVersionControl.MigrateConfig(oldConfig, newConfig);
+            if (oldVersion < Version.Parse("3.0.0"))
+            {
+                var t = typeof(T);
+                if (typeof(ITextConfig).IsAssignableFrom(t)
+                    && !string.Equals(name, "MainConfigs", StringComparison.Ordinal)
+                    && !string.Equals(name, "AdvancedConfigs", StringComparison.Ordinal))
+                {
+                    NormalizePlaceholdersInTextField(oldConfig);
+                }
+            }
+
+            var finalConfig = ConfigVersionControl.MigrateConfig(oldConfig, newConfig);
             SaveConfig(finalConfig);
             return finalConfig;
         }
@@ -210,31 +217,20 @@ public class ConfigItem(string name, string configPath)
         return $"{method.DeclaringType?.FullName}|{method.Name}|{targetId}";
     }
 
-    private static void NormalizePlaceholdersForDirectStringProps(object obj)
+    private static void NormalizePlaceholdersInTextField(object obj)
     {
-        if (obj == null)
+        if (obj is not ITextConfig textConfig)
             return;
 
-        var type = obj.GetType();
-        var props = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
-        foreach (var p in props)
-        {
-            if (!p.CanRead || !p.CanWrite)
-                continue;
-            if (p.PropertyType != typeof(string))
-                continue;
+        var val = textConfig.Text;
+        if (string.IsNullOrEmpty(val))
+            return;
 
-            var val = (string)p.GetValue(obj);
-            if (string.IsNullOrEmpty(val))
-                continue;
-
-            var normalized = SwapLevelAndDiffPlaceholders(val);
-            if (!ReferenceEquals(val, normalized))
-                p.SetValue(obj, normalized);
-        }
+        var normalized = SwapLevelAndDiffPlaceholders(val);
+        if (!ReferenceEquals(val, normalized) && val != normalized)
+            textConfig.Text = normalized;
     }
 
-    // Case-insensitive swap of {level} and {diff}, result forced to lower-case.
     private static string SwapLevelAndDiffPlaceholders(string input)
     {
         if (string.IsNullOrEmpty(input)) return input;
@@ -242,6 +238,6 @@ public class ConfigItem(string name, string configPath)
         var s = Regex.Replace(input, @"\{level\}", "{__tmp_level__}", RegexOptions.IgnoreCase);
         s = Regex.Replace(s, @"\{diff\}", "{level}", RegexOptions.IgnoreCase);
         s = s.Replace("{__tmp_level__}", "{diff}");
-        return s.ToLowerInvariant();
+        return s;
     }
 }
