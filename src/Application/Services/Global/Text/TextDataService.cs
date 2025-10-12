@@ -33,7 +33,7 @@ public class TextDataService : ITextDataService
         UpdateCachedValue("{total}", ((int)GameStatsService.AccuracyCalculationTotal).ToString());
         UpdateCachedValue("{song}", MusicInfoUtils.CurMusicName.TruncateByWidth(45));
         UpdateCachedValue("{level}", MusicInfoUtils.GetDifficultyLabel(ConfigAccessor.Main));
-        UpdateCachedValue("{diff}", MusicInfoUtils.CurMusicDiff.ToString());
+        UpdateCachedValue("{diff}", MusicInfoUtils.CurMusicDiffStr);
         UpdateCachedValue("{author}", MusicInfoUtils.CurMusicAuthor);
         UpdateCachedValue("{levelDesigner}", MusicInfoUtils.CurMusicLevelDesigner);
         UpdateCachedValue("{bpm}", MusicInfoUtils.CurMusicBpm);
