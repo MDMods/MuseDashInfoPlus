@@ -11,6 +11,7 @@ public static class MusicInfoUtils
     public static MusicInfo CurMusicInfo => GlobalDataBase.s_DbMusicTag.m_CurSelectedMusicInfo;
     public static string CurMusicName => CurMusicInfo.name;
     public static int CurMusicDiff => GlobalDataBase.s_DbBattleStage.selectedDifficulty;
+    public static string CurMusicDiffStr => CurMusicInfo.GetMusicLevelStringByDiff(CurMusicDiff);
     public static string CurMusicAuthor => CurMusicInfo.author;
     public static string CurMusicLevelDesigner => CurMusicInfo.levelDesigner;
     public static string CurMusicBpm => CurMusicInfo.bpm;
