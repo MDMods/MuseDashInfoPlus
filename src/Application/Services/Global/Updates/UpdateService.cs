@@ -85,8 +85,6 @@ public class UpdateService : IUpdateService
                 File.Delete(paths.BackupPath);
             if (File.Exists(paths.TempPath))
                 File.Delete(paths.TempPath);
-            if (File.Exists(paths.NewPath))
-                File.Delete(paths.NewPath);
             return true;
         }
         catch (Exception ex)

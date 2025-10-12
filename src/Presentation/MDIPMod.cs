@@ -119,17 +119,17 @@ public class MDIPMod : MelonMod
             var updateInfo = await UpdateService.GetUpdateInfoAsync();
             if (updateInfo == null)
             {
-                LogError("Failed to fetch update info.");
+                LogError("Auto Updater: Failed to fetch update info.");
                 return;
             }
             if (string.IsNullOrWhiteSpace(updateInfo.Hash))
             {
-                LogError("Update hash is empty.");
+                LogError("Auto Updater: Update hash is empty.");
             }
 
             if (!UpdateService.IsUpdateAvailable(updateInfo))
             {
-                LogInfo("Already up to date.");
+                LogInfo("Auto Updater: Already up to date.");
                 return;
             }
 
@@ -137,7 +137,7 @@ public class MDIPMod : MelonMod
         }
         catch (Exception ex)
         {
-            LogError("Update check failed.");
+            LogError("Auto Updater: Update check failed.");
             LogError(ex.ToString());
         }
     }
@@ -152,9 +152,9 @@ public class MDIPMod : MelonMod
 
         var success = await UpdateService.ApplyUpdateAsync(updateInfo);
         if (success)
-            LogWarn("Auto update successful!");
+            LogWarn("Auto Updater: Update successful!");
         else
-            LogError("Auto update failed!");
+            LogError("Auto Updater: Update failed!");
     }
 
     private void LogInfo(string message)
