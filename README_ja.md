@@ -64,6 +64,7 @@ Info+は、ゲーム内の追加情報を表示する、高度にカスタマイ
 - `{diff}`: 譜面難易度（数値）
 - `{level}`: 譜面難易度（テキスト）
 - `{author}`: 譜面作者
+- `{levelDesigner}`: 譜面のレベルデザイナー
 - `{bpm}`: 譜面BPM（固定データ、リアルタイムBPMではありません）
 - `{overview}`: TP/APインジケーター、100%未満の場合は現在の精度を表示
 - `{stats}`: Miss/Great/Early/Lateカウント

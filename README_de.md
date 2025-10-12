@@ -65,6 +65,7 @@ In Textkonfigurationsdateien finden Sie Einträge wie `text: '{overview} / {stat
 - `{diff}`: Chart-Schwierigkeit (numerisch)
 - `{level}`: Chart-Schwierigkeit (Text)
 - `{author}`: Chart-Autor
+- `{levelDesigner}`: Level-Designer des Charts
 - `{bpm}`: Chart-BPM (feste Daten, nicht Echtzeit-BPM)
 - `{overview}`: TP/AP-Indikator, zeigt aktuelle Genauigkeit, wenn unter 100%
 - `{stats}`: Miss/Great/Early/Late-Zählungen

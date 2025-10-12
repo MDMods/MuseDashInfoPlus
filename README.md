@@ -63,6 +63,7 @@ In text configuration files, you'll find entries like `text: '{overview} / {stat
 - `{diff}`: Chart difficulty (numeric)
 - `{level}`: Chart difficulty (text)
 - `{author}`: Chart author
+- `{levelDesigner}`: Level designer of the chart
 - `{bpm}`: Chart BPM (fixed data, not real-time BPM)
 - `{overview}`: TP/AP indicator, shows current accuracy if below 100%
 - `{stats}`: Miss/Great/Early/Late counts
