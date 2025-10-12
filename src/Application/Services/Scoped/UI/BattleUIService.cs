@@ -53,6 +53,8 @@ public class BattleUIService : IBattleUIService
 
     private ScoreStyleType _scoreStyleType = ScoreStyleType.Unknown;
 
+    private bool? _lastUiVisibleByDefault;
+
     private float CurrentY => _scoreTransform != null ? _scoreTransform.localPosition.y : Constants.SCORE_ZOOM_OUT_Y;
 
     public void OnGameStart(PnlBattle instance)
@@ -121,6 +123,8 @@ public class BattleUIService : IBattleUIService
 
             if (!ConfigurePauseButton(_currentPanel))
                 return;
+
+            _lastUiVisibleByDefault = ConfigAccessor.Main.UiVisibleByDefault;
 
             BuildTextFieldBindings();
 
@@ -291,7 +295,16 @@ public class BattleUIService : IBattleUIService
         {
             RefreshTextFields(true, true);
 
-            SetDesiredUiVisible(ConfigAccessor.Main.UiVisibleByDefault);
+            var currentDefault = ConfigAccessor.Main.UiVisibleByDefault;
+            if (_lastUiVisibleByDefault == null)
+            {
+                _lastUiVisibleByDefault = currentDefault;
+            }
+            else if (_lastUiVisibleByDefault.Value != currentDefault)
+            {
+                _lastUiVisibleByDefault = currentDefault;
+                SetDesiredUiVisible(currentDefault);
+            }
         }
         catch (Exception ex)
         {
@@ -785,6 +798,8 @@ public class BattleUIService : IBattleUIService
         _allowNativeZoomFollow = false;
 
         MusicInfoUtils.BattleUIType = BattleUIItem.Unknown;
+
+        _lastUiVisibleByDefault = null;
 
         Interlocked.Exchange(ref _pendingApplyRequests, 0);
     }
