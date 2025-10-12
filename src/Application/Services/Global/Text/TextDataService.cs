@@ -32,9 +32,10 @@ public class TextDataService : ITextDataService
         UpdateCachedValue("{pbAcc}", $"{GameStatsService.History.Accuracy}%");
         UpdateCachedValue("{total}", ((int)GameStatsService.AccuracyCalculationTotal).ToString());
         UpdateCachedValue("{song}", MusicInfoUtils.CurMusicName.TruncateByWidth(45));
-        UpdateCachedValue("{diff}", MusicInfoUtils.GetDifficultyLabel(main));
         UpdateCachedValue("{level}", MusicInfoUtils.CurMusicLevel);
+        UpdateCachedValue("{diff}", MusicInfoUtils.CurMusicDiff.ToString());
         UpdateCachedValue("{author}", MusicInfoUtils.CurMusicAuthor);
+        UpdateCachedValue("{levelDesigner}", MusicInfoUtils.CurMusicLevelDesigner);
         UpdateCachedValue("{bpm}", MusicInfoUtils.CurMusicBpm);
         UpdateCachedValue("{pbGreat}", GameStatsService.History.Great.ToString());
         UpdateCachedValue("{pbMissOther}", GameStatsService.History.MissOther.ToString());
