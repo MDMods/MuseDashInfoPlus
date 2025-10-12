@@ -62,7 +62,7 @@ Info+ 是一個高度客製化的 MuseDash 遊戲模組，用於顯示額外的�
 - `{level}`：譜面難度（文字）
 - `{author}`：音樂作者
 - `{levelDesigner}`：譜面關卡設計者
-- `{bpm}`：譜面 BPM（固定資料，非即時 BPM）
+- `{bpm}`：音樂 BPM（固定資料，非即時 BPM）
 - `{overview}`：TP / AP 指示，若當前準確率低於 100%，則改為顯示當前準確率
 - `{stats}`：Miss / Great / Early / Late 等資料
 - `{pbStats}`：個人最佳記錄下的 Miss / Great / Early / Late 等資料

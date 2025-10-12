@@ -66,7 +66,7 @@ espaces réservés `{dataName}` seront remplacés selon les règles suivantes. C
 - `{level}` : Difficulté du chart (texte)
 - `{author}` : Auteur de la musique
 - `{levelDesigner}` : Concepteur de niveau du chart
-- `{bpm}` : BPM du chart (données fixes, pas de BPM en temps réel)
+- `{bpm}` : BPM de la musique (données fixes, pas de BPM en temps réel)
 - `{overview}` : Indicateur TP/AP, affiche la précision actuelle si inférieure à 100%
 - `{stats}` : Compteurs Miss/Great/Early/Late
 - `{pbStats}` : Compteurs Miss/Great/Early/Late du record personnel

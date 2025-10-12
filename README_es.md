@@ -66,7 +66,7 @@ marcadores `{dataName}` se reemplazarán según las siguientes reglas. Estos pue
 - `{level}`: Dificultad del chart (texto)
 - `{author}`: Autor de la música
 - `{levelDesigner}`: Diseñador de nivel del chart
-- `{bpm}`: BPM del chart (datos fijos, no BPM en tiempo real)
+- `{bpm}`: BPM de la música (datos fijos, no BPM en tiempo real)
 - `{overview}`: Indicador TP/AP, muestra la precisión actual si está por debajo del 100%
 - `{stats}`: Contadores Miss/Great/Early/Late
 - `{pbStats}`: Contadores Miss/Great/Early/Late del récord personal
