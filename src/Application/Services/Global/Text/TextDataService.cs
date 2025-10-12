@@ -32,9 +32,10 @@ public class TextDataService : ITextDataService
         UpdateCachedValue("{pbAcc}", $"{GameStatsService.History.Accuracy}%");
         UpdateCachedValue("{total}", ((int)GameStatsService.AccuracyCalculationTotal).ToString());
         UpdateCachedValue("{song}", MusicInfoUtils.CurMusicName.TruncateByWidth(45));
-        UpdateCachedValue("{diff}", MusicInfoUtils.GetDifficultyLabel(main));
         UpdateCachedValue("{level}", MusicInfoUtils.CurMusicLevel);
+        UpdateCachedValue("{diff}", MusicInfoUtils.CurMusicDiff.ToString());
         UpdateCachedValue("{author}", MusicInfoUtils.CurMusicAuthor);
+        UpdateCachedValue("{levelDesigner}", MusicInfoUtils.CurMusicLevelDesigner);
         UpdateCachedValue("{bpm}", MusicInfoUtils.CurMusicBpm);
         UpdateCachedValue("{pbGreat}", GameStatsService.History.Great.ToString());
         UpdateCachedValue("{pbMissOther}", GameStatsService.History.MissOther.ToString());
@@ -93,8 +94,8 @@ public class TextDataService : ITextDataService
         var text = originalText;
         foreach (var (key, value) in _cachedValues)
         {
-            if (text.Contains(key))
-                text = text.Replace(key, value ?? string.Empty, StringComparison.Ordinal);
+            if (text.Contains(key, StringComparison.OrdinalIgnoreCase))
+                text = text.Replace(key, value ?? string.Empty, StringComparison.OrdinalIgnoreCase);
         }
 
         var finalText = text.Trim().Trim(TrimChars).Trim();
@@ -131,10 +132,7 @@ public class TextDataService : ITextDataService
         }
 
         if (ConfigService == null)
-        {
-            Logger?.Warn("ConfigService not available; deferring callback registration.");
             return;
-        }
 
         if (Interlocked.CompareExchange(ref _globalCallbacksState, -1, 0) != 0)
             return;
@@ -153,16 +151,8 @@ public class TextDataService : ITextDataService
             Volatile.Write(ref _globalCallbacksState, 1);
             _callbacksRegistered = true;
         }
-        catch (InvalidOperationException ex)
+        catch (Exception)
         {
-            Logger?.Warn("Config modules not ready yet; will retry callback registration.");
-            Logger?.Warn(ex);
-            Volatile.Write(ref _globalCallbacksState, 0);
-        }
-        catch (Exception ex)
-        {
-            Logger?.Error("Failed to register configuration update callbacks.");
-            Logger?.Error(ex);
             Volatile.Write(ref _globalCallbacksState, 0);
         }
     }

@@ -64,8 +64,9 @@ In Textkonfigurationsdateien finden Sie Einträge wie `text: '{overview} / {stat
 - `{song}`: Chart-Name
 - `{diff}`: Chart-Schwierigkeit (numerisch)
 - `{level}`: Chart-Schwierigkeit (Text)
-- `{author}`: Chart-Autor
-- `{bpm}`: Chart-BPM (feste Daten, nicht Echtzeit-BPM)
+- `{author}`: Musik-Autor
+- `{levelDesigner}`: Chart-Level-Designer
+- `{bpm}`: Musik-BPM (feste Daten, nicht Echtzeit-BPM)
 - `{overview}`: TP/AP-Indikator, zeigt aktuelle Genauigkeit, wenn unter 100%
 - `{stats}`: Miss/Great/Early/Late-Zählungen
 - `{pbStats}`: Persönliche Rekord Miss/Great/Early/Late-Zählungen
