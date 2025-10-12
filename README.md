@@ -62,8 +62,8 @@ In text configuration files, you'll find entries like `text: '{overview} / {stat
 - `{song}`: Chart name
 - `{diff}`: Chart difficulty (numeric)
 - `{level}`: Chart difficulty (text)
-- `{author}`: Chart author
-- `{levelDesigner}`: Level designer of the chart
+- `{author}`: Music author
+- `{levelDesigner}`: Chart level designer
 - `{bpm}`: Chart BPM (fixed data, not real-time BPM)
 - `{overview}`: TP/AP indicator, shows current accuracy if below 100%
 - `{stats}`: Miss/Great/Early/Late counts

@@ -63,8 +63,8 @@ Info+는 게임 내 추가 정보를 표시하는 고도로 커스터마이징 �
 - `{song}`: 차트 이름
 - `{diff}`: 차트 난이도 (숫자)
 - `{level}`: 차트 난이도 (텍스트)
-- `{author}`: 차트 제작자
-- `{levelDesigner}`: 차트의 레벨 디자이너
+- `{author}`: 음악 작곡가
+- `{levelDesigner}`: 차트 레벨 디자이너
 - `{bpm}`: 차트 BPM (고정 데이터, 실시간 BPM 아님)
 - `{overview}`: TP/AP 표시기, 100% 미만일 경우 현재 정확도 표시
 - `{stats}`: Miss/Great/Early/Late 카운트

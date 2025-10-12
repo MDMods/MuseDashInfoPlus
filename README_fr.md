@@ -64,7 +64,7 @@ espaces réservés `{dataName}` seront remplacés selon les règles suivantes. C
 - `{song}` : Nom du chart
 - `{diff}` : Difficulté du chart (numérique)
 - `{level}` : Difficulté du chart (texte)
-- `{author}` : Auteur du chart
+- `{author}` : Auteur de la musique
 - `{levelDesigner}` : Concepteur de niveau du chart
 - `{bpm}` : BPM du chart (données fixes, pas de BPM en temps réel)
 - `{overview}` : Indicateur TP/AP, affiche la précision actuelle si inférieure à 100%
