@@ -18,6 +18,7 @@ Alle Datenelemente können in Bezug auf Sichtbarkeit, Position, Größe, Farbe, 
 
 ## Wichtige Hinweise
 
+- ⌨️ **UI-Umschalt-Hotkey**: Drücken Sie **F10**, um die Anzeige aller In-Game-UI umzuschalten. Wenn die UI versehentlich verschwindet, drücken Sie erneut **F10**, um sie wiederherzustellen. Dieser Hotkey kann in `MainConfigs.yml` geändert werden
 - Die Miss/Great/Early/Late-Zählungen persönlicher Rekorde werden nicht im Basisspiel gespeichert und können nur gespeichert werden, wenn Info+ installiert ist. Sie müssen mit installiertem Info+ mindestens einen persönlichen Rekord erzielen, damit die persönliche Rekord-Statistikdifferenz funktioniert
 - Wenn Sie den [SongDesc](https://github.com/mdmods/songdesc) Mod geladen haben, werden Chart-Informationen standardmäßig deaktiviert. Verwenden Sie die Konfiguration, um sie wieder zu aktivieren
 - Einige Daten funktionieren möglicherweise nicht richtig für Touhou Danmaku-Charts aufgrund von Kompatibilitätsproblemen
@@ -25,18 +26,18 @@ Alle Datenelemente können in Bezug auf Sichtbarkeit, Position, Größe, Farbe, 
 
 ## Vorschauen
 
-![Vorschau 1](Static/Preview1.webp)
+![Vorschau 1](static/Preview1.webp)
 
-![Vorschau 2](Static/Preview2.webp)
+![Vorschau 2](static/Preview2.webp)
 
-![Vorschau 3](Static/Preview3.webp)
+![Vorschau 3](static/Preview3.webp)
 
 ## Konfiguration
 
 Konfigurationsdateien sind nach Kategorien organisiert und im Verzeichnis
 `.\MuseDash\UserData\Info+\` gespeichert. Alle Konfigurationseinträge enthalten Kommentare. Bitte verstehen Sie den Zweck jeder Einstellung, bevor Sie Änderungen vornehmen.
 
-Alle Konfigurationsdateien werden **beim ersten Start automatisch generiert**. Nach dem Ändern der Konfiguration **speichern Sie die Datei, damit sie wirksam wird** (wenn Sie im Spiel sind, wird sie im nächsten Spiel wirksam).
+Alle Konfigurationsdateien werden **beim ersten Start automatisch generiert**. Nach dem Ändern der Konfiguration **speichern Sie die Datei und die Änderungen werden sofort wirksam**.
 
 - `MainConfigs.yml`: Primäre Konfigurationsdatei
 - `TextFieldLowerLeftConfigs.yml`: Textkonfiguration für den unteren linken Bildschirmbereich
@@ -64,6 +65,7 @@ In Textkonfigurationsdateien finden Sie Einträge wie `text: '{overview} / {stat
 - `{diff}`: Chart-Schwierigkeit (numerisch)
 - `{level}`: Chart-Schwierigkeit (Text)
 - `{author}`: Chart-Autor
+- `{bpm}`: Chart-BPM (feste Daten, nicht Echtzeit-BPM)
 - `{overview}`: TP/AP-Indikator, zeigt aktuelle Genauigkeit, wenn unter 100%
 - `{stats}`: Miss/Great/Early/Late-Zählungen
 - `{pbStats}`: Persönliche Rekord Miss/Great/Early/Late-Zählungen
@@ -75,6 +77,7 @@ In Textkonfigurationsdateien finden Sie Einträge wie `text: '{overview} / {stat
 - `{pbLate}`: Persönliche Rekord Late-Zählung
 - `{skySpeed}`: Aktuelle Himmel-Geschwindigkeit
 - `{groundSpeed}`: Aktuelle Boden-Geschwindigkeit
+- `{time}`: Systemzeit
 
 Hinweis: Rich Text wird für einige Konfigurationseinträge unterstützt. Zum Beispiel:
 `<size=40><color=#e1bb8a>{total}</color></size>`. Wenn Sie mit Rich Text nicht vertraut sind, suchen Sie bitte danach. Für Zeilenumbrüche verwenden Sie `\n`.

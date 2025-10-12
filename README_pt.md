@@ -18,6 +18,7 @@ Todos os elementos de dados podem ser livremente personalizados em termos de vis
 
 ## Notas importantes
 
+- ⌨️ **Tecla de alternância da interface**: Pressione **F10** para alternar a exibição de toda a interface do jogo. Se a interface desaparecer acidentalmente, pressione **F10** novamente para restaurá-la. Esta tecla pode ser alterada em `MainConfigs.yml`
 - As contagens Miss/Great/Early/Late dos recordes pessoais não são armazenadas no jogo base e só podem ser salvas quando o Info+ está instalado. Você precisa alcançar pelo menos um recorde pessoal com o Info+ instalado para que a diferença de estatísticas do recorde pessoal funcione
 - Se você carregou o mod [SongDesc](https://github.com/mdmods/songdesc), as informações do chart serão desativadas por padrão. Use a configuração para reativá-las
 - Alguns dados podem não funcionar corretamente para charts Touhou Danmaku devido a problemas de compatibilidade
@@ -25,18 +26,18 @@ Todos os elementos de dados podem ser livremente personalizados em termos de vis
 
 ## Prévias
 
-![Prévia 1](Static/Preview1.webp)
+![Prévia 1](static/Preview1.webp)
 
-![Prévia 2](Static/Preview2.webp)
+![Prévia 2](static/Preview2.webp)
 
-![Prévia 3](Static/Preview3.webp)
+![Prévia 3](static/Preview3.webp)
 
 ## Configuração
 
 Os arquivos de configuração são organizados por categoria e armazenados no diretório
 `.\MuseDash\UserData\Info+\`. Todas as entradas de configuração incluem comentários. Por favor, entenda o propósito de cada configuração antes de fazer modificações.
 
-Todos os arquivos de configuração são **gerados automaticamente na primeira execução**. Após modificar a configuração, **salve o arquivo para que tenha efeito** (se você estiver no jogo, terá efeito no próximo jogo).
+Todos os arquivos de configuração são **gerados automaticamente na primeira execução**. Após modificar a configuração, **salve o arquivo e as alterações terão efeito imediatamente**.
 
 - `MainConfigs.yml`: Arquivo de configuração principal
 - `TextFieldLowerLeftConfigs.yml`: Configuração de texto para a área inferior esquerda da tela
@@ -64,6 +65,7 @@ marcadores `{dataName}` serão substituídos de acordo com as seguintes regras. 
 - `{diff}`: Dificuldade do chart (numérica)
 - `{level}`: Dificuldade do chart (texto)
 - `{author}`: Autor do chart
+- `{bpm}`: BPM do chart (dados fixos, não BPM em tempo real)
 - `{overview}`: Indicador TP/AP, mostra precisão atual se abaixo de 100%
 - `{stats}`: Contadores Miss/Great/Early/Late
 - `{pbStats}`: Contadores Miss/Great/Early/Late do recorde pessoal
@@ -75,6 +77,7 @@ marcadores `{dataName}` serão substituídos de acordo com as seguintes regras. 
 - `{pbLate}`: Contagem Late do recorde pessoal
 - `{skySpeed}`: Velocidade céu atual
 - `{groundSpeed}`: Velocidade chão atual
+- `{time}`: Hora local do sistema
 
 Nota: Texto rico é suportado para algumas entradas de configuração. Por exemplo:
 `<size=40><color=#e1bb8a>{total}</color></size>`. Se você não está familiarizado com texto rico, por favor pesquise. Para quebras de linha, use `\n`.
