@@ -8,10 +8,10 @@ public static class MusicInfoUtils
 {
     public static BattleUIItem BattleUIType { get; set; }
 
-    public static MusicInfo CurMusicInfo => GlobalDataBase.s_DbMusicTag.m_CurSelectedMusicInfo;
+    public static MusicInfo CurMusicInfo => GlobalDataBase.s_DbBattleStage.selectedMusicInfo;
     public static string CurMusicName => CurMusicInfo.name;
-    public static int CurMusicDiff => GlobalDataBase.s_DbBattleStage.selectedDifficulty;
-    public static string CurMusicDiffStr => CurMusicInfo.GetMusicLevelStringByDiff(CurMusicDiff);
+    public static int CurMusicDiff => GlobalDataBase.s_DbBattleStage.selectedDifficulty; // 1-5
+    public static string CurMusicDiffStr => CurMusicInfo.GetMusicLevelStringByDiff(CurMusicDiff); // 1-12, and custom text possible
     public static string CurMusicAuthor => CurMusicInfo.author;
     public static string CurMusicLevelDesigner => CurMusicInfo.levelDesigner;
     public static string CurMusicBpm => CurMusicInfo.bpm;
