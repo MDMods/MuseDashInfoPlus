@@ -1,4 +1,5 @@
 using System.Globalization;
+using Il2CppAssets.Scripts.Database;
 using JetBrains.Annotations;
 using MDIP.Application.DependencyInjection;
 using MDIP.Application.Services.Global.Configuration;
@@ -34,6 +35,7 @@ public class TextDataService : ITextDataService
         UpdateCachedValue("{song}", MusicInfoUtils.CurMusicName.TruncateByWidth(45));
         UpdateCachedValue("{level}", MusicInfoUtils.GetDifficultyLabel(ConfigAccessor.Main));
         UpdateCachedValue("{diff}", MusicInfoUtils.CurMusicDiffStr);
+        UpdateCachedValue("{albumName}", MusicInfoUtils.CurAlbumName);
         UpdateCachedValue("{author}", MusicInfoUtils.CurMusicAuthor);
         UpdateCachedValue("{levelDesigner}", MusicInfoUtils.CurMusicLevelDesigner);
         UpdateCachedValue("{bpm}", MusicInfoUtils.CurMusicBpm);
@@ -42,6 +44,15 @@ public class TextDataService : ITextDataService
         UpdateCachedValue("{pbMissCollectible}", GameStatsService.History.MissCollectible.ToString());
         UpdateCachedValue("{pbEarly}", GameStatsService.History.Early.ToString());
         UpdateCachedValue("{pbLate}", GameStatsService.History.Late.ToString());
+        UpdateCachedValue("{userLanguage}", DataHelper.userLanguage);
+        UpdateCachedValue("{offset}", DataHelper.offset.ToString());
+        UpdateCachedValue("{playerName}", DataHelper.nickname);
+        UpdateCachedValue("{playerLevel}", DataHelper.Level.ToString());
+        UpdateCachedValue("{bgmVolume}", DataHelper.bgmVolume.ToString("F2"));
+        UpdateCachedValue("{hitSfxVolume}", DataHelper.hitSfxVolume.ToString("F2"));
+        UpdateCachedValue("{voiceVolume}", DataHelper.voiceVolume.ToString("F2"));
+        UpdateCachedValue("{elfin}", MusicInfoUtils.CurElfin);
+        UpdateCachedValue("{character}", MusicInfoUtils.CurGirl);
 
         if (!GameStatsService.History.HasStats)
         {
