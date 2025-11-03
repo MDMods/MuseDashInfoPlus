@@ -1,4 +1,6 @@
 ﻿using Il2CppAssets.Scripts.Database;
+using Il2CppAssets.Scripts.PeroTools.Commons;
+using Il2CppAssets.Scripts.PeroTools.Managers;
 using MDIP.Core.Domain.Configs;
 using MDIP.Core.Domain.Enums;
 
@@ -15,6 +17,38 @@ public static class MusicInfoUtils
     public static string CurMusicAuthor => CurMusicInfo.author;
     public static string CurMusicLevelDesigner => CurMusicInfo.levelDesigner;
     public static string CurMusicBpm => CurMusicInfo.bpm;
+    public static string CurAlbumName => Singleton<ConfigManager>.m_Instance.GetConfigStringValue("albums", "uid", "title", DataHelper.selectedAlbumUid);
+    public static string CurElfin {
+        get
+        {   // Reference: https://github.com/MDMods/CurrentCombination/blob/main/Managers/ModManager.cs
+            var elfinIndex = DataHelper.selectedElfinIndex;
+
+            if (elfinIndex < 0) return string.Empty;
+
+            return Singleton<ConfigManager>.instance
+                .GetJson("elfin", true)[elfinIndex]
+                ["name"].ToString();
+        }
+    }
+    public static string CurGirl {
+        get
+        {   // Reference: https://github.com/MDMods/CurrentCombination/blob/main/Managers/ModManager.cs
+            var characterIndex = DataHelper.selectedRoleIndex;
+
+            if (characterIndex < 0) return string.Empty;
+
+            var configManager = Singleton<ConfigManager>.instance;
+            var character = configManager.GetJson("character", true)[characterIndex];
+
+            var characterType = configManager.GetConfigObject<DBConfigCharacter>()
+                .GetCharacterInfoByIndex(characterIndex)
+                .characterType;
+
+            return string.Equals(characterType, "Special")
+                ? character["characterName"].ToString()
+                : character["cosName"].ToString();
+        }
+    }
 
     public static string CurMusicHash => (CurMusicDiff + CurMusicAuthor + CurMusicLevelDesigner + CurMusicInfo.musicName).GetConsistentHash();
 
