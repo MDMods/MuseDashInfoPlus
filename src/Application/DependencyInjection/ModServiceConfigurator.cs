@@ -18,6 +18,7 @@ namespace MDIP.Application.DependencyInjection;
 public static class ModServiceConfigurator
 {
     private static readonly HashSet<Type> _staticInjectionTargets = [];
+    private static bool _isGameScopeActive;
     public static SimpleServiceProvider Provider { get; private set; }
     public static IServiceScope CurrentScope { get; private set; }
 
@@ -58,8 +59,14 @@ public static class ModServiceConfigurator
 
     public static void CreateGameScope()
     {
+        // Prevent duplicate scope creation in the same game session
+        // This can happen if another mod's prefix patch returns false and manually calls the original method
+        if (_isGameScopeActive)
+            return;
+
         DisposeCurrentScope();
         CurrentScope = Provider.CreateScope();
+        _isGameScopeActive = true;
         Provider.RefreshSingletonPropertyInjections();
         RefreshStaticInjections();
     }
@@ -68,6 +75,7 @@ public static class ModServiceConfigurator
     {
         CurrentScope?.Dispose();
         CurrentScope = null;
+        _isGameScopeActive = false;
 
         if (Provider == null)
             return;
