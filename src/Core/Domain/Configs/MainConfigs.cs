@@ -1,4 +1,4 @@
-﻿using MDIP.Core.Domain.Attributes;
+using MDIP.Core.Domain.Attributes;
 
 namespace MDIP.Core.Domain.Configs;
 
@@ -143,6 +143,11 @@ public class MainConfigs : ConfigBase
     [ConfigCommentZh("以模组计算的 Miss 数替代结算页面的 Miss 数")]
     [ConfigCommentEn("Show mod-calculated misses instead of game's default count on results screen")]
     public bool ReplaceResultsScreenMissCount { get; set; } = false;
+
+    [ConfigCommentZh("避让技能图标")]
+    [ConfigCommentEn("Shift the upper left info display to avoid overlapping skill icons")]
+    public bool PushIndicatorOnSkill { get; set; } = true;
+
 
     [ConfigCommentZh("启用UI显隐切换快捷键")]
     [ConfigCommentEn("Enable UI visibility toggle hotkey")]
