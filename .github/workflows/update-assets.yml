@@ -1,0 +1,96 @@
+name: Update Assets Branch
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  update-assets:
+    runs-on: ubuntu-latest
+    if: ${{ !github.event.release.prerelease }}
+
+    steps:
+      - name: Checkout main branch
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          TAG="${{ github.event.release.tag_name }}"
+          VERSION="${TAG#v}"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Extracted version: $VERSION"
+
+      - name: Download Info+.dll from release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Use gh CLI to download Info+.dll
+          gh release download "${{ github.event.release.tag_name }}" \
+            --repo "${{ github.repository }}" \
+            --pattern "Info+.dll"
+
+          if [ ! -f "Info+.dll" ]; then
+            echo "Error: Info+.dll not found in release assets"
+            exit 1
+          fi
+
+          echo "Successfully downloaded Info+.dll"
+
+      - name: Calculate SHA256 hash
+        id: hash
+        run: |
+          HASH=$(sha256sum "Info+.dll" | awk '{print $1}')
+          echo "hash=$HASH" >> $GITHUB_OUTPUT
+          echo "Calculated hash: $HASH"
+
+      - name: Update version.json
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          HASH="${{ steps.hash.outputs.hash }}"
+          DOWNLOAD_URL="https://github.com/${{ github.repository }}/releases/download/${{ github.event.release.tag_name }}/Info+.dll"
+
+          jq -n \
+            --arg version "$VERSION" \
+            --arg hash "$HASH" \
+            --arg url "$DOWNLOAD_URL" \
+            '{
+              "Version": $version,
+              "DownloadURL": [
+                "https://mdip.leever.cn/Info+.dll",
+                $url
+              ],
+              "Hash": $hash
+            }' > version.json
+
+          echo "Updated version.json:"
+          cat version.json
+
+      - name: Push to assets branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Fetch all branches
+          git fetch origin assets:assets 2>/dev/null || true
+
+          # Create new orphan branch for clean push
+          git checkout --orphan assets-temp
+
+          # Remove all tracked files
+          git rm -rf . 2>/dev/null || true
+
+          # Add only the two files we need
+          git add version.json "Info+.dll"
+          git commit -m "Update to version ${{ steps.version.outputs.version }}"
+
+          # Force push to assets branch
+          git push -f origin assets-temp:assets
+
+          echo "Successfully pushed to assets branch"
