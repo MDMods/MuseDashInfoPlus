@@ -236,24 +236,30 @@ public class BattleUIService : IBattleUIService
         _previousY = CurrentY;
     }
 
+    // Horizontal shift applied per visible auto-avoid skill icon.
+    private const float SkillIconWidth = 80f;
+
     private void UpdateSkillOffset()
     {
         if (_isShutdown || !_isInitialized || TextObjectService?.TextUpperLeft == null)
             return;
 
+        // Feature disabled: clear any offset previously applied so the text snaps back,
+        // and reset state so re-enabling mid-battle re-initializes cleanly.
         if (!ConfigAccessor.Main.PushIndicatorOnSkill)
-            return;
-
-        BattleProperty battleProperty = null;
-        try
         {
-            battleProperty = Singleton<BattleProperty>.instance;
-        }
-        catch
-        {
+            if (_skillOffsetInitialized || _skillOffset != 0f)
+            {
+                _skillOffset = 0f;
+                _isMissToGreat = false;
+                _isGreatToPerfect = false;
+                _skillOffsetInitialized = false;
+                ApplyUpperLeftPosition();
+            }
             return;
         }
 
+        var battleProperty = Singleton<BattleProperty>.instance;
         if (battleProperty == null)
             return;
 
@@ -266,25 +272,16 @@ public class BattleUIService : IBattleUIService
             if (battleProperty.missToGreat != 0)
             {
                 _isMissToGreat = true;
-                _skillOffset += 80f;
+                _skillOffset += SkillIconWidth;
             }
             if (battleProperty.greatToPerfect != 0)
             {
                 _isGreatToPerfect = true;
-                _skillOffset += 80f;
+                _skillOffset += SkillIconWidth;
             }
 
             _skillOffsetInitialized = true;
-
-            var textObj = TextObjectService.TextUpperLeft;
-            var config = ConfigAccessor.TextFieldUpperLeft;
-            if (textObj != null && config != null)
-            {
-                textObj.transform.localPosition = new Vector3(
-                    Constants.POS_UPPER_LEFT_TEXT.x + _skillOffset + config.OffsetX,
-                    Constants.POS_UPPER_LEFT_TEXT.y + config.OffsetY,
-                    Constants.POS_UPPER_LEFT_TEXT.z);
-            }
+            ApplyUpperLeftPosition();
             return;
         }
 
@@ -292,30 +289,33 @@ public class BattleUIService : IBattleUIService
 
         if (_isMissToGreat && battleProperty.missToGreat < 1)
         {
-            _skillOffset -= 80f;
+            _skillOffset -= SkillIconWidth;
             _isMissToGreat = false;
             changed = true;
         }
 
         if (_isGreatToPerfect && battleProperty.greatToPerfect < 1)
         {
-            _skillOffset -= 80f;
+            _skillOffset -= SkillIconWidth;
             _isGreatToPerfect = false;
             changed = true;
         }
 
         if (changed)
-        {
-            var textObj = TextObjectService.TextUpperLeft;
-            var config = ConfigAccessor.TextFieldUpperLeft;
-            if (textObj != null && config != null)
-            {
-                textObj.transform.localPosition = new Vector3(
-                    Constants.POS_UPPER_LEFT_TEXT.x + _skillOffset + config.OffsetX,
-                    Constants.POS_UPPER_LEFT_TEXT.y + config.OffsetY,
-                    Constants.POS_UPPER_LEFT_TEXT.z);
-            }
-        }
+            ApplyUpperLeftPosition();
+    }
+
+    private void ApplyUpperLeftPosition()
+    {
+        var textObj = TextObjectService?.TextUpperLeft;
+        var config = ConfigAccessor.TextFieldUpperLeft;
+        if (textObj == null || config == null)
+            return;
+
+        textObj.transform.localPosition = new Vector3(
+            Constants.POS_UPPER_LEFT_TEXT.x + _skillOffset + config.OffsetX,
+            Constants.POS_UPPER_LEFT_TEXT.y + config.OffsetY,
+            Constants.POS_UPPER_LEFT_TEXT.z);
     }
 
     public void QueueApplyConfigChanges()
