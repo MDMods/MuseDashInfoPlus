@@ -1,4 +1,6 @@
-﻿using Il2CppAssets.Scripts.UI.Panels;
+using Il2CppAssets.Scripts.UI.Panels;
+using Il2CppAssets.Scripts.PeroTools.Commons;
+using Il2CppAssets.Scripts.GameCore.Managers;
 using JetBrains.Annotations;
 using MDIP.Application.DependencyInjection;
 using MDIP.Application.Services.Global.Assets;
@@ -50,6 +52,12 @@ public class BattleUIService : IBattleUIService
 
     private bool _allowNativeZoomFollow;
     private float _autoShowEnableTime;
+
+    private bool _isMissToGreat;
+    private bool _isGreatToPerfect;
+    private float _skillOffset;
+    private bool _skillOffsetInitialized;
+
 
     private ScoreStyleType _scoreStyleType = ScoreStyleType.Unknown;
 
@@ -148,6 +156,11 @@ public class BattleUIService : IBattleUIService
             _allowNativeZoomFollow = false;
             _autoShowEnableTime = Time.time + AutoShowDelaySeconds;
 
+            _isMissToGreat = false;
+            _isGreatToPerfect = false;
+            _skillOffset = 0f;
+            _skillOffsetInitialized = false;
+
             _isInitialized = true;
         }
         catch (Exception ex)
@@ -160,6 +173,8 @@ public class BattleUIService : IBattleUIService
     {
         if (_isShutdown || !_isInitialized || _currentPanel == null || _scoreTransform == null)
             return;
+
+        UpdateSkillOffset();
 
         if (!NativeZoomInCompleted)
         {
@@ -219,6 +234,88 @@ public class BattleUIService : IBattleUIService
         }
 
         _previousY = CurrentY;
+    }
+
+    // Horizontal shift applied per visible auto-avoid skill icon.
+    private const float SkillIconWidth = 80f;
+
+    private void UpdateSkillOffset()
+    {
+        if (_isShutdown || !_isInitialized || TextObjectService?.TextUpperLeft == null)
+            return;
+
+        // Feature disabled: clear any offset previously applied so the text snaps back,
+        // and reset state so re-enabling mid-battle re-initializes cleanly.
+        if (!ConfigAccessor.Main.PushIndicatorOnSkill)
+        {
+            if (_skillOffsetInitialized || _skillOffset != 0f)
+            {
+                _skillOffset = 0f;
+                _isMissToGreat = false;
+                _isGreatToPerfect = false;
+                _skillOffsetInitialized = false;
+                ApplyUpperLeftPosition();
+            }
+            return;
+        }
+
+        var battleProperty = Singleton<BattleProperty>.instance;
+        if (battleProperty == null)
+            return;
+
+        if (!_skillOffsetInitialized)
+        {
+            _skillOffset = 0f;
+            _isMissToGreat = false;
+            _isGreatToPerfect = false;
+
+            if (battleProperty.missToGreat != 0)
+            {
+                _isMissToGreat = true;
+                _skillOffset += SkillIconWidth;
+            }
+            if (battleProperty.greatToPerfect != 0)
+            {
+                _isGreatToPerfect = true;
+                _skillOffset += SkillIconWidth;
+            }
+
+            _skillOffsetInitialized = true;
+            ApplyUpperLeftPosition();
+            return;
+        }
+
+        var changed = false;
+
+        if (_isMissToGreat && battleProperty.missToGreat < 1)
+        {
+            _skillOffset -= SkillIconWidth;
+            _isMissToGreat = false;
+            changed = true;
+        }
+
+        if (_isGreatToPerfect && battleProperty.greatToPerfect < 1)
+        {
+            _skillOffset -= SkillIconWidth;
+            _isGreatToPerfect = false;
+            changed = true;
+        }
+
+        if (changed)
+            ApplyUpperLeftPosition();
+    }
+
+    private void ApplyUpperLeftPosition()
+    {
+        var textObj = TextObjectService?.TextUpperLeft;
+        var config = ConfigAccessor.TextFieldUpperLeft;
+        if (textObj == null || config == null)
+            return;
+
+        textObj.transform.localPosition = new Vector3(
+            Constants.POS_UPPER_LEFT_TEXT.x + _skillOffset + config.OffsetX,
+            Constants.POS_UPPER_LEFT_TEXT.y + config.OffsetY,
+            Constants.POS_UPPER_LEFT_TEXT.z);
     }
 
     public void QueueApplyConfigChanges()
@@ -655,7 +752,10 @@ public class BattleUIService : IBattleUIService
             "InfoPlus_TextUpperLeft",
             () => ConfigAccessor.TextFieldUpperLeft,
             () => _currentPanel.Find("Up"),
-            () => Constants.POS_UPPER_LEFT_TEXT,
+            () => new Vector3(
+                Constants.POS_UPPER_LEFT_TEXT.x + _skillOffset,
+                Constants.POS_UPPER_LEFT_TEXT.y,
+                Constants.POS_UPPER_LEFT_TEXT.z),
             false,
             TextAnchor.UpperLeft,
             FontStyle.Normal,
@@ -800,6 +900,11 @@ public class BattleUIService : IBattleUIService
         MusicInfoUtils.BattleUIType = BattleUIItem.Unknown;
 
         _lastUiVisibleByDefault = null;
+
+        _isMissToGreat = false;
+        _isGreatToPerfect = false;
+        _skillOffset = 0f;
+        _skillOffsetInitialized = false;
 
         Interlocked.Exchange(ref _pendingApplyRequests, 0);
     }
