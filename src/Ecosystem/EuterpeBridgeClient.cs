@@ -14,6 +14,27 @@ internal static class EuterpeBridgeClient
     private static bool _resolved;
     private static MethodInfo _isEuterpeUid;
     private static MethodInfo _tryGetLocalBest;
+    private static MethodInfo _isMultiplayerActive;
+
+    // True while the current battle is a Euterpe multiplayer round — Euterpe paints its own in-battle
+    // heads-up then, so Info+ retreats from the corners it occupies (see BattleUi's bindings). Soft:
+    // a missing bridge (Euterpe absent / too old) reports false, so non-MP play is never affected.
+    public static bool IsMultiplayerActive()
+    {
+        EnsureResolved();
+        if (_isMultiplayerActive == null)
+            return false;
+
+        try
+        {
+            return (bool)_isMultiplayerActive.Invoke(null, null);
+        }
+        catch (Exception ex)
+        {
+            Log.Warn($"EuterpeBridge IsMultiplayerActive failed: {ex.Message}");
+            return false;
+        }
+    }
 
     public static bool IsEuterpeChart(string uid)
     {
@@ -86,8 +107,10 @@ internal static class EuterpeBridgeClient
             _isEuterpeUid = type.GetMethod("IsEuterpeUid", [typeof(string)]);
             _tryGetLocalBest = type.GetMethod("TryGetLocalBest",
                 [typeof(string), typeof(int), typeof(int).MakeByRefType(), typeof(float).MakeByRefType()]);
+            _isMultiplayerActive = type.GetMethod("IsMultiplayerActive", Type.EmptyTypes);
 
-            Log.Info($"EuterpeBridge: resolved (IsEuterpeUid={_isEuterpeUid != null}, TryGetLocalBest={_tryGetLocalBest != null}).");
+            Log.Info($"EuterpeBridge: resolved (IsEuterpeUid={_isEuterpeUid != null}, " +
+                     $"TryGetLocalBest={_tryGetLocalBest != null}, IsMultiplayerActive={_isMultiplayerActive != null}).");
         }
         catch (Exception ex)
         {

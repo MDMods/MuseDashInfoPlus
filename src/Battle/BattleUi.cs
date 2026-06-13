@@ -5,6 +5,7 @@ using MDIP.Core.Constants;
 using MDIP.Core.Domain.Configs;
 using MDIP.Core.Domain.Enums;
 using MDIP.Core.Utilities;
+using MDIP.Ecosystem;
 using MDIP.Globals;
 using MDIP.Presentation;
 using UnityEngine.UI;
@@ -586,7 +587,10 @@ public class BattleUi(GameStats stats, TextObjects textObjects)
             false,
             TextAnchor.LowerLeft,
             FontStyle.Italic,
-            () => Config.TextFieldLowerLeft.Enabled,
+            // Retreat from the lower-left during a Euterpe multiplayer round: Euterpe paints its live
+            // standings there, and the two text blocks must not overlap (the resolver is re-evaluated
+            // every refresh, so the field returns the instant the round ends).
+            () => Config.TextFieldLowerLeft.Enabled && !EuterpeBridgeClient.IsMultiplayerActive(),
             obj => textObjects.TextLowerLeft = obj,
             () => textObjects.TextLowerLeft,
             false,
@@ -600,7 +604,9 @@ public class BattleUi(GameStats stats, TextObjects textObjects)
             false,
             TextAnchor.LowerRight,
             FontStyle.Italic,
-            () => Config.TextFieldLowerRight.Enabled,
+            // Retreat from the lower-right during a Euterpe multiplayer round: Euterpe paints its
+            // personal rank readout there (the re-evaluated resolver restores the field once it ends).
+            () => Config.TextFieldLowerRight.Enabled && !EuterpeBridgeClient.IsMultiplayerActive(),
             obj => textObjects.TextLowerRight = obj,
             () => textObjects.TextLowerRight,
             false,
