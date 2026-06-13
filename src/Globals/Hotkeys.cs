@@ -48,7 +48,7 @@ internal static class Hotkeys
         }
     }
 
-    public static void RebindFromConfig()
+    private static void RebindFromConfig()
     {
         lock (Sync)
         {

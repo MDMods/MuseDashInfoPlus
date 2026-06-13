@@ -45,7 +45,7 @@ public class GameStats
     public int CurrentGroundSpeed { get; set; }
 
     public int MissCountHittable => _miss.Monster + _miss.Long + _miss.Mul;
-    public int MissCountCollectible => _miss.Energy + _miss.Music + _miss.RedPoint + _miss.Ghost;
+    public int MissCountCollectible => _miss.Energy + _miss.Music + _miss.Ghost;
     public int MissCount => MissCountHittable + MissCountCollectible + _miss.Block;
     public float AccuracyCalculationTotal => _total.Music + _total.Energy + _total.Hittable + _total.Block;
     public float AccuracyCalculationCounted => _current.Perfect + _current.Great / 2f + _current.Block + _current.Music + _current.Energy + _current.RedPoint;
@@ -54,7 +54,7 @@ public class GameStats
     public bool IsAllPerfect => IsPlayerPlaying && _current.Great + MissCount < 1;
     public bool IsTruePerfect => IsAllPerfect && _current.Early + _current.Late < 1;
 
-    public float GetAccuracyRest() => AccuracyCalculationTotal - _current.Perfect - _current.Great - _current.Block - _current.Music - _current.Energy - _current.RedPoint - MissCount - _miss.LongPair;
+    private float GetAccuracyRest() => AccuracyCalculationTotal - _current.Perfect - _current.Great - _current.Block - _current.Music - _current.Energy - _current.RedPoint - MissCount - _miss.LongPair;
 
     public void UpdateCurrentStats()
     {
@@ -88,10 +88,10 @@ public class GameStats
         else
             Log.Error("=========== Note Count Error ===========");
         Log.Info($"Total:{AccuracyCalculationTotal} | Counted:{AccuracyCalculationCounted} | Rest:{AccuracyCalculationRest}");
-        Log.Info($"Total => Music:{Total.Music} | Energy:{Total.Energy} | Block:{Total.Block} | RedPoint:{Total.RedPoint} | Hittable:{Total.Hittable}");
+        Log.Info($"Total => Music:{Total.Music} | Energy:{Total.Energy} | Block:{Total.Block} | Hittable:{Total.Hittable}");
         Log.Info($"Counted => Music:{Current.Music} | Energy:{Current.Energy} | Block:{Current.Block} | RedPoint:{Current.RedPoint} | Perfect:{Current.Perfect} | Great:{Current.Great} /2f");
-        Log.Info($"Miss => Music:{Miss.Music} | Energy:{Miss.Energy} | Block:{Miss.Block} | RedPoint:{Miss.RedPoint} | Hittable:{MissCountHittable} | LongPair:{Miss.LongPair} | Ghost:{Miss.Ghost}");
-        Log.Info($"{AccuracyCalculationTotal} - {Current.Perfect + Current.Great + Current.Block + Current.Music + Current.Energy + Current.RedPoint} - {Miss.Music + Miss.Energy + MissCountHittable + Miss.LongPair + Miss.Block + Miss.RedPoint + Miss.Ghost} = {AccuracyCalculationRest}");
+        Log.Info($"Miss => Music:{Miss.Music} | Energy:{Miss.Energy} | Block:{Miss.Block} | Hittable:{MissCountHittable} | LongPair:{Miss.LongPair} | Ghost:{Miss.Ghost}");
+        Log.Info($"{AccuracyCalculationTotal} - {Current.Perfect + Current.Great + Current.Block + Current.Music + Current.Energy + Current.RedPoint} - {Miss.Music + Miss.Energy + MissCountHittable + Miss.LongPair + Miss.Block + Miss.Ghost} = {AccuracyCalculationRest}");
         if (!isInGame)
             Log.Error("======================================");
         Log.Info($"Calc Acc: {GetCalculatedAccuracy()} | True Acc:{GetTrueAccuracy()}");
@@ -431,8 +431,6 @@ public class GameStats
                         _total.Hittable++;
                     if (type.IsRegularNote())
                     {
-                        _total.Notes++;
-
                         if (note.isAir)
                         {
                             if (CurrentSkySpeed == -1)
@@ -448,29 +446,14 @@ public class GameStats
 
                 switch (type)
                 {
-                    case NoteType.Monster:
-                        _total.Monster++;
-                        break;
                     case NoteType.Block:
                         _total.Block++;
-                        break;
-                    case NoteType.Long when !note.isLongPressing:
-                        _total.Long++;
-                        break;
-                    case NoteType.Ghost:
-                        _total.Ghost++;
-                        break;
-                    case NoteType.Boss:
-                        _total.Boss++;
                         break;
                     case NoteType.Energy:
                         _total.Energy++;
                         break;
                     case NoteType.Music:
                         _total.Music++;
-                        break;
-                    case NoteType.Mul:
-                        _total.Mul++;
                         break;
                 }
             }

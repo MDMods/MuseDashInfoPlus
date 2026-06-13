@@ -67,29 +67,16 @@ public static class YamlParser
 
     public static T Deserialize<T>(string yaml) where T : new()
     {
+        // The config schema is flat — one `key: value` per line — so there is no nesting to track.
         var lines = yaml.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
         var result = new T();
-        var currentPath = new Stack<string>();
-        var indentLevel = 0;
 
         foreach (var line in lines)
         {
             if (string.IsNullOrWhiteSpace(line))
                 continue;
 
-            var currentIndent = line.TakeWhile(c => c == ' ').Count() / 2;
-            var actualLine = line.Trim();
-
-            if (currentIndent < indentLevel)
-            {
-                while (currentIndent < indentLevel && currentPath.Count > 0)
-                {
-                    currentPath.Pop();
-                    indentLevel--;
-                }
-            }
-
-            var parts = actualLine.Split([':'], 2);
+            var parts = line.Trim().Split([':'], 2);
             if (parts.Length != 2)
                 continue;
 
@@ -97,16 +84,10 @@ public static class YamlParser
             var value = parts[1].Trim();
 
             var property = GetProperty(result.GetType(), propertyName);
-            if (property == null)
+            if (property == null || value.Length == 0)
                 continue;
 
-            if (value.Length > 0)
-                SetValue(result, property, value);
-            else
-            {
-                currentPath.Push(propertyName);
-                indentLevel = currentIndent + 1;
-            }
+            SetValue(result, property, value);
         }
 
         return result;

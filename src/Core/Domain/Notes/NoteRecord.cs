@@ -10,7 +10,7 @@ public class NoteRecord(short oid, NoteType type, int doubleId, string longType)
     public string LongType { get; } = longType;
     public Dictionary<string, List<string>> PatchInfosDic { get; } = new();
 
-    public void AddPatchInfo(string name, string info = "null")
+    public void AddPatchInfo(string name, string info)
     {
         if (!PatchInfosDic.TryGetValue(name, out var list))
         {

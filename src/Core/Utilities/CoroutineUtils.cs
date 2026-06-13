@@ -9,10 +9,4 @@ public static class CoroutineUtils
         yield return new WaitForSeconds(delay);
         action?.Invoke();
     }
-
-    public static IEnumerator Run<T>(T instance, Action<T> action, float delay = 0f)
-    {
-        yield return new WaitForSeconds(delay);
-        action?.Invoke(instance);
-    }
 }
