@@ -39,6 +39,23 @@ public class TextObjects(GameStats stats)
             SetText(TextUpperRight, Config.TextFieldUpperRight.Text?.UnEscapeReturn());
     }
 
+    // Shows or hides the overlay by toggling the live text objects (disabled fields stay null/hidden).
+    public void SetVisible(bool visible)
+    {
+        SetActive(TextLowerLeft, visible);
+        SetActive(TextLowerRight, visible);
+        SetActive(TextScoreBelow, visible);
+        SetActive(TextScoreRight, visible);
+        SetActive(TextUpperLeft, visible);
+        SetActive(TextUpperRight, visible);
+    }
+
+    private static void SetActive(GameObject obj, bool visible)
+    {
+        if (obj != null)
+            obj.SetActive(visible);
+    }
+
     // Destroys any live text GameObjects and clears the references. Idempotent.
     public void DestroyAll()
     {

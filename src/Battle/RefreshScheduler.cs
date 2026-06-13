@@ -15,7 +15,7 @@ public class RefreshScheduler(BattleUi ui, GameStats stats, TextObjects textObje
 
     public void OnFixedUpdateTick()
     {
-        ui.CheckAndZoom();
+        ui.OnFixedTick();
     }
 
     public void OnLateUpdateTick()
@@ -23,10 +23,8 @@ public class RefreshScheduler(BattleUi ui, GameStats stats, TextObjects textObje
         TextData.ApplyPendingConstantsRefresh(stats);
         ui.ApplyPendingConfigChanges();
 
-        // Hotkey polling: only when in-level and native zoom-in completed
-        if (Config.Main.EnableUiToggleHotkey &&
-            stats.IsPlayerPlaying &&
-            ui.NativeZoomInCompleted)
+        // Hotkey polling: only while the player is in the run.
+        if (Config.Main.EnableUiToggleHotkey && stats.IsPlayerPlaying)
         {
             if (Hotkeys.CheckToggleTriggered())
                 ui.SetDesiredUiVisible(!RuntimeData.DesiredUiVisible);

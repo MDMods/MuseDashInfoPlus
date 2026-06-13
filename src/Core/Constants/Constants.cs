@@ -39,9 +39,6 @@ public static class Constants
 
     public const string COLOR_WHITE = "#fdfdfa";
 
-    public const float SCORE_ZOOM_OUT_Y = 670f;
-    public const float SCORE_ZOOM_IN_Y = 530f;
-
     public static readonly string STATS_DATA_FILE = Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath, "..", "MuseDash_Data", "info+_song_stats.json"));
 
     public static readonly Vector3 POS_LOWER_LEFT_TEXT = new(-866, -460, 0);

@@ -13,18 +13,17 @@ using Object = UnityEngine.Object;
 namespace MDIP.Battle;
 
 // Builds the in-battle overlay (clones a score-text template, spawns the six configured text fields
-// under the native panel) and keeps the score-skill indicator offset in sync. The score-panel zoom
-// follow is delegated to ScoreZoomFollower; this class is the construction + per-frame coordination.
+// under the native panel) and keeps the score-skill indicator offset in sync. The session is created
+// at StageBattleComponent.GameStart — i.e. when the song actually starts — so the overlay simply
+// appears then; there is no native-zoom mirroring (the panel has already settled). Visibility is a
+// plain show/hide of the owned text objects.
 //
 // Robustness: text objects are reused from the tracked TextObjects references (never re-found by
-// name), so a stale or pending-destroy GameObject can never be picked up — the multiplayer
-// double-start bug class is closed at the source. Build failures shut the overlay down cleanly
-// without throwing into the game.
+// name), so a stale or pending-destroy GameObject can never be picked up. Build failures shut the
+// overlay down cleanly without throwing into the game.
 public class BattleUi(GameStats stats, TextObjects textObjects)
 {
     private bool _disposed;
-
-    private readonly ScoreZoomFollower _zoom = new();
 
     private readonly List<TextFieldBinding> _textFieldBindings = [];
     private int _pendingApplyRequests;
@@ -46,8 +45,6 @@ public class BattleUi(GameStats stats, TextObjects textObjects)
     private ScoreStyleType _scoreStyleType = ScoreStyleType.Unknown;
 
     private bool? _lastUiVisibleByDefault;
-
-    public bool NativeZoomInCompleted => _zoom.NativeZoomInCompleted;
 
     public void OnGameStart(PnlBattle instance)
     {
@@ -97,12 +94,6 @@ public class BattleUi(GameStats stats, TextObjects textObjects)
                 return;
             }
 
-            _currentPanel.localScale = new(1f, 3f, 1f);
-
-            var scoreTransform = RequireTransform(_currentPanel, "Score", "Score");
-            if (_isShutdown || scoreTransform == null)
-                return;
-
             _textObjectTemplate = CreateTextTemplate(pnlBattleOthers);
             if (_isShutdown || _textObjectTemplate == null)
                 return;
@@ -126,14 +117,15 @@ public class BattleUi(GameStats stats, TextObjects textObjects)
             stats.UpdateCurrentStats();
             textObjects.UpdateAllText();
 
-            _zoom.Begin(_currentPanel, scoreTransform);
-
             _isMissToGreat = false;
             _isGreatToPerfect = false;
             _skillOffset = 0f;
             _skillOffsetInitialized = false;
 
             _isInitialized = true;
+
+            // The song has started; show the overlay now if the player wants it visible.
+            textObjects.SetVisible(RuntimeData.DesiredUiVisible);
         }
         catch (Exception ex)
         {
@@ -141,13 +133,13 @@ public class BattleUi(GameStats stats, TextObjects textObjects)
         }
     }
 
-    public void CheckAndZoom()
+    // Per-FixedUpdate tick: only the score-skill indicator offset needs frame-level tracking now.
+    public void OnFixedTick()
     {
         if (_isShutdown || !_isInitialized)
             return;
 
         UpdateSkillOffset();
-        _zoom.Tick();
     }
 
     // Horizontal shift applied per visible auto-avoid skill icon. Kept here (not split out) because it
@@ -156,7 +148,7 @@ public class BattleUi(GameStats stats, TextObjects textObjects)
 
     private void UpdateSkillOffset()
     {
-        if (_isShutdown || !_isInitialized || textObjects.TextUpperLeft == null)
+        if (textObjects.TextUpperLeft == null)
             return;
 
         // Feature disabled: clear any offset previously applied so the text snaps back,
@@ -258,7 +250,8 @@ public class BattleUi(GameStats stats, TextObjects textObjects)
     public void SetDesiredUiVisible(bool visible)
     {
         RuntimeData.SetDesiredUiVisible(visible);
-        _zoom.SetVisible(visible);
+        if (_isInitialized)
+            textObjects.SetVisible(visible);
     }
 
     // Tears the overlay down deterministically: destroys the owned text objects and template and
@@ -280,6 +273,7 @@ public class BattleUi(GameStats stats, TextObjects textObjects)
         try
         {
             RefreshTextFields(true, true);
+            textObjects.SetVisible(RuntimeData.DesiredUiVisible);
 
             var currentDefault = Config.Main.UiVisibleByDefault;
             if (_lastUiVisibleByDefault == null)
@@ -761,8 +755,6 @@ public class BattleUi(GameStats stats, TextObjects textObjects)
 
         _currentPanel = null;
         _imgIconApParentPath = null;
-
-        _zoom.Reset();
 
         _isInitialized = false;
 

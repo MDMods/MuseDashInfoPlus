@@ -7,191 +7,89 @@ using MDIP.Globals;
 namespace MDIP.Battle;
 
 // The coordinator every Harmony patch and the mod lifecycle forward to. It owns the single live
-// BattleSession and is the ONE exception-isolation boundary: every entry point catches, logs and
-// swallows, so a fault inside Info+ can never propagate into the game's call chain or another mod's
-// patch (the failure mode behind the multiplayer "all native UI disappears" report).
+// BattleSession, and Guard is the ONE exception-isolation boundary — every entry runs through it, so
+// a fault inside Info+ can never propagate into the game's call chain or another mod's patch.
+//
+// The session is created on StageBattleComponent.GameStart — the simulation's real start, which fires
+// exactly once per run and downstream of PnlBattle.GameStart. Hooking it (instead of the UI panel's
+// GameStart) means Info+ does NOT contend with mods that gate PnlBattle.GameStart — e.g. a
+// multiplayer barrier that freezes the player at frame 0 and re-invokes at the synced start: that
+// barrier suppresses PnlBattle.GameStart, so StageBattleComponent.GameStart simply doesn't fire until
+// the real start. No __runOriginal guard, no double-fire handling, no contention to defend against.
 internal static class BattleController
 {
     public static BattleSession Current { get; private set; }
 
-    // PnlBattle.GameStart postfix. Acts only when the original method actually ran (runOriginal):
-    // another mod's prefix can suppress GameStart — e.g. a multiplayer barrier freezing the player at
-    // frame 0 — and the held re-invocation at the synced start is the real one. Idempotent: a session
-    // already live for this battle is left untouched, so a second GameStart never builds a second
-    // overlay.
-    public static void OnGameStart(PnlBattle pnl, bool runOriginal)
+    // StageBattleComponent.GameStart postfix. Builds the session for this run; the overlay reads the
+    // live battle panel via PnlBattle.instance. DisposeCurrent is a clean-slate guard — normally a
+    // no-op because the previous session was disposed at the last Loading scene.
+    public static void OnBattleStart() => Guard(() =>
     {
-        if (!runOriginal)
+        var pnl = PnlBattle.instance;
+        if (pnl == null)
             return;
 
-        try
-        {
-            if (Current != null)
-                return;
-            Current = new BattleSession(pnl);
-        }
-        catch (Exception ex)
-        {
-            Log.Error("Battle session start failed.");
-            Log.Error(ex);
-            EndSession();
-        }
-    }
+        DisposeCurrent();
+        Current = new BattleSession(pnl);
+    });
 
-    // Battle/scene teardown (the "Loading" scene). Disposing our session destroys our overlay objects;
-    // the game tears down the native battle scene itself.
-    public static void EndSession()
-    {
-        try
-        {
-            Current?.Dispose();
-        }
-        catch (Exception ex)
-        {
-            Log.Error("Battle session dispose failed.");
-            Log.Error(ex);
-        }
-        finally
-        {
-            Current = null;
-        }
-    }
+    // Battle/scene teardown (the "Loading" scene). The game tears down the native battle scene itself.
+    public static void EndSession() => Guard(DisposeCurrent);
 
-    public static void OnFixedUpdate()
-    {
-        try
-        {
-            Current?.Scheduler.OnFixedUpdateTick();
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex);
-        }
-    }
+    public static void OnFixedUpdate() => Guard(() => Current?.Scheduler.OnFixedUpdateTick());
 
-    public static void OnLateUpdate()
-    {
-        try
-        {
-            Current?.Scheduler.OnLateUpdateTick();
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex);
-        }
-    }
+    public static void OnLateUpdate() => Guard(() => Current?.Scheduler.OnLateUpdateTick());
 
     public static void OnSetPlayResult(int idx, byte result, bool isMulStart, bool isMulEnd, bool isLeft)
-    {
-        try
-        {
-            Current?.NoteEvents.HandleSetPlayResult(idx, result, isMulStart, isMulEnd, isLeft);
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex);
-        }
-    }
+        => Guard(() => Current?.NoteEvents.HandleSetPlayResult(idx, result, isMulStart, isMulEnd, isLeft));
 
     public static void OnMissCube(int idx, decimal currentTick)
-    {
-        try
-        {
-            Current?.NoteEvents.HandleMissCube(idx, currentTick);
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex);
-        }
-    }
+        => Guard(() => Current?.NoteEvents.HandleMissCube(idx, currentTick));
 
-    public static void OnVictoryDetail(PnlVictory instance)
+    public static void OnVictoryDetail(PnlVictory instance) => Guard(() =>
     {
-        try
+        if (Current != null)
         {
-            if (Current != null)
-            {
-                Current.Victory.OnSetDetailInfo(instance);
-                return;
-            }
-
-            // Fallback: the session is already gone (e.g. the scope-free teardown ran on a scene
-            // transition before the results screen). Persist the best directly from the game data.
-            SavePersonalBestDirect();
+            Current.Victory.OnSetDetailInfo(instance);
+            return;
         }
-        catch (Exception ex)
-        {
-            Log.Error("Victory detail handling failed.");
-            Log.Error(ex);
-        }
-    }
 
-    public static void OnControllerMissRecord(BaseEnemyObjectController instance)
+        // No live session (the scene already tore down before the results screen): persist the best
+        // directly from the game data.
+        SavePersonalBestDirect();
+    });
+
+    public static void OnControllerMissRecord(BaseEnemyObjectController instance) => Guard(() =>
     {
-        try
-        {
-            if (!Config.Advanced.OutputNoteRecordsToDesktop)
-                return;
-            Current?.NoteRecords.AddRecord(instance.m_MusicData, "ControllerMissCheck", $"m_HasMiss:{instance.m_HasMiss}");
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex);
-        }
-    }
+        if (!Config.Advanced.OutputNoteRecordsToDesktop)
+            return;
+        Current?.NoteRecords.AddRecord(instance.m_MusicData, "ControllerMissCheck", $"m_HasMiss:{instance.m_HasMiss}");
+    });
 
-    public static void OnMultHitMissRecord(MultHitEnemyController instance)
+    public static void OnMultHitMissRecord(MultHitEnemyController instance) => Guard(() =>
     {
-        try
-        {
-            if (!Config.Advanced.OutputNoteRecordsToDesktop)
-                return;
-            Current?.NoteRecords.AddRecord(instance.m_MusicData, "OnControllerMiss", $"m_HasMiss:{instance.m_HasMiss}");
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex);
-        }
-    }
+        if (!Config.Advanced.OutputNoteRecordsToDesktop)
+            return;
+        Current?.NoteRecords.AddRecord(instance.m_MusicData, "OnControllerMiss", $"m_HasMiss:{instance.m_HasMiss}");
+    });
 
-    public static void OnNoteResultRecord(int result)
+    public static void OnNoteResultRecord(int result) => Guard(() =>
     {
-        try
-        {
-            if (!Config.Advanced.OutputNoteRecordsToDesktop || Current == null)
-                return;
-            Current.NoteRecords.AddRecord(Current.Stats.GetCurMusicData(), "OnNoteResult", $"noteResult:{result}");
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex);
-        }
-    }
+        if (!Config.Advanced.OutputNoteRecordsToDesktop || Current == null)
+            return;
+        Current.NoteRecords.AddRecord(Current.Stats.GetCurMusicData(), "OnNoteResult", $"noteResult:{result}");
+    });
 
     public static void OnPrepRecordUpdated(PnlPreparation instance)
-    {
-        try
-        {
-            PrepScreen.OnRecordUpdated(instance);
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex);
-        }
-    }
+        => Guard(() => PrepScreen.OnRecordUpdated(instance));
 
-    // A config file changed: ask the live overlay (if any) to re-apply on its next tick. No-op in
-    // menus, where there is no session.
-    public static void QueueConfigApply()
+    // A config file changed: ask the live overlay (if any) to re-apply on its next tick.
+    public static void QueueConfigApply() => Guard(() => Current?.Ui.QueueApplyConfigChanges());
+
+    private static void DisposeCurrent()
     {
-        try
-        {
-            Current?.Ui.QueueApplyConfigChanges();
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex);
-        }
+        Current?.Dispose();
+        Current = null;
     }
 
     private static void SavePersonalBestDirect()
@@ -206,5 +104,19 @@ internal static class BattleController
 
         RuntimeData.StorePersonalBestAccuracy(hash, acc);
         RuntimeData.StorePersonalBestScore(hash, score);
+    }
+
+    // The single exception-isolation boundary: an Info+ fault is logged and swallowed here, never
+    // propagated into the game's call chain.
+    private static void Guard(Action body)
+    {
+        try
+        {
+            body();
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex);
+        }
     }
 }
