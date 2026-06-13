@@ -6,6 +6,7 @@ using MDIP.Core.Domain.Configs;
 using MDIP.Core.Domain.Enums;
 using MDIP.Core.Domain.Records;
 using MDIP.Core.Utilities;
+using MDIP.Ecosystem;
 using MDIP.Globals;
 
 namespace MDIP.Battle;
@@ -392,9 +393,13 @@ public class GameStats
 
         PlayingMusicHash = MusicInfoUtils.CurMusicHash;
 
+        // PB comes from the chart's ecosystem (native store for vanilla/CAM, the Euterpe bridge for
+        // Euterpe charts), maxed against this session's running best. This is the only chart-source
+        // branch in the mod — everything else reads the game's MusicInfo uniformly.
         var record = RuntimeData.TryGet(PlayingMusicHash);
-        _history.Score = Math.Max(BattleHelper.GetCurrentMusicHighScore(), record.PersonalBestScore);
-        _history.Accuracy = record.PersonalBestAccuracy;
+        var (ecoScore, ecoAccuracy) = ChartSource.ResolvePersonalBest(MusicInfoUtils.CurMusicInfo, MusicInfoUtils.CurMusicDiff);
+        _history.Score = Math.Max(ecoScore, record.PersonalBestScore);
+        _history.Accuracy = Math.Max(ecoAccuracy, record.PersonalBestAccuracy);
 
         Log.Info($"Playing: {MusicInfoUtils.CurMusicName}");
         Log.Info($"Hash: {PlayingMusicHash}");
