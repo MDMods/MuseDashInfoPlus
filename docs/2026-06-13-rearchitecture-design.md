@@ -203,3 +203,22 @@ No automated tests are feasible (Il2Cpp game runtime). Verification = `dotnet bu
 (verify-only, no deploy) for compile correctness, then manual in-game testing by K via a Debug
 build (which deploys to `Mods/`). The MP case is the acceptance test: enter an Euterpe multiplayer
 round with Info+ enabled and confirm both native and Info+ UI render correctly.
+
+## 10. Implementation notes (deviations from the plan above)
+
+- **§8 sequencing.** The DI removal is atomic (services are coupled through injection; splitting it
+  would require a forbidden shim), so the structural refactor landed as one coherent commit
+  ("refactor: replace DI container with explicit composition"). `ChartSource` followed as its own
+  commit because it depends on the `Log` static introduced by the refactor — so the order is
+  structural-first, ecosystem-second (not ecosystem-first as §8 listed).
+- **§5 rule 4 (native-UI side-effect restoration) was dropped — YAGNI.** The native objects Info+
+  mutates (AP-icon position, pause-button size, panel scale) live in the GameMain battle scene, which
+  the game destroys on every battle exit, taking them with it — there is nothing to restore on the
+  normal path. The only mid-scene teardown is the game-update incompatibility shutdown
+  (`FailAndShutdown`), where Info+ is already non-functional and a cosmetic native tweak is moot.
+  Rules 1–3 — the ones that actually fix the bug (`__runOriginal` guard, idempotent session, patch
+  exception isolation) plus the tracked-reference text reuse — are all in place.
+- **§6 migration: no migration code was written.** Config schema and the stats key/format are
+  unchanged, so the existing version-control path carries user values forward on a future version
+  bump. `ModBuildInfo.Version` is intentionally NOT bumped here — that is a release-time decision for
+  K, made when shipping via the auto-updater.
