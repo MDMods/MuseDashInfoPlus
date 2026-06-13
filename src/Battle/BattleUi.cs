@@ -12,9 +12,9 @@ using Object = UnityEngine.Object;
 
 namespace MDIP.Battle;
 
-// Builds and drives the in-battle overlay: clones a score-text template, spawns the six configured
-// text fields under the native panel, follows the native score zoom, and applies the score-skill
-// indicator offset. Owned by a BattleSession; reads its siblings GameStats / TextObjects.
+// Builds the in-battle overlay (clones a score-text template, spawns the six configured text fields
+// under the native panel) and keeps the score-skill indicator offset in sync. The score-panel zoom
+// follow is delegated to ScoreZoomFollower; this class is the construction + per-frame coordination.
 //
 // Robustness: text objects are reused from the tracked TextObjects references (never re-found by
 // name), so a stale or pending-destroy GameObject can never be picked up — the multiplayer
@@ -24,34 +24,19 @@ public class BattleUi(GameStats stats, TextObjects textObjects)
 {
     private bool _disposed;
 
-    public bool NativeZoomInCompleted { get; private set; }
-
-    private const float ZoomSpeed = 2f;
-    private const float SignificantYChange = 10f;
-    private const float AutoShowDelaySeconds = 2f;
+    private readonly ScoreZoomFollower _zoom = new();
 
     private readonly List<TextFieldBinding> _textFieldBindings = [];
     private int _pendingApplyRequests;
 
     private Transform _currentPanel;
-    private Transform _scoreTransform;
 
     private GameObject _textObjectTemplate;
 
     private string _imgIconApParentPath;
 
-    private float _currentScale = 3f;
-    private float _targetScale = 3f;
-    private float _zoomProgress;
-    private float _previousY = Constants.SCORE_ZOOM_OUT_Y;
-
-    private bool _isZooming;
-    private bool _isZoomingIn;
     private bool _isShutdown;
     private bool _isInitialized;
-
-    private bool _allowNativeZoomFollow;
-    private float _autoShowEnableTime;
 
     private bool _isMissToGreat;
     private bool _isGreatToPerfect;
@@ -62,7 +47,7 @@ public class BattleUi(GameStats stats, TextObjects textObjects)
 
     private bool? _lastUiVisibleByDefault;
 
-    private float CurrentY => _scoreTransform != null ? _scoreTransform.localPosition.y : Constants.SCORE_ZOOM_OUT_Y;
+    public bool NativeZoomInCompleted => _zoom.NativeZoomInCompleted;
 
     public void OnGameStart(PnlBattle instance)
     {
@@ -114,8 +99,8 @@ public class BattleUi(GameStats stats, TextObjects textObjects)
 
             _currentPanel.localScale = new(1f, 3f, 1f);
 
-            _scoreTransform = RequireTransform(_currentPanel, "Score", "Score");
-            if (_isShutdown || _scoreTransform == null)
+            var scoreTransform = RequireTransform(_currentPanel, "Score", "Score");
+            if (_isShutdown || scoreTransform == null)
                 return;
 
             _textObjectTemplate = CreateTextTemplate(pnlBattleOthers);
@@ -141,16 +126,7 @@ public class BattleUi(GameStats stats, TextObjects textObjects)
             stats.UpdateCurrentStats();
             textObjects.UpdateAllText();
 
-            _previousY = Constants.SCORE_ZOOM_OUT_Y;
-            _currentScale = 3f;
-            _targetScale = 3f;
-            _isZooming = false;
-            _isZoomingIn = false;
-            _zoomProgress = 0f;
-
-            NativeZoomInCompleted = false;
-            _allowNativeZoomFollow = false;
-            _autoShowEnableTime = Time.time + AutoShowDelaySeconds;
+            _zoom.Begin(_currentPanel, scoreTransform);
 
             _isMissToGreat = false;
             _isGreatToPerfect = false;
@@ -167,72 +143,15 @@ public class BattleUi(GameStats stats, TextObjects textObjects)
 
     public void CheckAndZoom()
     {
-        if (_isShutdown || !_isInitialized || _currentPanel == null || _scoreTransform == null)
+        if (_isShutdown || !_isInitialized)
             return;
 
         UpdateSkillOffset();
-
-        if (!NativeZoomInCompleted)
-        {
-            if (CurrentY <= Constants.SCORE_ZOOM_IN_Y + 2f)
-                NativeZoomInCompleted = true;
-        }
-
-        if (!RuntimeData.DesiredUiVisible)
-        {
-            ForceHide();
-            _previousY = CurrentY;
-            return;
-        }
-
-        if (!_allowNativeZoomFollow)
-        {
-            if (NativeZoomInCompleted && Time.time >= _autoShowEnableTime)
-                EnableFollowAndStart();
-            else
-            {
-                ForceHide();
-                _previousY = CurrentY;
-                return;
-            }
-        }
-
-        if (Mathf.Abs(_currentScale - _currentPanel.localScale.y) > 0.01f)
-        {
-            _currentScale = _currentPanel.localScale.y;
-            _targetScale = _currentScale;
-        }
-
-        var yChange = CurrentY - _previousY;
-        if (!_isZooming && Mathf.Abs(yChange) > SignificantYChange)
-        {
-            _isZoomingIn = yChange < 0;
-            _isZooming = true;
-            _zoomProgress = 0f;
-            _targetScale = _isZoomingIn ? 1f : 3f;
-        }
-
-        if (_isZooming)
-        {
-            _zoomProgress = Mathf.Min(_zoomProgress + Time.fixedDeltaTime * ZoomSpeed, 1f);
-            var easedProgress = _isZoomingIn ? EaseOutCubic(_zoomProgress) : EaseInCubic(_zoomProgress);
-            _currentScale = Mathf.Lerp(_isZoomingIn ? 3f : 1f, _targetScale, easedProgress);
-            _currentPanel.localScale = new(1f, _currentScale, 1f);
-            if (_zoomProgress >= 1f)
-            {
-                _isZooming = false;
-                _currentScale = _targetScale;
-            }
-        }
-        else
-        {
-            _currentPanel.localScale = new(1f, _currentScale, 1f);
-        }
-
-        _previousY = CurrentY;
+        _zoom.Tick();
     }
 
-    // Horizontal shift applied per visible auto-avoid skill icon.
+    // Horizontal shift applied per visible auto-avoid skill icon. Kept here (not split out) because it
+    // shares the text-field offset state with the upper-left binding.
     private const float SkillIconWidth = 80f;
 
     private void UpdateSkillOffset()
@@ -339,18 +258,7 @@ public class BattleUi(GameStats stats, TextObjects textObjects)
     public void SetDesiredUiVisible(bool visible)
     {
         RuntimeData.SetDesiredUiVisible(visible);
-        if (!visible)
-        {
-            _allowNativeZoomFollow = false;
-            ForceHide();
-        }
-        else
-        {
-            if (NativeZoomInCompleted)
-                EnableFollowAndStart();
-            else
-                _allowNativeZoomFollow = false;
-        }
+        _zoom.SetVisible(visible);
     }
 
     // Tears the overlay down deterministically: destroys the owned text objects and template and
@@ -362,15 +270,6 @@ public class BattleUi(GameStats stats, TextObjects textObjects)
 
         Teardown();
         _disposed = true;
-    }
-
-    private void EnableFollowAndStart()
-    {
-        _allowNativeZoomFollow = true;
-        _isZooming = true;
-        _isZoomingIn = true;
-        _zoomProgress = 0f;
-        _targetScale = 1f;
     }
 
     private void OnConfigsUpdated()
@@ -461,16 +360,6 @@ public class BattleUi(GameStats stats, TextObjects textObjects)
 
         if (triggerTextRefresh && !_isShutdown)
             textObjects.UpdateAllText();
-    }
-
-    private void ForceHide()
-    {
-        if (_currentPanel != null)
-            _currentPanel.localScale = new(1f, 3f, 1f);
-        _currentScale = 3f;
-        _targetScale = 3f;
-        _isZooming = false;
-        _isZoomingIn = false;
     }
 
     // Reuses the caller-tracked `existing` GameObject when present (the config-reapply path);
@@ -871,18 +760,11 @@ public class BattleUi(GameStats stats, TextObjects textObjects)
         _textFieldBindings.Clear();
 
         _currentPanel = null;
-        _scoreTransform = null;
         _imgIconApParentPath = null;
 
-        _currentScale = 3f;
-        _targetScale = 3f;
-        _zoomProgress = 0f;
-        _previousY = Constants.SCORE_ZOOM_OUT_Y;
-        _isZooming = false;
-        _isZoomingIn = false;
+        _zoom.Reset();
+
         _isInitialized = false;
-        NativeZoomInCompleted = false;
-        _allowNativeZoomFollow = false;
 
         MusicInfoUtils.BattleUIType = BattleUIItem.Unknown;
 
@@ -902,10 +784,6 @@ public class BattleUi(GameStats stats, TextObjects textObjects)
             Object.Destroy(obj);
         return null;
     }
-
-    private static float EaseInCubic(float value) => value * value * value;
-
-    private static float EaseOutCubic(float value) => 1f - Mathf.Pow(1f - value, 3f);
 
     private sealed class TextFieldBinding(
         string objectName,
