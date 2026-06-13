@@ -17,36 +17,49 @@ public static class MusicInfoUtils
     public static string CurMusicAuthor => CurMusicInfo.author;
     public static string CurMusicLevelDesigner => CurMusicInfo.levelDesigner;
     public static string CurMusicBpm => CurMusicInfo.bpm;
-    public static string CurAlbumName => Singleton<ConfigManager>.m_Instance.GetConfigStringValue("albums", "uid", "title", DataHelper.selectedAlbumUid);
-    public static string CurElfin {
+    // Album title / elfin name / character name read from the game's loaded (localized) config via its
+    // typed accessors — not by indexing the opaque localization JSON by position + field name, which
+    // assumed the array order and key names of an undocumented format. The typed objects ARE the data
+    // the game itself displays, so the resolved strings (and their localization) match.
+    public static string CurAlbumName
+    {
         get
-        {   // Reference: https://github.com/MDMods/CurrentCombination/blob/main/Managers/ModManager.cs
-            var elfinIndex = DataHelper.selectedElfinIndex;
-
-            if (elfinIndex < 0) return string.Empty;
-
-            return Singleton<ConfigManager>.instance
-                .GetJson("elfin", true)[elfinIndex]
-                ["name"].ToString();
+        {
+            var album = Singleton<ConfigManager>.instance
+                .GetConfigObject<DBConfigAlbums>()
+                ?.GetAlbumsInfoByUid(DataHelper.selectedAlbumUid);
+            return album?.title ?? string.Empty;
         }
     }
-    public static string CurGirl {
-        get
-        {   // Reference: https://github.com/MDMods/CurrentCombination/blob/main/Managers/ModManager.cs
-            var characterIndex = DataHelper.selectedRoleIndex;
 
+    public static string CurElfin
+    {
+        get
+        {
+            var elfinIndex = DataHelper.selectedElfinIndex;
+            if (elfinIndex < 0) return string.Empty;
+
+            var info = Singleton<ConfigManager>.instance
+                .GetConfigObject<DBConfigElfin>()
+                ?.GetElfinInfoByIndex(elfinIndex);
+            return info?.name ?? string.Empty;
+        }
+    }
+
+    public static string CurGirl
+    {
+        get
+        {
+            var characterIndex = DataHelper.selectedRoleIndex;
             if (characterIndex < 0) return string.Empty;
 
-            var configManager = Singleton<ConfigManager>.instance;
-            var character = configManager.GetJson("character", true)[characterIndex];
+            var info = Singleton<ConfigManager>.instance
+                .GetConfigObject<DBConfigCharacter>()
+                ?.GetCharacterInfoByIndex(characterIndex);
+            if (info == null) return string.Empty;
 
-            var characterType = configManager.GetConfigObject<DBConfigCharacter>()
-                .GetCharacterInfoByIndex(characterIndex)
-                .characterType;
-
-            return string.Equals(characterType, "Special")
-                ? character["characterName"].ToString()
-                : character["cosName"].ToString();
+            // "Special" characters carry their display name in characterName; cosmetics use cosName.
+            return string.Equals(info.characterType, "Special") ? info.characterName : info.cosName;
         }
     }
 

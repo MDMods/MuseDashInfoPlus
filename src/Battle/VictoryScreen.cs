@@ -58,6 +58,10 @@ public class VictoryScreen(GameStats stats, NoteRecords records)
 
         try
         {
+            // GAME-UPDATE SENSITIVE: PnlVictory exposes no typed handle for the miss-count text
+            // (verified via ilspycmd — only SetDetailInfo/SetNormalDetailInfo methods, no field), so
+            // this walks the results hierarchy by name. If a game update restructures the victory
+            // screen, this throws and the catch below disables only the miss-count replacement.
             var pnlVictory = instance.pnlVictory.GetComponentsInChildren<Transform>(true).FirstOrDefault(transform =>
                 transform.gameObject.activeSelf &&
                 transform.name == "PnlVictory" &&
