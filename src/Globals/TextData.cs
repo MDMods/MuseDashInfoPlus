@@ -56,7 +56,7 @@ internal static class TextData
             UpdateCachedValue("{pbStatsGap}", main.StatsGapTextWhenNoPersonalBest);
         }
 
-        if (!RuntimeData.IsFirstTry(MusicInfoUtils.CurMusicHash))
+        if (stats.History.HasPersonalBest)
             return;
 
         UpdateCachedValue("{scoreGap}", main.ScoreGapTextWhenNoPersonalBest);
@@ -84,7 +84,7 @@ internal static class TextData
             UpdateCachedValue("{pbStatsGap}", stats.FormatPersonalBestStatsGap());
         }
 
-        if (RuntimeData.IsFirstTry(MusicInfoUtils.CurMusicHash))
+        if (!stats.History.HasPersonalBest)
             return;
 
         UpdateCachedValue("{scoreGap}", stats.FormatScoreGap());

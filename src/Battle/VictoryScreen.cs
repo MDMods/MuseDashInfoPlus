@@ -4,30 +4,30 @@ using MDIP.Presentation;
 
 namespace MDIP.Battle;
 
-// Handles the results screen: persists the run as a new personal best when it beats the stored one,
-// optionally exports note records, and (optionally) replaces the native miss count with our hittable
-// count. Owned by a BattleSession; reads its siblings GameStats and NoteRecords.
+// Handles the results screen: persists this run's great/miss/early/late breakdown to Info+'s own
+// StatsStore when it's a new best (the only store that holds the breakdown), and optionally exports
+// note records + overwrites the displayed miss count with our hittable-miss count. Owned by a
+// BattleSession; reads its siblings GameStats / NoteRecords. "New best" compares this run to the PB
+// loaded at battle start (GameStats.History) — the ecosystem itself owns the score/accuracy record.
 public class VictoryScreen(GameStats stats, NoteRecords records)
 {
     public void OnSetDetailInfo(PnlVictory instance)
     {
         stats.IsPlayerPlaying = false;
 
-        var hash = stats.PlayingMusicHash;
-
-        var trueAccuracy = Math.Round(stats.GetTrueAccuracy(), 2);
-        var newAcc = (float)trueAccuracy;
+        var trueAccuracy = (float)Math.Round(stats.GetTrueAccuracy(), 2);
         var newScore = stats.Current.Score;
 
-        var accBest = RuntimeData.StorePersonalBestAccuracy(hash, newAcc);
-        var scoreBest = RuntimeData.StorePersonalBestScore(hash, newScore);
-
         var mainConfig = Config.Main;
-        var newBest = mainConfig.PersonalBestCriteria == 2 ? scoreBest : accBest;
+        // New best vs the PB loaded at battle start. A first play (no PB) compares against 0 → a run
+        // with any score/accuracy counts as a new best, which is what we want.
+        var newBest = mainConfig.PersonalBestCriteria == 2
+            ? newScore > stats.History.Score
+            : trueAccuracy > stats.History.Accuracy;
 
         if (newBest)
         {
-            StatsStore.SetStats(hash,
+            StatsStore.SetStats(stats.PlayingMusicHash,
                 new()
                 {
                     Great = stats.Current.Great,
@@ -48,42 +48,20 @@ public class VictoryScreen(GameStats stats, NoteRecords records)
             Directory.CreateDirectory(folder);
 
             var fileName = $"{MusicInfoUtils.CurMusicName.ToSafeFileName()}_{DateTime.Now:yyyyMMdd_HHmmss}.csv";
-            var fullPath = Path.Combine(folder, fileName);
-
-            records.ExportToCsv(fullPath);
+            records.ExportToCsv(Path.Combine(folder, fileName));
         }
 
         if (!mainConfig.ReplaceResultsScreenMissCount)
             return;
 
-        try
-        {
-            // GAME-UPDATE SENSITIVE: PnlVictory exposes no typed handle for the miss-count text
-            // (verified via ilspycmd — only SetDetailInfo/SetNormalDetailInfo methods, no field), so
-            // this walks the results hierarchy by name. If a game update restructures the victory
-            // screen, this throws and the catch below disables only the miss-count replacement.
-            var pnlVictory = instance.pnlVictory.GetComponentsInChildren<Transform>(true).FirstOrDefault(transform =>
-                transform.gameObject.activeSelf &&
-                transform.name == "PnlVictory" &&
-                transform.gameObject != instance.pnlVictory);
+        // Overwrite the displayed miss count via the results panel's typed controls — no hierarchy walk.
+        var controls = instance.m_CurControls;
+        if (controls?.missTxt == null)
+            return;
 
-            if (pnlVictory == null)
-                throw new NullReferenceException("PnlVictory container not found.");
-
-            var missValueTransform = pnlVictory.Find("PnlVictory_3D/DetailInfo/Other/TxtMiss/TxtValue");
-            if (missValueTransform == null)
-                throw new NullReferenceException("Miss value text transform not found.");
-
-            var textComponent = missValueTransform.gameObject.GetComponent<UnityEngine.UI.Text>();
-            if (textComponent == null)
-                throw new NullReferenceException("Text component not found on miss value object.");
-
-            textComponent.text = (stats.MissCountHittable + stats.Miss.Block).ToString();
-        }
-        catch (Exception ex)
-        {
-            Log.Error("Replace results screen miss count failed.");
-            Log.Error(ex);
-        }
+        var missText = (stats.MissCountHittable + stats.Miss.Block).ToString();
+        foreach (var txt in controls.missTxt)
+            if (txt != null)
+                txt.text = missText;
     }
 }

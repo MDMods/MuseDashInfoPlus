@@ -1,4 +1,3 @@
-using Il2CppAssets.Scripts.Database;
 using Il2CppAssets.Scripts.GameCore.HostComponent;
 using Il2CppFormulaBase;
 using Il2CppGameLogic;
@@ -393,13 +392,16 @@ public class GameStats
 
         PlayingMusicHash = MusicInfoUtils.CurMusicHash;
 
-        // PB comes from the chart's ecosystem (native store for vanilla/CAM, the Euterpe bridge for
-        // Euterpe charts), maxed against this session's running best. This is the only chart-source
-        // branch in the mod — everything else reads the game's MusicInfo uniformly.
-        var record = RuntimeData.TryGet(PlayingMusicHash);
-        var (ecoScore, ecoAccuracy) = ChartSource.ResolvePersonalBest(MusicInfoUtils.CurMusicInfo, MusicInfoUtils.CurMusicDiff);
-        _history.Score = Math.Max(ecoScore, record.PersonalBestScore);
-        _history.Accuracy = Math.Max(ecoAccuracy, record.PersonalBestAccuracy);
+        // PB summary (score + accuracy) read live from the chart's ecosystem authoritative store — no
+        // UI scrape, no cache. No record => first play (Score/Accuracy stay 0, HasPersonalBest false).
+        // The great/miss/early/late breakdown is loaded separately below, from Info+'s own StatsStore
+        // (no ecosystem persists it).
+        if (ChartSource.TryGetPersonalBest(MusicInfoUtils.CurMusicInfo, MusicInfoUtils.CurMusicDiff, out var pbScore, out var pbAccuracy))
+        {
+            _history.Score = pbScore;
+            _history.Accuracy = pbAccuracy;
+            _history.HasPersonalBest = true;
+        }
 
         Log.Info($"Playing: {MusicInfoUtils.CurMusicName}");
         Log.Info($"Hash: {PlayingMusicHash}");

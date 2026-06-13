@@ -1,7 +1,4 @@
-using Il2CppAssets.Scripts.GameCore.HostComponent;
 using Il2CppAssets.Scripts.UI.Panels;
-using Il2CppGameLogic;
-using MDIP.Core.Utilities;
 using MDIP.Globals;
 
 namespace MDIP.Battle;
@@ -46,18 +43,10 @@ internal static class BattleController
     public static void OnMissCube(int idx, decimal currentTick)
         => Guard(() => Current?.NoteEvents.HandleMissCube(idx, currentTick));
 
-    public static void OnVictoryDetail(PnlVictory instance) => Guard(() =>
-    {
-        if (Current != null)
-        {
-            Current.Victory.OnSetDetailInfo(instance);
-            return;
-        }
-
-        // No live session (the scene already tore down before the results screen): persist the best
-        // directly from the game data.
-        SavePersonalBestDirect();
-    });
+    // PnlVictory.SetDetailInfo postfix. No live session => nothing to do (the game owns the score/acc
+    // PB; without a run there is no breakdown to record).
+    public static void OnVictoryDetail(PnlVictory instance)
+        => Guard(() => Current?.Victory.OnSetDetailInfo(instance));
 
     public static void OnControllerMissRecord(BaseEnemyObjectController instance) => Guard(() =>
     {
@@ -80,9 +69,6 @@ internal static class BattleController
         Current.NoteRecords.AddRecord(Current.Stats.GetCurMusicData(), "OnNoteResult", $"noteResult:{result}");
     });
 
-    public static void OnPrepRecordUpdated(PnlPreparation instance)
-        => Guard(() => PrepScreen.OnRecordUpdated(instance));
-
     // A config file changed: ask the live overlay (if any) to re-apply on its next tick.
     public static void QueueConfigApply() => Guard(() => Current?.Ui.QueueApplyConfigChanges());
 
@@ -90,20 +76,6 @@ internal static class BattleController
     {
         Current?.Dispose();
         Current = null;
-    }
-
-    private static void SavePersonalBestDirect()
-    {
-        var task = TaskStageTarget.instance;
-        if (task == null)
-            return;
-
-        var hash = MusicInfoUtils.CurMusicHash;
-        var acc = (float)Math.Round((double)(task.GetAccuracy() * 100f), 2);
-        var score = task.m_Score;
-
-        RuntimeData.StorePersonalBestAccuracy(hash, acc);
-        RuntimeData.StorePersonalBestScore(hash, score);
     }
 
     // The single exception-isolation boundary: an Info+ fault is logged and swallowed here, never

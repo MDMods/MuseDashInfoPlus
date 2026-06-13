@@ -69,12 +69,16 @@ internal static class StatsStore
     {
         try
         {
-            var directory = Path.GetDirectoryName(Constants.STATS_DATA_FILE);
+            var path = Constants.STATS_DATA_FILE;
+            var directory = Path.GetDirectoryName(path);
             if (!string.IsNullOrEmpty(directory))
                 Directory.CreateDirectory(directory);
 
-            var jsonString = JsonSerializer.Serialize(_statsDict);
-            File.WriteAllText(Constants.STATS_DATA_FILE, jsonString);
+            // Atomic write: serialize to a temp file then replace, so a crash mid-write leaves the
+            // previous good file intact instead of a truncated/corrupt one.
+            var tempPath = path + ".tmp";
+            File.WriteAllText(tempPath, JsonSerializer.Serialize(_statsDict));
+            File.Move(tempPath, path, overwrite: true);
         }
         catch (Exception ex)
         {

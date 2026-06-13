@@ -1,26 +1,61 @@
 using Il2CppAssets.Scripts.Database;
+using Il2CppAssets.Scripts.PeroTools.Nice.Interface;
 
 namespace MDIP.Ecosystem;
 
-// The mod's single chart-source branch: "where is this chart's personal best?".
+// The one place that reads a chart's personal best, always from the ecosystem's OWN authoritative
+// store — never scraped from UI text. Score + accuracy(0..100) by music uid + 1-based difficulty.
+// `false` means no record exists (a first play).
 //
-// Every ecosystem (vanilla, CustomAlbums, Euterpe) injects its charts as real MusicInfo entries, so
-// title/author/difficulty/level/album all read uniformly from the game — only the PB store diverges:
-//   - Euterpe keeps it in its own save, read through EuterpeBridgeClient;
-//   - vanilla AND CustomAlbums use the native high-score store (CAM writes there too), so they share
-//     the one fallback. No CAM-specific code exists because CAM needs none today — and adding a
-//     detect-but-do-nothing branch would be dead weight.
+//   - Euterpe : its own save via the pinned cross-mod bridge (EuterpeBridgeClient).
+//   - CustomAlbums : its own save via its public API (CamSaveClient; reflected, isolated).
+//   - vanilla : the game's own high-score store (DataHelper.highest) — the exact source PnlRecord
+//     renders on the prep screen, so we read the source, not the rendered text.
+//
+// The great/miss/early/late breakdown is deliberately NOT here: no ecosystem persists it (it exists
+// only live on the results screen), so Info+ keeps that in its own StatsStore. PB summary = ecosystem
+// truth; breakdown = Info+'s own record.
 internal static class ChartSource
 {
-    // Returns (native game score, accuracy as 0..100); accuracy is 0 when the source has none, and
-    // the caller maxes it against its own session cache.
-    public static (int Score, float AccuracyPercent) ResolvePersonalBest(MusicInfo info, int difficulty)
-    {
-        if (info != null
-            && EuterpeBridgeClient.IsEuterpeChart(info.uid)
-            && EuterpeBridgeClient.TryGetPersonalBest(info.uid, difficulty, out var score, out var accuracyPercent))
-            return (score, accuracyPercent);
+    // CustomAlbums' fixed album id is 999 (AlbumManager.Uid); every CAM chart uid is "999-{index}".
+    private const string CustomAlbumsUidPrefix = "999-";
 
-        return (BattleHelper.GetCurrentMusicHighScore(), 0f);
+    public static bool TryGetPersonalBest(MusicInfo info, int difficulty, out int score, out float accuracyPercent)
+    {
+        score = 0;
+        accuracyPercent = 0f;
+        if (info == null)
+            return false;
+
+        var uid = info.uid;
+
+        if (EuterpeBridgeClient.IsEuterpeChart(uid))
+            return EuterpeBridgeClient.TryGetPersonalBest(uid, difficulty, out score, out accuracyPercent);
+
+        if (!string.IsNullOrEmpty(uid) && uid.StartsWith(CustomAlbumsUidPrefix, StringComparison.Ordinal))
+            return CamSaveClient.TryGetPersonalBest(uid, difficulty, out score, out accuracyPercent);
+
+        return TryGetVanillaPersonalBest(uid, difficulty, out score, out accuracyPercent);
+    }
+
+    private static bool TryGetVanillaPersonalBest(string uid, int difficulty, out int score, out float accuracyPercent)
+    {
+        score = 0;
+        accuracyPercent = 0f;
+        if (string.IsNullOrEmpty(uid) || DataHelper.highest == null)
+            return false;
+
+        var key = $"{uid}_{difficulty}";
+        foreach (var data in DataHelper.highest)
+        {
+            if (data.fields["uid"].GetResult<string>() != key)
+                continue;
+
+            score = data.fields["score"].GetResult<int>();
+            accuracyPercent = data.fields["accuracy"].GetResult<float>() * 100f; // the game stores 0..1
+            return true;
+        }
+
+        return false;
     }
 }
