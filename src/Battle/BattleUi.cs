@@ -25,6 +25,8 @@ public class BattleUi(GameStats stats, TextObjects textObjects)
 {
     private bool _disposed;
 
+    private readonly OverlayEntrance _entrance = new();
+
     private readonly List<TextFieldBinding> _textFieldBindings = [];
     private int _pendingApplyRequests;
 
@@ -124,10 +126,15 @@ public class BattleUi(GameStats stats, TextObjects textObjects)
 
             _isInitialized = true;
 
-            // The native battle UI is appearing right now (we're in its GameStart, before its zoom-in
-            // settles); show the overlay if the player wants it — the text is parented under the panel,
-            // so it rides the game's own entrance animation with no work of ours.
+            // The native battle UI is appearing right now (we're in its GameStart). Show the overlay
+            // if the player wants it, and fade Info+'s text up from invisible so it can't poke out
+            // while it rides the panel's entrance into place.
             textObjects.SetVisible(RuntimeData.DesiredUiVisible);
+            if (RuntimeData.DesiredUiVisible)
+            {
+                textObjects.SetAlpha(0f);
+                _entrance.Begin();
+            }
         }
         catch (Exception ex)
         {
@@ -140,6 +147,9 @@ public class BattleUi(GameStats stats, TextObjects textObjects)
     {
         if (_isShutdown || !_isInitialized)
             return;
+
+        if (_entrance.TryAdvance(out var alpha))
+            textObjects.SetAlpha(alpha);
 
         UpdateSkillOffset();
     }
@@ -255,6 +265,10 @@ public class BattleUi(GameStats stats, TextObjects textObjects)
         if (!_isInitialized)
             return;
 
+        // A manual toggle is instant: cancel any in-progress entrance and restore full opacity so a
+        // re-show is never stuck mid-fade.
+        _entrance.Stop();
+        textObjects.SetAlpha(1f);
         textObjects.SetVisible(visible);
     }
 
@@ -756,6 +770,8 @@ public class BattleUi(GameStats stats, TextObjects textObjects)
         }
 
         _textFieldBindings.Clear();
+
+        _entrance.Stop();
 
         _currentPanel = null;
         _imgIconApParentPath = null;

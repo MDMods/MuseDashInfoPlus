@@ -56,6 +56,39 @@ public class TextObjects(GameStats stats)
             obj.SetActive(visible);
     }
 
+    // Sets the alpha of every live text object (and its outline) — drives the entrance fade-in.
+    public void SetAlpha(float alpha)
+    {
+        SetAlpha(TextLowerLeft, alpha);
+        SetAlpha(TextLowerRight, alpha);
+        SetAlpha(TextScoreBelow, alpha);
+        SetAlpha(TextScoreRight, alpha);
+        SetAlpha(TextUpperLeft, alpha);
+        SetAlpha(TextUpperRight, alpha);
+    }
+
+    private static void SetAlpha(GameObject obj, float alpha)
+    {
+        if (obj == null)
+            return;
+
+        var text = obj.GetComponent<UnityEngine.UI.Text>();
+        if (text != null)
+        {
+            var color = text.color;
+            color.a = alpha;
+            text.color = color;
+        }
+
+        var outline = obj.GetComponent<UnityEngine.UI.Outline>();
+        if (outline != null)
+        {
+            var effect = outline.effectColor;
+            effect.a = alpha;
+            outline.effectColor = effect;
+        }
+    }
+
     // Destroys any live text GameObjects and clears the references. Idempotent.
     public void DestroyAll()
     {
