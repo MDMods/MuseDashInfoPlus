@@ -7,25 +7,24 @@ namespace MDIP.Battle;
 // BattleSession, and Guard is the ONE exception-isolation boundary — every entry runs through it, so
 // a fault inside Info+ can never propagate into the game's call chain or another mod's patch.
 //
-// The session is created on StageBattleComponent.GameStart — the simulation's real start, which fires
-// exactly once per run and downstream of PnlBattle.GameStart. Hooking it (instead of the UI panel's
-// GameStart) means Info+ does NOT contend with mods that gate PnlBattle.GameStart — e.g. a
-// multiplayer barrier that freezes the player at frame 0 and re-invokes at the synced start: that
-// barrier suppresses PnlBattle.GameStart, so StageBattleComponent.GameStart simply doesn't fire until
-// the real start. No __runOriginal guard, no double-fire handling, no contention to defend against.
+// The session is created on PnlBattle.GameStart (postfix) — the moment the native battle UI is set up
+// and begins its own zoom-in. Info+'s text is parented under that panel, so it rides the game's
+// built-in entrance for free (no Info+ animation, no delay). A single __runOriginal guard handles
+// multiplayer: a barrier can suppress PnlBattle.GameStart to freeze the player at frame 0 and
+// re-invoke at the synced start; the postfix still runs on the suppressed call, but the native UI
+// isn't set up then — so we act only when the original actually ran (the real start, where the panel
+// and its zoom exist to ride).
 internal static class BattleController
 {
     public static BattleSession Current { get; private set; }
 
-    // StageBattleComponent.GameStart postfix. Builds the session for this run; the overlay reads the
-    // live battle panel via PnlBattle.instance. DisposeCurrent is a clean-slate guard — normally a
-    // no-op because the previous session was disposed at the last Loading scene.
-    public static void OnBattleStart() => Guard(() =>
+    public static void OnBattleStart(PnlBattle pnl, bool runOriginal) => Guard(() =>
     {
-        var pnl = PnlBattle.instance;
-        if (pnl == null)
+        if (!runOriginal || pnl == null)
             return;
 
+        // Clean-slate guard — normally a no-op because the previous session was disposed at the last
+        // Loading scene.
         DisposeCurrent();
         Current = new BattleSession(pnl);
     });

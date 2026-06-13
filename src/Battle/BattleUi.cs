@@ -25,8 +25,6 @@ public class BattleUi(GameStats stats, TextObjects textObjects)
 {
     private bool _disposed;
 
-    private readonly OverlayEntrance _entrance = new();
-
     private readonly List<TextFieldBinding> _textFieldBindings = [];
     private int _pendingApplyRequests;
 
@@ -126,11 +124,10 @@ public class BattleUi(GameStats stats, TextObjects textObjects)
 
             _isInitialized = true;
 
-            // The song has started; show the overlay now if the player wants it visible, playing the
-            // one-shot un-stretch entrance with it.
+            // The native battle UI is appearing right now (we're in its GameStart, before its zoom-in
+            // settles); show the overlay if the player wants it — the text is parented under the panel,
+            // so it rides the game's own entrance animation with no work of ours.
             textObjects.SetVisible(RuntimeData.DesiredUiVisible);
-            if (RuntimeData.DesiredUiVisible)
-                _entrance.Begin(_currentPanel);
         }
         catch (Exception ex)
         {
@@ -144,7 +141,6 @@ public class BattleUi(GameStats stats, TextObjects textObjects)
         if (_isShutdown || !_isInitialized)
             return;
 
-        _entrance.Tick();
         UpdateSkillOffset();
     }
 
@@ -260,8 +256,6 @@ public class BattleUi(GameStats stats, TextObjects textObjects)
             return;
 
         textObjects.SetVisible(visible);
-        if (!visible)
-            _entrance.Cancel(); // never leave the panel squashed when hidden mid-entrance
     }
 
     // Tears the overlay down deterministically: destroys the owned text objects and template and
@@ -762,8 +756,6 @@ public class BattleUi(GameStats stats, TextObjects textObjects)
         }
 
         _textFieldBindings.Clear();
-
-        _entrance.Reset();
 
         _currentPanel = null;
         _imgIconApParentPath = null;
