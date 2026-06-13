@@ -1,7 +1,5 @@
-﻿using Il2CppAssets.Scripts.GameCore.HostComponent;
-using JetBrains.Annotations;
-using MDIP.Application.DependencyInjection;
-using MDIP.Application.Services.Scoped.Notes;
+using Il2CppAssets.Scripts.GameCore.HostComponent;
+using MDIP.Battle;
 
 namespace MDIP.Presentation.Patches;
 
@@ -9,9 +7,5 @@ namespace MDIP.Presentation.Patches;
 internal static class BattleEnemyManagerSetPlayResultPatch
 {
     private static void Postfix(int idx, byte result, bool isMulStart = false, bool isMulEnd = false, bool isLeft = false)
-    {
-        NoteEventService?.HandleSetPlayResult(idx, result, isMulStart, isMulEnd, isLeft);
-    }
-
-    [UsedImplicitly] [Inject] public static INoteEventService NoteEventService { get; set; }
+        => BattleController.OnSetPlayResult(idx, result, isMulStart, isMulEnd, isLeft);
 }
