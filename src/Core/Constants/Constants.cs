@@ -48,6 +48,10 @@ public static class Constants
     public static readonly Vector3 POS_UPPER_LEFT_TEXT = new(-850, 310, 0);
     public static readonly Vector3 POS_UPPER_RIGHT_TEXT = new(720, 470, 0);
 
+    // Native score panel Y thresholds used to follow the game's built-in zoom-in entrance.
+    public const float SCORE_ZOOM_OUT_Y = 670f;
+    public const float SCORE_ZOOM_IN_Y = 530f;
+
     public static readonly Dictionary<ScoreStyleType, Vector2> OFFSET_SCORE_BELOW_TEXT = new()
     {
         { ScoreStyleType.GC, new(325, 0) },

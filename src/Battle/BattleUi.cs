@@ -97,6 +97,15 @@ public class BattleUi(GameStats stats, TextObjects textObjects)
                 return;
             }
 
+            var scoreTransform = RequireTransform(_currentPanel, "Score", "Score");
+            if (_isShutdown || scoreTransform == null)
+                return;
+
+            // Squash the native panel to its pre-zoom pose NOW — before the text fields are created — so
+            // they are born off-screen and can never flash. The entrance eases it open once the native
+            // zoom-in completes (see OverlayEntrance).
+            _entrance.Begin(_currentPanel, scoreTransform);
+
             _textObjectTemplate = CreateTextTemplate(pnlBattleOthers);
             if (_isShutdown || _textObjectTemplate == null)
                 return;
@@ -127,15 +136,9 @@ public class BattleUi(GameStats stats, TextObjects textObjects)
 
             _isInitialized = true;
 
-            // The native battle UI is appearing right now (we're in its GameStart). Show the overlay
-            // if the player wants it, and fade Info+'s text up from invisible so it can't poke out
-            // while it rides the panel's entrance into place.
-            textObjects.SetVisible(RuntimeData.DesiredUiVisible);
-            if (RuntimeData.DesiredUiVisible)
-            {
-                textObjects.SetAlpha(0f);
-                _entrance.Begin();
-            }
+            // The text fields are live but the panel is held squashed (set in _entrance.Begin above), so
+            // nothing is on screen yet. The per-tick entrance eases the panel open once the native zoom
+            // completes — or keeps it squashed while the overlay is toggled off.
         }
         catch (Exception ex)
         {
@@ -149,8 +152,7 @@ public class BattleUi(GameStats stats, TextObjects textObjects)
         if (_isShutdown || !_isInitialized)
             return;
 
-        if (_entrance.TryAdvance(out var alpha))
-            textObjects.SetAlpha(alpha);
+        _entrance.Tick(RuntimeData.DesiredUiVisible);
 
         UpdateSkillOffset();
     }
@@ -266,11 +268,9 @@ public class BattleUi(GameStats stats, TextObjects textObjects)
         if (!_isInitialized)
             return;
 
-        // A manual toggle is instant: cancel any in-progress entrance and restore full opacity so a
-        // re-show is never stuck mid-fade.
-        _entrance.Stop();
-        textObjects.SetAlpha(1f);
-        textObjects.SetVisible(visible);
+        // Visibility is the panel scale: hidden snaps it back squashed (edge text off-screen, the
+        // centred native UI unaffected), shown eases it open once the native zoom has completed.
+        _entrance.OnDesiredVisibleChanged(visible);
     }
 
     // Tears the overlay down deterministically: destroys the owned text objects and template and
@@ -292,7 +292,6 @@ public class BattleUi(GameStats stats, TextObjects textObjects)
         try
         {
             RefreshTextFields(true, true);
-            textObjects.SetVisible(RuntimeData.DesiredUiVisible);
 
             var currentDefault = Config.Main.UiVisibleByDefault;
             if (_lastUiVisibleByDefault == null)
@@ -777,7 +776,7 @@ public class BattleUi(GameStats stats, TextObjects textObjects)
 
         _textFieldBindings.Clear();
 
-        _entrance.Stop();
+        _entrance.Reset();
 
         _currentPanel = null;
         _imgIconApParentPath = null;
