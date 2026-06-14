@@ -1,7 +1,5 @@
-﻿using Il2CppGameLogic;
-using JetBrains.Annotations;
-using MDIP.Application.DependencyInjection;
-using MDIP.Application.Services.Scoped.Notes;
+using Il2CppGameLogic;
+using MDIP.Battle;
 
 namespace MDIP.Presentation.Patches;
 
@@ -9,9 +7,5 @@ namespace MDIP.Presentation.Patches;
 internal static class GameMissPlayMissCubePatch
 {
     private static void Postfix(int idx, decimal currentTick)
-    {
-        NoteEventService?.HandleMissCube(idx, currentTick);
-    }
-
-    [UsedImplicitly] [Inject] public static INoteEventService NoteEventService { get; set; }
+        => BattleController.OnMissCube(idx, currentTick);
 }

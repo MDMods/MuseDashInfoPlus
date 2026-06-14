@@ -82,8 +82,6 @@ public static class Extensions
         return input[..j];
     }
 
-    public static string EscapeReturn(this string text) => text.Replace("\n", "\\n");
-
     public static string UnEscapeReturn(this string text) => text.Replace("\\n", "\n");
 
     public static int CalculateWidth(this string input) => input.Sum(c => IsFullWidth(c) ? 2 : 1);

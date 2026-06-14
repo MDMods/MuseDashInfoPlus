@@ -1,15 +1,10 @@
 ﻿namespace MDIP.Core.Domain.Records;
 
+// Only the totals the accuracy formula reads are tracked. (The game gives no reliable miss-source
+// breakdown, so per-type note totals beyond these were write-only and were removed.)
 public record struct TotalStats(
-    int Notes,
     int Hittable,
-    int Monster,
     int Block,
-    int Long,
-    int Ghost,
-    int Boss,
     int Energy,
-    int Music,
-    int Mul,
-    int RedPoint
+    int Music
 );

@@ -8,6 +8,5 @@ public record struct MissStats(
     int Ghost,
     int Energy,
     int Music,
-    int Mul,
-    int RedPoint
+    int Mul
 );

@@ -1,37 +1,29 @@
-using JetBrains.Annotations;
-using MDIP.Application.DependencyInjection;
-using MDIP.Application.Services.Global.Assets;
-using MDIP.Application.Services.Global.Configuration;
-using MDIP.Application.Services.Global.Logging;
-using MDIP.Application.Services.Global.Updates;
-using MDIP.Application.Services.Scoped.Scheduling;
+using MDIP.Battle;
 using MDIP.Core.Domain.Configs;
 using MDIP.Core.Domain.Updates;
-using MDIP.Presentation.Patches;
+using MDIP.Globals;
 
 namespace MDIP.Presentation;
 
 // ReSharper disable once InconsistentNaming
 public class MDIPMod : MelonMod
 {
-    private readonly HashSet<string> _missingServicesLogged = [];
     public static bool IsSongDescLoaded { get; private set; }
+
+    private static readonly (Type type, string name)[] ConfigModules =
+    [
+        (typeof(MainConfigs), nameof(MainConfigs)),
+        (typeof(AdvancedConfigs), nameof(AdvancedConfigs)),
+        (typeof(TextFieldLowerLeftConfigs), nameof(TextFieldLowerLeftConfigs)),
+        (typeof(TextFieldLowerRightConfigs), nameof(TextFieldLowerRightConfigs)),
+        (typeof(TextFieldScoreBelowConfigs), nameof(TextFieldScoreBelowConfigs)),
+        (typeof(TextFieldScoreRightConfigs), nameof(TextFieldScoreRightConfigs)),
+        (typeof(TextFieldUpperLeftConfigs), nameof(TextFieldUpperLeftConfigs)),
+        (typeof(TextFieldUpperRightConfigs), nameof(TextFieldUpperRightConfigs))
+    ];
 
     public override void OnInitializeMelon()
     {
-        ModServiceConfigurator.Build();
-        ModServiceConfigurator.Inject(this);
-        ModServiceConfigurator.InjectStatics(
-            typeof(BaseEnemyObjectControllerPatch),
-            typeof(BattleEnemyManagerSetPlayResultPatch),
-            typeof(GameMissPlayMissCubePatch),
-            typeof(MultHitEnemyControllerPatch),
-            typeof(PnlBattleGameStartPatch),
-            typeof(PnlPreparationPatch),
-            typeof(PnlVictorySetDetailInfoPatch),
-            typeof(StatisticsManagerPatch)
-        );
-
         _ = Task.Run(CheckForUpdatesAsync);
     }
 
@@ -39,30 +31,21 @@ public class MDIPMod : MelonMod
     {
         IsSongDescLoaded = RegisteredMelons.Any(mod => mod?.MelonAssembly?.Assembly?.FullName?.TrimStart().StartsWith("SongDesc") ?? false);
 
-        if (ConfigService == null)
-        {
-            LogMissingServiceOnce(nameof(ConfigService));
-            return;
-        }
-
-        ConfigService.Init();
-        foreach (var (type, name) in new (Type type, string name)[]
-                 {
-                     (typeof(MainConfigs), nameof(MainConfigs)),
-                     (typeof(AdvancedConfigs), nameof(AdvancedConfigs)),
-                     (typeof(TextFieldLowerLeftConfigs), nameof(TextFieldLowerLeftConfigs)),
-                     (typeof(TextFieldLowerRightConfigs), nameof(TextFieldLowerRightConfigs)),
-                     (typeof(TextFieldScoreBelowConfigs), nameof(TextFieldScoreBelowConfigs)),
-                     (typeof(TextFieldScoreRightConfigs), nameof(TextFieldScoreRightConfigs)),
-                     (typeof(TextFieldUpperLeftConfigs), nameof(TextFieldUpperLeftConfigs)),
-                     (typeof(TextFieldUpperRightConfigs), nameof(TextFieldUpperRightConfigs))
-                 })
-        {
+        Config.Init();
+        foreach (var (type, name) in ConfigModules)
             RegisterAndSaveConfig(type, name);
-        }
-        ConfigService.ActivateWatcher();
 
-        LogInfo($"{ModBuildInfo.Name} has loaded correctly!");
+        Config.ActivateWatcher();
+
+        // Initialize the visibility toggle from config ONCE, up front — independent of the in-battle
+        // zoom state. (The old lazy init ran during the hotkey poll, which never fired when another
+        // mod held the battle frozen, leaving the overlay stuck hidden.)
+        RuntimeData.InitDesiredUiVisible(Config.Main.UiVisibleByDefault);
+
+        Hotkeys.Init();
+        RegisterConfigChangeHandlers();
+
+        Log.Info($"{ModBuildInfo.Name} has loaded correctly!");
     }
 
     public override void OnSceneWasLoaded(int buildIndex, string sceneName)
@@ -70,66 +53,64 @@ public class MDIPMod : MelonMod
         switch (sceneName)
         {
             case "Loading":
-                ModServiceConfigurator.DisposeCurrentScope();
-                FontService?.UnloadFonts();
+                BattleController.EndSession();
+                Fonts.UnloadFonts();
                 break;
         }
     }
 
-    public override void OnFixedUpdate()
-    {
-        var scheduler = ModServiceConfigurator.Provider?.GetService(typeof(IRefreshScheduler)) as IRefreshScheduler;
-        scheduler?.OnFixedUpdateTick();
-    }
+    public override void OnFixedUpdate() => BattleController.OnFixedUpdate();
 
-    public override void OnLateUpdate()
-    {
-        var scheduler = ModServiceConfigurator.Provider?.GetService(typeof(IRefreshScheduler)) as IRefreshScheduler;
-        scheduler?.OnLateUpdateTick();
-    }
+    public override void OnLateUpdate() => BattleController.OnLateUpdate();
 
-    private void RegisterAndSaveConfig(Type configType, string moduleName)
+    private static void RegisterAndSaveConfig(Type configType, string moduleName)
     {
-        if (ConfigService == null)
-        {
-            LogMissingServiceOnce(nameof(ConfigService));
-            return;
-        }
-
         var fileName = $"{moduleName}.yml";
-        ConfigService.RegisterModule(moduleName, fileName);
-        var method = typeof(IConfigService).GetMethod(nameof(ConfigService.GetConfig))!
-            .MakeGenericMethod(configType);
-        var config = method.Invoke(ConfigService, [moduleName]);
-        typeof(IConfigService).GetMethod(nameof(ConfigService.SaveConfig))!
-            .MakeGenericMethod(configType)
-            .Invoke(ConfigService, [moduleName, config]);
+        Config.RegisterModule(moduleName, fileName);
+
+        var get = typeof(Config).GetMethod(nameof(Config.GetConfig))!.MakeGenericMethod(configType);
+        var config = get.Invoke(null, [moduleName]);
+        typeof(Config).GetMethod(nameof(Config.SaveConfig))!.MakeGenericMethod(configType)
+            .Invoke(null, [moduleName, config]);
     }
 
-    private async Task CheckForUpdatesAsync()
+    private static void RegisterConfigChangeHandlers()
     {
-        if (UpdateService == null)
-        {
-            LogMissingServiceOnce(nameof(UpdateService));
-            return;
-        }
+        // Any config change clears the text caches + recomputes constants, and asks the live overlay
+        // to re-apply. Registered once for every module; the hotkey rebind handler is registered
+        // separately by Hotkeys.Init.
+        Config.RegisterUpdateCallback<MainConfigs>(nameof(MainConfigs), _ => OnAnyConfigChanged());
+        Config.RegisterUpdateCallback<AdvancedConfigs>(nameof(AdvancedConfigs), _ => OnAnyConfigChanged());
+        Config.RegisterUpdateCallback<TextFieldLowerLeftConfigs>(nameof(TextFieldLowerLeftConfigs), _ => OnAnyConfigChanged());
+        Config.RegisterUpdateCallback<TextFieldLowerRightConfigs>(nameof(TextFieldLowerRightConfigs), _ => OnAnyConfigChanged());
+        Config.RegisterUpdateCallback<TextFieldScoreBelowConfigs>(nameof(TextFieldScoreBelowConfigs), _ => OnAnyConfigChanged());
+        Config.RegisterUpdateCallback<TextFieldScoreRightConfigs>(nameof(TextFieldScoreRightConfigs), _ => OnAnyConfigChanged());
+        Config.RegisterUpdateCallback<TextFieldUpperLeftConfigs>(nameof(TextFieldUpperLeftConfigs), _ => OnAnyConfigChanged());
+        Config.RegisterUpdateCallback<TextFieldUpperRightConfigs>(nameof(TextFieldUpperRightConfigs), _ => OnAnyConfigChanged());
+    }
 
+    private static void OnAnyConfigChanged()
+    {
+        TextData.QueueRefresh();
+        BattleController.QueueConfigApply();
+    }
+
+    private static async Task CheckForUpdatesAsync()
+    {
         try
         {
-            var updateInfo = await UpdateService.GetUpdateInfoAsync();
+            var updateInfo = await Updates.GetUpdateInfoAsync();
             if (updateInfo == null)
             {
-                LogError("Auto Updater: Failed to fetch update info.");
+                Log.Error("Auto Updater: Failed to fetch update info.");
                 return;
             }
             if (string.IsNullOrWhiteSpace(updateInfo.Hash))
-            {
-                LogError("Auto Updater: Update hash is empty.");
-            }
+                Log.Error("Auto Updater: Update hash is empty.");
 
-            if (!UpdateService.IsUpdateAvailable(updateInfo))
+            if (!Updates.IsUpdateAvailable(updateInfo))
             {
-                LogInfo("Auto Updater: Already up to date.");
+                Log.Info("Auto Updater: Already up to date.");
                 return;
             }
 
@@ -137,52 +118,17 @@ public class MDIPMod : MelonMod
         }
         catch (Exception ex)
         {
-            LogError("Auto Updater: Update check failed.");
-            LogError(ex.ToString());
+            Log.Error("Auto Updater: Update check failed.");
+            Log.Error(ex.ToString());
         }
     }
 
-    private async Task HandleUpdateAsync(VersionInfo updateInfo)
+    private static async Task HandleUpdateAsync(VersionInfo updateInfo)
     {
-        if (UpdateService == null)
-        {
-            LogMissingServiceOnce(nameof(UpdateService));
-            return;
-        }
-
-        var success = await UpdateService.ApplyUpdateAsync(updateInfo);
+        var success = await Updates.ApplyUpdateAsync(updateInfo);
         if (success)
-            LogWarn("Auto Updater: Update successful!");
+            Log.Warn("Auto Updater: Update successful!");
         else
-            LogError("Auto Updater: Update failed!");
+            Log.Error("Auto Updater: Update failed!");
     }
-
-    private void LogInfo(string message)
-    {
-        if (Logger != null) Logger.Info(message);
-        else Melon<MDIPMod>.Logger.Msg(message);
-    }
-
-    private void LogWarn(string message)
-    {
-        if (Logger != null) Logger.Warn(message);
-        else Melon<MDIPMod>.Logger.Warning(message);
-    }
-
-    private void LogError(string message)
-    {
-        if (Logger != null) Logger.Error(message);
-        else Melon<MDIPMod>.Logger.Error(message);
-    }
-
-    private void LogMissingServiceOnce(string serviceName)
-    {
-        if (_missingServicesLogged.Add(serviceName))
-            Melon<MDIPMod>.Logger.Warning($"Service '{serviceName}' is not available yet; skipping related operations.");
-    }
-
-    [UsedImplicitly] [Inject] public IConfigService ConfigService { get; set; }
-    [UsedImplicitly] [Inject] public IUpdateService UpdateService { get; set; }
-    [UsedImplicitly] [Inject] public IFontService FontService { get; set; }
-    [UsedImplicitly] [Inject] public ILogger<MDIPMod> Logger { get; set; }
 }
