@@ -26,7 +26,7 @@ internal static class TextData
 
         var main = Config.Main;
         UpdateCachedValue("{pbScore}", stats.History.Score.ToString());
-        UpdateCachedValue("{pbAcc}", $"{stats.History.Accuracy}%");
+        UpdateCachedValue("{pbAcc}", FormattableString.Invariant($"{stats.History.Accuracy:F2}%"));
         UpdateCachedValue("{total}", ((int)stats.AccuracyCalculationTotal).ToString());
         UpdateCachedValue("{song}", MusicInfoUtils.CurMusicName.TruncateByWidth(45));
         UpdateCachedValue("{level}", MusicInfoUtils.GetDifficultyLabel(main));
